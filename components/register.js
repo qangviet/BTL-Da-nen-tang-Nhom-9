@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { TouchableOpacity, StyleSheet, Image, View, Text, TextInput, SafeAreaView } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
 
-const RegisterScreen = () => {
+const RegisterScreen = ({navigation}) => {
     const [first_name, setFirst_name] = useState("");
     const [last_name, setLast_name] = useState("");
     const [email, setEmail] = useState("");
@@ -123,6 +123,12 @@ const RegisterScreen = () => {
             <TouchableOpacity style={styles.loginButton} className="my-5">
                 <Text style={styles.loginButtonText}>ĐĂNG KÝ</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+                <Text style={{color: 'white'}}>
+                Hoặc đăng nhập bằng username/password
+                </Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -143,6 +149,12 @@ const styles = StyleSheet.create({
         width: "85%",
         alignItems: "center",
         alignSelf: 'center'
+    },
+
+    loginButtonText: {
+        color: "#b91c1c",
+        fontSize: 16,
+        fontWeight: "bold",
     },
 
     dropdown: {

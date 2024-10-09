@@ -86,6 +86,15 @@ const LoginScreen = ({navigation}) => {
             <TouchableOpacity>
                 <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity 
+            onPress={() => navigation.navigate('RegisterScreen')}
+            style={{marginTop: 10}}
+            >
+                <Text style={styles.forgotPassword}>
+                Chưa có tài khoản? Đăng ký
+                </Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -104,13 +113,13 @@ const styles = StyleSheet.create({
     logo: {
         width: 150,
         height: 30,
-        marginBottom: 80,
+        marginBottom: 90,
     },
 
     title: {
         color: "white",
         fontSize: 18,
-        marginBottom: 20,
+        marginBottom: 30,
         textAlign: "center",
     },
 
