@@ -17,11 +17,11 @@ const StyledText = styled(Text);
 const StyledTextInput = styled(TextInput);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleLogin = () => {
+    const handleLogin = (navigation) => {
         // Ở đây bạn sẽ thêm logic xác thực đăng nhập thực tế
         if (username === "user" && password === "password") {
             navigation.replace("Home");
@@ -73,7 +73,7 @@ const LoginScreen = () => {
                 </View>
             </StyledView>
 
-            <TouchableOpacity style={styles.loginButton} className="my-5" onPress={handleLogin}>
+            <TouchableOpacity style={styles.loginButton} className="my-5" onPress={() => handleLogin(navigation)}>
                 <Text style={styles.loginButtonText}>ĐĂNG NHẬP</Text>
             </TouchableOpacity>
 
@@ -93,7 +93,7 @@ export default LoginScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#C8102E",
+        backgroundColor: "#b91c1c",
         justifyContent: "center",
         alignItems: "center",
         padding: 20,
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
 
     input: {
         width: "90%",
-        backgroundColor: "#C8102E",
+        backgroundColor: "#b91c1c",
         borderRadius: 25,
         padding: 10,
         marginBottom: 15,
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     },
 
     loginButtonText: {
-        color: "#C8102E",
+        color: "#b91c1c",
         fontSize: 16,
         fontWeight: "bold",
     },
