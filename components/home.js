@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
+import { StyleSheet, Image, View, Text, TouchableOpacity, SafeAreaView } from "react-native";
 
 const handleLoginPress = (navigation) => {
     // Xử lý khi nhấn nút Đăng nhập
@@ -16,10 +16,10 @@ const HomeScreen = ({ navigation }) => {
         <SafeAreaView>
             <View className="bg-red-700 h-full w-full">
                 <View className="flex items-center mt-40">
-                    <Text className="text-white text-6xl font-extrabold">HUST</Text>
+                    <Image source={require('../assets/logo.png')} style={styles.logo}/>
                 </View>
                 <View className="flex items-center my-20">
-                    <Text className="text-white text-3xl font-bold">Welcome to AIIHust</Text>
+                    <Text className="text-white text-3xl font-bold">Welcome to AIHust</Text>
                 </View>
                 <View className="flex flex-row items-center justify-center gap-8 mt-20">
                     <TouchableOpacity
@@ -42,3 +42,11 @@ const HomeScreen = ({ navigation }) => {
 };
 
 export default HomeScreen;
+
+const styles = StyleSheet.create({
+    logo: {
+        width: 150,
+        height: 30,
+        marginBottom: 80,
+    }
+})
