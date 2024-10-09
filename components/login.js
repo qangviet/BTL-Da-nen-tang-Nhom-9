@@ -73,13 +73,15 @@ const LoginScreen = ({navigation}) => {
                 </View>
             </StyledView>
 
-            <TouchableOpacity style={styles.loginButton} className="my-5" onPress={() => handleLogin(navigation)}>
-                <Text style={styles.loginButtonText}>ĐĂNG NHẬP</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.loginButton} className="my-5" onPress={() => handleLogin(navigation)}>
+                    <Text style={styles.loginButtonText}>ĐĂNG NHẬP</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity style={styles.fingerprintButton}>
-                <Ionicons name="finger-print" size={24} color="white" />
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.fingerprintButton}>
+                    <Ionicons name="finger-print" size={40} color="white"/>
+                </TouchableOpacity>
+            </View>
 
             <TouchableOpacity>
                 <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
@@ -99,10 +101,6 @@ const styles = StyleSheet.create({
         padding: 20,
     },
 
-    elevation: {
-        elevation: 2,
-    },
-
     logo: {
         width: 150,
         height: 30,
@@ -112,7 +110,7 @@ const styles = StyleSheet.create({
     title: {
         color: "white",
         fontSize: 18,
-        marginBottom: 50,
+        marginBottom: 20,
         textAlign: "center",
     },
 
@@ -127,11 +125,17 @@ const styles = StyleSheet.create({
         borderColor: "white",
     },
 
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between', 
+        width: '85%',
+    },
+
     loginButton: {
         backgroundColor: "white",
         borderRadius: 10,
         padding: 15,
-        width: "85%",
+        width: "80%",
         alignItems: "center",
     },
 
@@ -142,12 +146,12 @@ const styles = StyleSheet.create({
     },
 
     fingerprintButton: {
-        marginVertical: 15,
         alignItems: "center",
+        justifyContent: "center",
+        marginRight: 10,
     },
-
+    
     forgotPassword: {
         color: "white",
-        marginTop: 10,
     },
 });
