@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { View, Text, TextInput, SafeAreaView } from "react-native";
+import { StyleSheet, Image, View, Text, TextInput, SafeAreaView } from "react-native";
 
 import SelectDropdown from "react-native-select-dropdown";
 
@@ -31,7 +31,7 @@ const RegisterScreen = () => {
         <SafeAreaView>
             <View className="bg-red-700 h-full">
                 <View className="flex items-center mt-20">
-                    <Text className="text-white text-6xl font-extrabold">HUST</Text>
+                    <Image source={require('../assets/logo.png')} style={styles.logo}/>
                 </View>
                 <View className="flex items-center my-20">
                     <Text className="text-white text-3xl font-bold">Welcome to AIIHust</Text>
@@ -113,3 +113,11 @@ const RegisterScreen = () => {
 };
 
 export default RegisterScreen;
+
+const styles = StyleSheet.create({
+    logo: {
+        width: 150,
+        height: 30,
+        marginTop: 50,
+    }
+})
