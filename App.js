@@ -10,11 +10,6 @@ const App = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="RegisterScreen">
-                {/* <Stack.Screen
-                    name="Home"
-                    component={HomeScreen}
-                    options={{ title: "Trang chủ", headerShown: false }}
-                /> */}
                 <Stack.Screen
                     name="RegisterScreen"
                     component={RegisterScreen}
