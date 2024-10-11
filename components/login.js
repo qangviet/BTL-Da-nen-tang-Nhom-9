@@ -17,11 +17,11 @@ const StyledText = styled(Text);
 const StyledTextInput = styled(TextInput);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleLogin = () => {
+    const handleLogin = (navigation) => {
         // Ở đây bạn sẽ thêm logic xác thực đăng nhập thực tế
         if (username === "user" && password === "password") {
             navigation.replace("Home");
@@ -73,16 +73,27 @@ const LoginScreen = () => {
                 </View>
             </StyledView>
 
-            <TouchableOpacity style={styles.loginButton} className="my-5" onPress={handleLogin}>
-                <Text style={styles.loginButtonText}>ĐĂNG NHẬP</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.loginButton} className="my-5" onPress={() => handleLogin(navigation)}>
+                    <Text style={styles.loginButtonText}>ĐĂNG NHẬP</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity style={styles.fingerprintButton}>
-                <Ionicons name="finger-print" size={24} color="white" />
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.fingerprintButton}>
+                    <Ionicons name="finger-print" size={40} color="white"/>
+                </TouchableOpacity>
+            </View>
 
             <TouchableOpacity>
                 <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+            onPress={() => navigation.navigate('RegisterScreen')}
+            style={{marginTop: 10}}
+            >
+                <Text style={styles.forgotPassword}>
+                Chưa có tài khoản? Đăng ký
+                </Text>
             </TouchableOpacity>
         </View>
     );
@@ -93,32 +104,28 @@ export default LoginScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#C8102E",
+        backgroundColor: "#b91c1c",
         justifyContent: "center",
         alignItems: "center",
         padding: 20,
     },
 
-    elevation: {
-        elevation: 2,
-    },
-
     logo: {
         width: 150,
         height: 30,
-        marginBottom: 80,
+        marginBottom: 90,
     },
 
     title: {
         color: "white",
         fontSize: 18,
-        marginBottom: 50,
+        marginBottom: 30,
         textAlign: "center",
     },
 
     input: {
         width: "90%",
-        backgroundColor: "#C8102E",
+        backgroundColor: "#b91c1c",
         borderRadius: 25,
         padding: 10,
         marginBottom: 15,
@@ -127,27 +134,33 @@ const styles = StyleSheet.create({
         borderColor: "white",
     },
 
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between', 
+        width: '85%',
+    },
+
     loginButton: {
         backgroundColor: "white",
         borderRadius: 10,
         padding: 15,
-        width: "85%",
+        width: "80%",
         alignItems: "center",
     },
 
     loginButtonText: {
-        color: "#C8102E",
+        color: "#b91c1c",
         fontSize: 16,
         fontWeight: "bold",
     },
 
     fingerprintButton: {
-        marginVertical: 15,
         alignItems: "center",
+        justifyContent: "center",
+        marginRight: 10,
     },
-
+    
     forgotPassword: {
         color: "white",
-        marginTop: 10,
     },
 });
