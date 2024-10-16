@@ -17,9 +17,11 @@ const StyledText = styled(Text);
 const StyledTextInput = styled(TextInput);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+
+    const [focusIndex, setFocusIndex] = useState(null);
 
     const handleLogin = (navigation) => {
         // Ở đây bạn sẽ thêm logic xác thực đăng nhập thực tế
@@ -41,12 +43,14 @@ const LoginScreen = ({navigation}) => {
 
             <StyledView className="relative my-4 w-[85%]">
                 <StyledTextInput
-                    className="bg-transparent text-white border border-white 
+                    className="bg-transparent text-white 
                     rounded-full py-3 px-12 text-base font-medium"
                     placeholder="Email hoặc mã số SV/CB"
                     value={username}
                     onChangeText={setUsername}
                     placeholderTextColor="#e6e8e6"
+                    onFocus={() => setFocusIndex(0)}
+                    style={[focusIndex == 0 ? styles.inputFocused : styles.input]}
                 />
                 <View
                     className="flex-1 justify-center items-center absolute 
@@ -57,13 +61,15 @@ const LoginScreen = ({navigation}) => {
             </StyledView>
             <StyledView className="relative my-3 w-[85%]">
                 <StyledTextInput
-                    className="bg-transparents border border-white text-white 
+                    className="bg-transparents text-white 
                     rounded-full py-3 px-12 text-base font-medium"
                     placeholder="Mật khẩu"
                     secureTextEntry
                     value={password}
                     onChangeText={setPassword}
                     placeholderTextColor="#e6e8e6"
+                    onFocus={() => setFocusIndex(1)}
+                    style={[focusIndex == 1 ? styles.inputFocused : styles.input]}
                 />
                 <View className="absolute top-1/2 -translate-y-[10px] left-5">
                     <Fontisto name="locked" size={20} color="white" />
@@ -79,7 +85,7 @@ const LoginScreen = ({navigation}) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.fingerprintButton}>
-                    <Ionicons name="finger-print" size={40} color="white"/>
+                    <Ionicons name="finger-print" size={40} color="white" />
                 </TouchableOpacity>
             </View>
 
@@ -87,12 +93,12 @@ const LoginScreen = ({navigation}) => {
                 <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
-            onPress={() => navigation.navigate('RegisterScreen')}
-            style={{marginTop: 10}}
+            <TouchableOpacity
+                onPress={() => navigation.navigate('RegisterScreen')}
+                style={{ marginTop: 10 }}
             >
                 <Text style={styles.forgotPassword}>
-                Chưa có tài khoản? Đăng ký
+                    Chưa có tài khoản? Đăng ký
                 </Text>
             </TouchableOpacity>
         </View>
@@ -124,19 +130,30 @@ const styles = StyleSheet.create({
     },
 
     input: {
-        width: "90%",
+        width: "100%",
         backgroundColor: "#b91c1c",
         borderRadius: 25,
         padding: 10,
-        marginBottom: 15,
+        // marginBottom: 15,
         color: "white",
         borderWidth: 1,
+        borderColor: "#dbd9d9",
+    },
+
+    inputFocused: {
+        width: "100%",
+        backgroundColor: "#b91c1c",
+        borderRadius: 25,
+        padding: 10,
+        // marginBottom: 15,
+        color: "white",
+        borderWidth: 2,
         borderColor: "white",
     },
 
     buttonContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between', 
+        justifyContent: 'space-between',
         width: '85%',
     },
 
@@ -159,7 +176,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         marginRight: 10,
     },
-    
+
     forgotPassword: {
         color: "white",
     },

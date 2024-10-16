@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { TouchableOpacity, StyleSheet, Image, View, Text, TextInput, SafeAreaView } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
 
-const RegisterScreen = ({navigation}) => {
+const RegisterScreen = ({ navigation }) => {
     const [first_name, setFirst_name] = useState("");
     const [last_name, setLast_name] = useState("");
     const [email, setEmail] = useState("");
@@ -13,17 +13,17 @@ const RegisterScreen = ({navigation}) => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
     const [items, setItems] = useState([
-        {label: 'Teacher', value: 'Giảng viên'},
-        {label: 'Student', value: 'Sinh viên'}
+        { label: 'Teacher', value: 'Giảng viên' },
+        { label: 'Student', value: 'Sinh viên' }
     ]);
-    
+
     const [focusIndex, setFocusIndex] = useState(null);
 
 
     return (
-        <View className="bg-red-700 h-full" style={{justifyContent: 'center', alignItems: 'center'}}>
+        <View className="bg-red-700 h-full" style={{ justifyContent: 'center', alignItems: 'center' }}>
             <View className="flex items-center mt-0">
-                <Image source={require('../assets/logo.png')} style={styles.logo}/>
+                <Image source={require('../assets/logo.png')} style={styles.logo} />
             </View>
             <View className="flex items-center my-10">
                 <Text className="text-white text-3xl font-bold">Welcome to AIIHust</Text>
@@ -38,7 +38,6 @@ const RegisterScreen = ({navigation}) => {
                         placeholder="Họ"
                         placeholderTextColor="white"
                         onFocus={() => setFocusIndex(0)}
-                        // onBlur={() => setFocusIndex(null)}
                         style={[focusIndex == 0 ? styles.inputFocused : styles.input]}
 
                     />
@@ -118,15 +117,15 @@ const RegisterScreen = ({navigation}) => {
                         height: 20,
                         // backgroundColor: 'white'
                     }}
-                    />
+                />
             </View>
             <TouchableOpacity style={styles.loginButton} className="my-5">
                 <Text style={styles.loginButtonText}>ĐĂNG KÝ</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
-                <Text style={{color: 'white'}}>
-                Hoặc đăng nhập bằng username/password
+                <Text style={{ color: 'white' }}>
+                    Hoặc đăng nhập bằng username/password
                 </Text>
             </TouchableOpacity>
         </View>
@@ -160,7 +159,7 @@ const styles = StyleSheet.create({
     dropdown: {
         backgroundColor: 'transparent',
         borderWidth: 1,
-        borderColor: 'white',
+        borderColor: '#dbd9d9',
     },
 
     dropdownFocused: {
@@ -172,7 +171,7 @@ const styles = StyleSheet.create({
     input: {
         width: '100%',
         borderWidth: 1,
-        borderColor: 'white',
+        borderColor: '#dbd9d9',
         borderRadius: 10,
         paddingHorizontal: 20,
         paddingVertical: 10,
