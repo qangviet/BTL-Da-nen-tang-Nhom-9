@@ -8,30 +8,31 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
     return (
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName="RegisterScreen">
-                {/* <Stack.Screen
-                    name="Home"
-                    component={HomeScreen}
-                    options={{ title: "Trang chủ", headerShown: false }}
-                /> */}
-                <Stack.Screen
-                    name="RegisterScreen"
-                    component={RegisterScreen}
-                    options={{ title: "Đăng ký", headerShown: false }}
-                />
-                <Stack.Screen
-                    name="LoginScreen"
-                    component={LoginScreen}
-                    options={{ title: "Đăng nhập", headerShown: false }}
-                />
-                <Stack.Screen
-                    name="RegisterClassScreen"
-                    component={RegisterClassScreen}
-                    options={{ title: "Đăng ký lớp", headerShown: false }}
-                />
-            </Stack.Navigator>
-        </NavigationContainer>
+        <RegisterClassScreen></RegisterClassScreen>
+        // <NavigationContainer>
+        //     <Stack.Navigator initialRouteName="RegisterScreen">
+        //         {/* <Stack.Screen
+        //             name="Home"
+        //             component={HomeScreen}
+        //             options={{ title: "Trang chủ", headerShown: false }}
+        //         /> */}
+        //         <Stack.Screen
+        //             name="RegisterScreen"
+        //             component={RegisterScreen}
+        //             options={{ title: "Đăng ký", headerShown: false }}
+        //         />
+        //         <Stack.Screen
+        //             name="LoginScreen"
+        //             component={LoginScreen}
+        //             options={{ title: "Đăng nhập", headerShown: false }}
+        //         />
+        //         <Stack.Screen
+        //             name="RegisterClassScreen"
+        //             component={RegisterClassScreen}
+        //             options={{ title: "Đăng ký lớp", headerShown: false }}
+        //         />
+        //     </Stack.Navigator>
+        // </NavigationContainer>
     );
 };
 export default App;
