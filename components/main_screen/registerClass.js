@@ -1,19 +1,10 @@
 import React, { Suspense, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-    StyleSheet,
-    Image,
-    ScrollView,
-    View,
-    Text,
-    TextInput,
-    SafeAreaView,
-    TouchableOpacity,
-} from "react-native";
+import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity } from "react-native";
 import CheckBox from "react-native-check-box";
 import { Table, TableWrapper, Row, Cell, Col } from "react-native-table-component";
 
-import LogoHust from "./logo";
+import LogoHust from "../logo";
 const RegisterClassScreen = ({ navigation }) => {
     const [tableHead] = useState([
         "Mã học phần",
@@ -62,8 +53,8 @@ const RegisterClassScreen = ({ navigation }) => {
 
     return (
         <View>
-            <View className="bg-red-700 pt-14 pb-5 relative">
-                <View className="absolute left-3 top-14">
+            <View className="bg-red-700 pt-8 pb-5 relative">
+                <View className="absolute left-3 top-8">
                     <TouchableOpacity>
                         <FontAwesome name="long-arrow-left" size={26} color="white" />
                     </TouchableOpacity>
@@ -180,12 +171,40 @@ const RegisterClassScreen = ({ navigation }) => {
         </View>
     );
 };
+
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: "#fff" },
-    header: { backgroundColor: "#537791" },
-    textHeader: { textAlign: "center", fontWeight: "500", color: "white" },
-    textRecoder: { textAlign: "center", fontWeight: "100", color: "black" },
-    dataWrapper: { marginTop: -1 },
-    row: { height: 40, backgroundColor: "#fff" },
+    container: {
+        flex: 1,
+        padding: 16,
+        paddingTop: 30,
+        backgroundColor: "#fff"
+    },
+
+    header: {
+        backgroundColor: "#537791"
+    },
+
+    textHeader: {
+        textAlign: "center",
+        fontWeight: "500",
+        color: "white"
+    },
+
+    textRecoder: {
+        textAlign: "center",
+        fontWeight: "100",
+        color: "black"
+    },
+
+    dataWrapper: {
+        marginTop: -1
+    },
+
+    row: {
+        height: 40,
+        backgroundColor: "#fff"
+    },
+
 });
+
 export default RegisterClassScreen;
