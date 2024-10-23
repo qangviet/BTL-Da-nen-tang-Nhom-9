@@ -5,7 +5,7 @@ export default class ClassSurveys extends Component {
       render() {
             return (
                   <View>
-                        <Text>classSurveys</Text>
+                        <Text></Text>
                   </View>
             )
       }

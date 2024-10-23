@@ -64,7 +64,7 @@ const ClassDocsScreen = ({ navigation }) => {
       return (
             <View style={{ flex: 1 }}>
                   <FlatList
-                        className="mb-8"
+                        className="mb-5"
                         data={DOCs}
                         renderItem={({ item }) => <Item item={item} />}
                         keyExtractor={item => item.id}
