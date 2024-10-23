@@ -4,10 +4,14 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import LoginScreen from "./components/login.js";
 import RegisterScreen from "./components/register.js";
-
+import RegisterClassScreen from "./components/registerClass.js";
+import ClassManagementScreen from "./components/manageClass.js";
+import CreateClassScreen from "./components/createClass.js";
+import EditClassScreen from "./components/editClass.js";
 import RegisterClassScreen from "./components/main_screen/registerClass.js";
 import MyClassesScreen from "./components/main_screen/my_classes.js";
 import ClassScreen from "./components/each_class/class.js";
+
 
 const Stack = createNativeStackNavigator();
 
