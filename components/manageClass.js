@@ -15,124 +15,32 @@ import { Table, TableWrapper, Row, Cell, Col } from "react-native-table-componen
 import Modal from "react-native-modal";
 
 import LogoHust from "./logo";
-const RegisterClassScreen = ({ navigation }) => {
+const ClassManagementScreen = ({ navigation }) => {
     const [tableHead] = useState([
         "Mã học phần",
         "Mã lớp học",
         "Mã lớp kèm",
         "Tên lớp học",
-        "Ngày đăng ký",
-        "TT Đăng ký",
         "Số TC",
         "Chọn",
     ]);
-    const [widthArr] = useState([70, 80, 80, 130, 100, 100, 50, 50]);
+    const [widthArr] = useState([70, 80, 80, 130, 70, 70]);
     const sumTC = 16;
     const [tableData, setTableData] = useState([
-        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "10/15/2023", "Thành công", "2", true],
-        [
-            "IT3040",
-            "123456",
-            "789012",
-            "Kỹ thuật lập trình",
-            "10/15/2023",
-            "Thành công",
-            "2",
-            false,
-        ],
-        [
-            "IT3040",
-            "123456",
-            "789012",
-            "Kỹ thuật lập trình",
-            "10/15/2023",
-            "Thành công",
-            "2",
-            false,
-        ],
-        [
-            "IT3040",
-            "123456",
-            "789012",
-            "Kỹ thuật lập trình",
-            "10/15/2023",
-            "Thành công",
-            "2",
-            false,
-        ],
-        [
-            "IT3040",
-            "123456",
-            "789012",
-            "Kỹ thuật lập trình",
-            "10/15/2023",
-            "Thành công",
-            "2",
-            false,
-        ],
-        [
-            "IT3040",
-            "123456",
-            "789012",
-            "Kỹ thuật lập trình",
-            "10/15/2023",
-            "Thành công",
-            "2",
-            false,
-        ],
-        [
-            "IT3040",
-            "123456",
-            "789012",
-            "Kỹ thuật lập trình",
-            "10/15/2023",
-            "Thành công",
-            "2",
-            false,
-        ],
-        [
-            "IT3040",
-            "123456",
-            "789012",
-            "Kỹ thuật lập trình",
-            "10/15/2023",
-            "Thành công",
-            "2",
-            false,
-        ],
-        [
-            "IT3040",
-            "123456",
-            "789012",
-            "Kỹ thuật lập trình",
-            "10/15/2023",
-            "Thành công",
-            "2",
-            false,
-        ],
-        [
-            "IT3040",
-            "123456",
-            "789012",
-            "Kỹ thuật lập trình",
-            "10/15/2023",
-            "Thành công",
-            "2",
-            false,
-        ],
-        [
-            "IT3040",
-            "123456",
-            "789012",
-            "Kỹ thuật lập trình",
-            "10/15/2023",
-            "Thành công",
-            "2",
-            false,
-        ],
-        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "10/15/2023", "Thành công", "2", true],
-        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "10/15/2023", "Thành công", "2", true],
-        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "10/15/2023", "Thành công", "2", true],
+        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", true],
+        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
+        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
+        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
+        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
+        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
+        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
+        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
+        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
+        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
+        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
+        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", true],
+        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", true],
+        ["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", true],
     ]);
 
     const [listClass, setListClass] = useState([
@@ -228,7 +136,7 @@ const RegisterClassScreen = ({ navigation }) => {
                 </View>
                 <View className="flex justify-center items-center">
                     <LogoHust width={100} height={20}></LogoHust>
-                    <Text className="text-white text-[24px] pt-3">REGISTER FOR CLASS</Text>
+                    <Text className="text-white text-[24px] pt-3">CLASS MANAGEMENT</Text>
                 </View>
             </View>
             <View className="mt-10 mx-8 flex flex-row">
@@ -241,7 +149,7 @@ const RegisterClassScreen = ({ navigation }) => {
                 </View>
                 <View className="basis-[35%] flex justify-center items-center bg-red-700 rounded-lg">
                     <TouchableOpacity>
-                        <Text className="text-white italic font-bold text-lg">Đăng ký</Text>
+                        <Text className="text-white italic font-bold text-lg">Tìm kiếm</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -272,8 +180,6 @@ const RegisterClassScreen = ({ navigation }) => {
                                                     data={
                                                         cellIndex === rowData.length - 1 ? (
                                                             <CheckBox
-                                                                // style={{ flex: 1, padding: 10 }}
-                                                                // className="py-1 self-center"
                                                                 style={{
                                                                     alignSelf: "center",
                                                                     paddingBottom: 4,
@@ -300,12 +206,6 @@ const RegisterClassScreen = ({ navigation }) => {
                         </View>
                     </ScrollView>
                 </View>
-                <View className="h-5 flex items-end px-6 mt-4">
-                    <Text className="text-black">
-                        Tổng số tín chỉ đã đăng ký:{" "}
-                        <Text className="text-red-600 font-bold">{sumTC}</Text>
-                    </Text>
-                </View>
             </View>
             <View className="flex flex-row mt-10 justify-center gap-x-3">
                 <View
@@ -313,7 +213,7 @@ const RegisterClassScreen = ({ navigation }) => {
                  bg-red-700 rounded-lg px-5 py-1"
                 >
                     <TouchableOpacity>
-                        <Text className="text-white italic font-bold text-lg">Gửi đăng ký</Text>
+                        <Text className="text-white italic font-bold text-lg">Tạo lớp học</Text>
                     </TouchableOpacity>
                 </View>
                 <View
@@ -321,7 +221,7 @@ const RegisterClassScreen = ({ navigation }) => {
                  bg-red-700 rounded-lg px-5 py-1"
                 >
                     <TouchableOpacity>
-                        <Text className="text-white italic font-bold text-lg">Xóa lớp</Text>
+                        <Text className="text-white italic font-bold text-lg">Chỉnh sửa</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -432,4 +332,4 @@ const styles = StyleSheet.create({
     dataWrapper: { marginTop: -1 },
     row: { height: 40, backgroundColor: "#fff" },
 });
-export default RegisterClassScreen;
+export default ClassManagementScreen;
