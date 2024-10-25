@@ -49,8 +49,7 @@ const ClassDocsScreen = ({ navigation }) => {
       );
 
       const Item = ({ item }) => (
-            <View className="bg-white p-4 m-2 rounded-lg shadow flex-row justify-between items-center"
-                  onPress={() => goToClass(item.name)}>
+            <View className="bg-white p-4 m-2 rounded-lg shadow flex-row justify-between items-center border border-gray-200">
                   <View>
                         <Text className='text-lg'>{item.name}</Text>
                         <Text className='text-gray-500'>Chỉnh sửa bởi: {item.uploader}</Text>

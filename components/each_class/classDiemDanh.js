@@ -198,9 +198,9 @@ const ClassDiemDanh = ({ navigation }) => {
     return (
         <View>
             <View
-                className="mt-12 flex flex-row 
+                className="flex flex-row 
             items-center px-4 justify-between
-            border-t border-black"
+            border-t border-gray-100"
             >
                 <View>
                     <Text className="text-lg font-semibold">Ngày điểm danh:</Text>
@@ -214,7 +214,7 @@ const ClassDiemDanh = ({ navigation }) => {
                         iconStyle={styles.iconStyle}
                         data={listDate}
                         search
-                        maxHeight={300}
+                        maxHeight={400}
                         labelField="label"
                         valueField="value"
                         placeholder="Chọn ngày"
@@ -228,14 +228,16 @@ const ClassDiemDanh = ({ navigation }) => {
                 </View>
             </View>
             <View className="border-t">
-                <Text className="text-lg pt-2 underline self-center">
-                    Yêu cầu xin vắng mặt ({nghihoc})
-                </Text>
+                <TouchableOpacity>
+                    <Text className="text-lg pt-2 underline self-center">
+                        Yêu cầu xin vắng mặt ({nghihoc})
+                    </Text>
+                </TouchableOpacity>
             </View>
-            <View className="max-h-[60%] mt-3">
+            <View className="max-h-[70%] mt-3">
                 <ScrollView horizontal={true}>
                     <View className="border-t ">
-                        <Table borderStyle={{ borderWidth: 1, borderColor: "#000" }}>
+                        <Table borderStyle={{ borderWidth: 1, borderColor: "gray" }}>
                             <Row
                                 data={tableHead}
                                 widthArr={widthArr}
@@ -326,12 +328,12 @@ const styles = StyleSheet.create({
         marginTop: 8,
         marginBottom: 8,
         height: 40,
-        width: 230,
+        width: 210,
         backgroundColor: "white",
-        paddingLeft: 20,
+        paddingLeft: 10,
         paddingRight: 5,
         borderWidth: 2,
-        borderColor: "#000",
+        borderColor: "lightgray",
         borderRadius: 10,
         elevation: 2,
     },
