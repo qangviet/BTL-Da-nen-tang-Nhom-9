@@ -63,9 +63,9 @@ const ClassSurveys = ({ navigation }) => {
                         {['Sắp tới', 'Quá hạn', 'Đã hoàn thành'].map((label, index) => (
                               <TouchableOpacity
                                     key={index}
-                                    className={`flex-1 mx-2 rounded-lg h-6 justify-center ${mode === index ? 'bg-blue-300' : 'bg-gray-300'}`}
+                                    className={`flex-1 mx-2 rounded-lg h-6 justify-center ${mode === index ? 'bg-red-600' : 'bg-gray-300'}`}
                                     onPress={() => setMode(index)}>
-                                    <Text className="text-center">{label}</Text>
+                                    <Text className={`text-center ${mode === index ? 'text-white' : 'text-black'}`}>{label}</Text>
                               </TouchableOpacity>
                         ))}
                   </View>
