@@ -14,11 +14,10 @@ import { Table, Row } from "react-native-table-component";
 
 import { Dropdown } from "react-native-element-dropdown";
 import { FontAwesome } from "@expo/vector-icons";
-import LogoHust from "./logo";
+import LogoHust from "components/logo.js";
 import AntDesign from "@expo/vector-icons/AntDesign";
-
 import Modal from "react-native-modal";
-const EditClassScreen = ({ navigation }) => {
+const CreateClassScreen = ({ navigation }) => {
     const listTypeClass = [
         { label: "LT", value: "LT" },
         { label: "BT", value: "BT" },
@@ -161,24 +160,6 @@ const EditClassScreen = ({ navigation }) => {
             </>
         );
     };
-
-    const [confirmSave, setConfirmSave] = useState(false);
-    const [confirmDelete, setConfirmDelete] = useState(false);
-
-    const openModalConfirmSave = () => {
-        setConfirmSave(true);
-    };
-    const closeModalConfirmSave = () => {
-        setConfirmSave(false);
-    };
-
-    const openModalConfirmDelete = () => {
-        setConfirmDelete(true);
-    };
-    const closeModalConfirmDelete = () => {
-        setConfirmDelete(false);
-    };
-
     return (
         <View>
             <View className="bg-red-700 pt-10 pb-5 relative">
@@ -284,17 +265,10 @@ const EditClassScreen = ({ navigation }) => {
                     placeholderTextColor={"#e86456"}
                     className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
                 />
-                <View className="flex flex-row">
-                    <View className="mx-auto py-2 px-4 bg-red-700 rounded-lg mt-10">
-                        <TouchableOpacity onPress={openModalConfirmDelete}>
-                            <Text className="text-white italic text-xl font-bold">Xóa lớp học</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View className="mx-auto py-2 px-4 bg-red-700 rounded-lg mt-10">
-                        <TouchableOpacity onPress={openModalConfirmSave}>
-                            <Text className="text-white italic text-xl font-bold">Xác nhận</Text>
-                        </TouchableOpacity>
-                    </View>
+                <View className="mx-auto py-2 px-4 bg-red-700 rounded-lg mt-10">
+                    <TouchableOpacity>
+                        <Text className="text-white italic text-xl font-bold">Tạo lớp học</Text>
+                    </TouchableOpacity>
                 </View>
                 <View className="mx-auto mt-8 ">
                     <TouchableOpacity onPress={() => openModalListClass()}>
@@ -304,60 +278,6 @@ const EditClassScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <Modal isVisible={confirmSave} onBackdropPress={() => closeModalConfirmSave()}>
-                <View className="bg-gray-300 rounded-xl self-center">
-                    <View>
-                        <View className="self-end px-3 py-3">
-                            <TouchableOpacity onPress={closeModalConfirmSave}>
-                                <AntDesign name="close" size={24} color="gray" />
-                            </TouchableOpacity>
-                        </View>
-                        <View className="border-t border-gray-400"></View>
-                    </View>
-                    <Text className="text-xl font-semibold self-center px-5 py-2 my-3">
-                        Xác nhận lưu thông tin lớp học?
-                    </Text>
-                    <View className="flex flex-row justify-end px-5 py-3">
-                        <View className="bg-blue-400 px-4 py-2 rounded-lg mx-2">
-                            <TouchableOpacity>
-                                <Text className="text-base">Hủy</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View className="bg-red-400 px-4 py-2 mx-2 rounded-lg">
-                            <TouchableOpacity>
-                                <Text className="text-base">Lưu</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
-            <Modal isVisible={confirmDelete} onBackdropPress={() => closeModalConfirmDelete()}>
-                <View className="bg-gray-300 rounded-xl self-center">
-                    <View>
-                        <View className="self-end px-3 py-3">
-                            <TouchableOpacity onPress={closeModalConfirmDelete}>
-                                <AntDesign name="close" size={24} color="gray" />
-                            </TouchableOpacity>
-                        </View>
-                        <View className="border-t border-gray-400"></View>
-                    </View>
-                    <Text className="text-xl font-semibold self-center px-5 py-2 my-3">
-                        Xác nhận xóa lớp học?
-                    </Text>
-                    <View className="flex flex-row justify-end px-5 py-3">
-                        <View className="bg-blue-400 px-4 py-2 rounded-lg mx-2">
-                            <TouchableOpacity>
-                                <Text className="text-base">Hủy</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View className="bg-red-400 px-4 py-2 mx-2 rounded-lg">
-                            <TouchableOpacity>
-                                <Text className="text-base">Xóa</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
             <Modal isVisible={isOpenModal} onBackdropPress={(e) => closeModalListClass(e)}>
                 <View className="h-[70%] bg-gray-200 ">
                     <ScrollView horizontal={true}>
@@ -496,4 +416,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default EditClassScreen;
+export default CreateClassScreen;

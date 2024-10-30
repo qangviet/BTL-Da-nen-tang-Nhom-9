@@ -5,13 +5,9 @@ import { LogBox } from "react-native";
 LogBox.ignoreAllLogs();
 import LoginScreen from "./components/login.js";
 import RegisterScreen from "./components/register.js";
-import ClassManagementScreen from "./components/manageClass.js";
-import CreateClassScreen from "./components/createClass.js";
-import EditClassScreen from "./components/editClass.js";
-import RegisterClassScreen from "./components/main_screen/registerClass.js";
-import MyClassesScreen from "./components/main_screen/my_classes.js";
-import ClassScreen from "./components/each_class/class.js";
-import ClassDiemDanh from "./components/each_class/classDiemDanh.js";
+import RegisterClassScreenSVien from "./components/SVien/main_screen/registerClassSVien.js";
+import MyClassesScreenSVien from "./components/SVien/main_screen/my_classesSVien.js";
+import ClassScreenSVien from "./components/SVien/each_class/tabClassSVien.js";
 
 
 const Stack = createNativeStackNavigator();
@@ -19,7 +15,7 @@ const Stack = createNativeStackNavigator();
 const App = () => {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="ClassScreen">
+            <Stack.Navigator initialRouteName="ClassScreenSVien">
                 <Stack.Screen
                     name="RegisterScreen"
                     component={RegisterScreen}
@@ -31,34 +27,19 @@ const App = () => {
                     options={{ title: "Đăng nhập", headerShown: false }}
                 />
                 <Stack.Screen
-                    name="RegisterClassScreen"
-                    component={RegisterClassScreen}
+                    name="RegisterClassScreenSVien"
+                    component={RegisterClassScreenSVien}
                     options={{ title: "Đăng ký lớp", headerShown: false }}
                 />
                 <Stack.Screen
-                    name="MyClassesScreen"
-                    component={MyClassesScreen}
+                    name="MyClassesScreenSVien"
+                    component={MyClassesScreenSVien}
                     options={{ title: "Danh sách lớp", headerShown: false }}
                 />
                 <Stack.Screen
-                    name="ClassScreen"
-                    component={ClassScreen}
+                    name="ClassScreenSVien"
+                    component={ClassScreenSVien}
                     options={{ title: "Lớp học", headerShown: false }}
-                />
-                <Stack.Screen
-                    name="ClassManagementScreen"
-                    component={ClassManagementScreen}
-                    options={{ title: "Quản lý lớp", headerShown: false }}
-                />
-                <Stack.Screen
-                    name="CreateClassScreen"
-                    component={CreateClassScreen}
-                    options={{ title: "Tạo lớp", headerShown: false }}
-                />
-                <Stack.Screen
-                    name="EditClassScreen"
-                    component={EditClassScreen}
-                    options={{ title: "Sửa lớp", headerShown: false }}
                 />
 
             </Stack.Navigator>

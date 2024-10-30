@@ -14,7 +14,7 @@ import CheckBox from "react-native-check-box";
 import { Table, TableWrapper, Row, Cell, Col } from "react-native-table-component";
 import Modal from "react-native-modal";
 
-import LogoHust from "./logo";
+import LogoHust from "components/logo.js";
 const ClassManagementScreen = ({ navigation }) => {
     const [tableHead] = useState([
         "Mã học phần",

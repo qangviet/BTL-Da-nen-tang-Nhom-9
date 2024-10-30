@@ -3,10 +3,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import React from 'react';
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import LogoHust from "../logo";
+import LogoHust from "components/logo.js";
 
-import ClassDocs from "./classDocs.js";
-import ClassSurveys from "./classSurveys.js";
+import ClassDocs from "./classDocsGVien.js";
+import ClassSurveys from "./classSurveysGVien.js";
 import ClassXinNghi from "./classXinNghi.js";
 
 const ClassScreen = ({ navigation }) => {
