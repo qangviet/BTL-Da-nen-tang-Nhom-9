@@ -8,14 +8,14 @@ import RegisterScreen from "./components/register.js";
 import RegisterClassScreenSVien from "./components/SVien/main_screen/registerClassSVien.js";
 import MyClassesScreenSVien from "./components/SVien/main_screen/my_classesSVien.js";
 import ClassScreenSVien from "./components/SVien/each_class/tabClassSVien.js";
-
+import classSubmitSurveysSVien from "./components/SVien/each_class/classSubmitSurveysSVien.js";
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="ClassScreenSVien">
+            <Stack.Navigator initialRouteName="classSubmitSurveysSVien">
                 <Stack.Screen
                     name="RegisterScreen"
                     component={RegisterScreen}
@@ -40,6 +40,11 @@ const App = () => {
                     name="ClassScreenSVien"
                     component={ClassScreenSVien}
                     options={{ title: "Lớp học", headerShown: false }}
+                />
+                <Stack.Screen
+                    name="classSubmitSurveysSVien"
+                    component={classSubmitSurveysSVien}
+                    options={{ title: "Nộp bài tập", headerShown: false }}
                 />
 
             </Stack.Navigator>

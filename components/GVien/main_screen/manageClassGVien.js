@@ -15,7 +15,7 @@ import { Table, TableWrapper, Row, Cell, Col } from "react-native-table-componen
 import Modal from "react-native-modal";
 
 import LogoHust from "./../../logo";
-const ClassManagementScreen = ({ navigation }) => {
+const ClassManagementScreenGVien = ({ navigation }) => {
     const [tableHead] = useState([
         "Mã học phần",
         "Mã lớp học",
@@ -332,4 +332,4 @@ const styles = StyleSheet.create({
     dataWrapper: { marginTop: -1 },
     row: { height: 40, backgroundColor: "#fff" },
 });
-export default ClassManagementScreen;
+export default ClassManagementScreenGVien;

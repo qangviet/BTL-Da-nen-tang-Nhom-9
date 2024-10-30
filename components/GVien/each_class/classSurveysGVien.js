@@ -2,7 +2,7 @@ import { Text, View, FlatList } from 'react-native'
 import React, { Component, useState } from 'react'
 import { TouchableOpacity } from 'react-native';
 
-const ClassSurveys = ({ navigation }) => {
+const ClassSurveysGVien = ({ navigation }) => {
 
       function viewAssignment(name) {
             console.log("Viewing " + name)
@@ -97,4 +97,4 @@ const ClassSurveys = ({ navigation }) => {
       )
 };
 
-export default ClassSurveys; 
+export default ClassSurveysGVien; 

@@ -5,7 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const ClassXinNghi = ({ navigation }) => {
+const ClassXinNghiSVien = ({ navigation }) => {
 
       const LichSuDiemDanh = [
             { id: 0, date: '15/10/2024', status: 'Có mặt' },
@@ -156,4 +156,4 @@ const ClassXinNghi = ({ navigation }) => {
       )
 }
 
-export default ClassXinNghi;
+export default ClassXinNghiSVien;

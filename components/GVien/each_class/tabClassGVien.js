@@ -9,7 +9,7 @@ import ClassDocs from "./classDocsGVien.js";
 import ClassSurveys from "./classSurveysGVien.js";
 import ClassDiemDanhGVien from "./classDiemDanhGVien.js";
 
-const ClassScreen = ({ navigation }) => {
+const ClassScreenGVien = ({ navigation }) => {
 
       const class_name = "Phát triển ứng dụng đa nền tảng";
       const class_teacher = "Nguyễn Tiến Thành";
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default ClassScreen;
+export default ClassScreenGVien;

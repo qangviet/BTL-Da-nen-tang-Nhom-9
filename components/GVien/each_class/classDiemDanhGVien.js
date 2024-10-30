@@ -5,7 +5,7 @@ import { Text, View, TouchableOpacity, StyleSheet, ScrollView } from "react-nati
 import { Dropdown } from "react-native-element-dropdown";
 import { Table, Row, TableWrapper, Cell } from "react-native-table-component";
 import CheckBox from "react-native-check-box";
-const ClassDiemDanh = ({ navigation }) => {
+const ClassDiemDanhGVien = ({ navigation }) => {
     // const listDate = ["01/10/2024", "08/10/2024", "15/10/2024", "22/10/2024", "29/10/2024", ""];
 
     const listDate = [
@@ -371,4 +371,4 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 });
-export default ClassDiemDanh;
+export default ClassDiemDanhGVien;

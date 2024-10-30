@@ -17,7 +17,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import LogoHust from "./../../logo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Modal from "react-native-modal";
-const CreateClassScreen = ({ navigation }) => {
+const CreateClassScreenGVien = ({ navigation }) => {
     const listTypeClass = [
         { label: "LT", value: "LT" },
         { label: "BT", value: "BT" },
@@ -416,4 +416,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CreateClassScreen;
+export default CreateClassScreenGVien;

@@ -3,7 +3,7 @@ import React from 'react'
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import LogoHust from "./../../logo";
 
-const MyClassesScreen = ({ navigation }) => {
+const MyClassesScreenGVien = ({ navigation }) => {
 
       const CLASSES = [
             { id: '0', name: 'Phát triển ứng dụng đa nền tảng', teacher: 'Nguyễn Tiến Thành' },
@@ -70,4 +70,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default MyClassesScreen;
+export default MyClassesScreenGVien;
