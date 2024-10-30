@@ -14,7 +14,7 @@ import { Table, Row } from "react-native-table-component";
 
 import { Dropdown } from "react-native-element-dropdown";
 import { FontAwesome } from "@expo/vector-icons";
-import LogoHust from "components/logo.js";
+import LogoHust from "./../../logo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Modal from "react-native-modal";
 const CreateClassScreen = ({ navigation }) => {

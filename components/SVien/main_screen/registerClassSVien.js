@@ -4,7 +4,7 @@ import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity } from 
 import CheckBox from "react-native-check-box";
 import { Table, TableWrapper, Row, Cell, Col } from "react-native-table-component";
 
-import LogoHust from "components/logo.js";
+import LogoHust from "./../../logo";
 const RegisterClassScreen = ({ navigation }) => {
     const [tableHead] = useState([
         "Mã học phần",

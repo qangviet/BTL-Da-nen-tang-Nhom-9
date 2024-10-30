@@ -1,7 +1,7 @@
 import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, FlatList } from "react-native";
 import React from 'react'
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import LogoHust from "components/logo.js";
+import LogoHust from './../../logo'
 
 const MyClassesScreen = ({ navigation }) => {
 

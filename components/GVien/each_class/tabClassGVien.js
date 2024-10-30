@@ -3,11 +3,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import React from 'react';
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import LogoHust from "components/logo.js";
+import LogoHust from "./../../logo";
 
 import ClassDocs from "./classDocsGVien.js";
 import ClassSurveys from "./classSurveysGVien.js";
-import ClassXinNghi from "./classXinNghi.js";
+import ClassDiemDanhGVien from "./classDiemDanhGVien.js";
 
 const ClassScreen = ({ navigation }) => {
 
@@ -48,7 +48,7 @@ const ClassScreen = ({ navigation }) => {
                   >
                         <Tab.Screen name="Tài liệu" component={ClassDocs} />
                         <Tab.Screen name="Bài tập" component={ClassSurveys} />
-                        <Tab.Screen name="Xin Nghỉ" component={ClassXinNghi} />
+                        <Tab.Screen name="Xin Nghỉ" component={ClassDiemDanhGVien} />
                   </Tab.Navigator>
             );
       };

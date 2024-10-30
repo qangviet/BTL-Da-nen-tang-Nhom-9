@@ -120,8 +120,12 @@ const ClassXinNghi = ({ navigation }) => {
                                           <Ionicons name="close-outline" size={28} color="gray" className="self-end mt-2 mr-3" />
                                     </TouchableOpacity>
                                     <Text className="self-center text-lg text-red-700">Lịch sử điểm danh</Text>
+                                    <View className="justify-between mt-3 h-10 flex-row">
+                                          <Text className="self-center ml-16 text-base font-bold">Buổi học</Text>
+                                          <Text className="self-center mr-8 text-base font-bold">Trạng thái</Text>
+                                    </View>
                                     <FlatList
-                                          className="mt-4 mb-5"
+                                          className="mb-5"
                                           data={LichSuDiemDanh}
                                           renderItem={({ item }) => <DateDiemDanh item={item} />}
                                           keyExtractor={item => item.id}
@@ -138,9 +142,11 @@ const ClassXinNghi = ({ navigation }) => {
                   >
                         <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                               <View className="bg-white h-1/5 w-9/12 self-center rounded-2xl mt-72">
-                                    <TouchableOpacity onPress={() => setsubmitVisible(false)} className="h-9 justify-center">
-                                          <Ionicons name="close-outline" size={28} color="gray" className="self-end mt-2 mr-3" />
-                                    </TouchableOpacity>
+                                    <View>
+                                          <TouchableOpacity onPress={() => setsubmitVisible(false)} className="h-9 justify-center self-end">
+                                                <Ionicons name="close-outline" size={28} color="gray" className="self-end mt-2 mr-3" />
+                                          </TouchableOpacity>
+                                    </View>
                                     <Text className="self-center text-xl text-red-700 mt-5">Nộp đơn thành công</Text>
                               </View>
                         </View>

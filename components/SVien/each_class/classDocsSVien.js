@@ -49,7 +49,7 @@ const ClassDocsScreen = ({ navigation }) => {
       );
 
       const Item = ({ item }) => (
-            <View className="bg-white p-4 m-2 rounded-lg shadow flex-row justify-between items-center border border-gray-200">
+            <TouchableOpacity className="bg-white p-4 m-2 rounded-lg shadow flex-row justify-between items-center border border-gray-200" onPress={() => console.log(`Mở ${item.name}`)}>
                   <View>
                         <Text className='text-lg'>{item.name}</Text>
                         <Text className='text-gray-500'>Chỉnh sửa bởi: {item.uploader}</Text>
@@ -57,7 +57,7 @@ const ClassDocsScreen = ({ navigation }) => {
                   <TouchableOpacity onPress={() => handleOpenModal(item)}>
                         <FontAwesome name="ellipsis-h" size={20} color="gray" />
                   </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
       );
 
       return (
