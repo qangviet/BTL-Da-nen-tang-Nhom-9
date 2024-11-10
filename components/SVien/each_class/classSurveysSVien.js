@@ -64,11 +64,6 @@ const ClassSurveysSVien = ({ navigation }) => {
                   grouped_pastdue[date].push(assignment);
             }
 
-
-            // if (!grouped[date]) {
-            //       grouped[date] = [];
-            // }
-            // grouped[date].push(assignment);
       });
 
       const sortedDates_upcoming = Object.keys(grouped_upcoming).sort((a, b) => new parseDate(b) - new parseDate(a));
