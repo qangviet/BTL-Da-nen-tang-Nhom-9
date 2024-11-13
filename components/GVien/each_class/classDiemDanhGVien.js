@@ -7,7 +7,7 @@ import { Table, Row, TableWrapper, Cell } from "react-native-table-component";
 import CheckBox from "react-native-check-box";
 import Modal from "react-native-modal";
 import Ionicons from "react-native-vector-icons/Ionicons";
-const ClassDiemDanh = ({ navigation }) => {
+const ClassDiemDanhGVien = ({ navigation }) => {
 	// const listDate = ["01/10/2024", "08/10/2024", "15/10/2024", "22/10/2024", "29/10/2024", ""];
 
 	const listDate = [
