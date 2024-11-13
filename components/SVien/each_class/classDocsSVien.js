@@ -4,7 +4,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native';
 
-const ClassDocsScreen = ({ navigation }) => {
+const ClassDocsScreenSVien = ({ navigation }) => {
 
       const DOCs = [
             { id: "0", name: "Tài liệu 1", uploader: 'Ai đó' },
@@ -103,4 +103,4 @@ const ClassDocsScreen = ({ navigation }) => {
       )
 }
 
-export default ClassDocsScreen;
+export default ClassDocsScreenSVien;

@@ -18,7 +18,7 @@ import LogoHust from "./../../logo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 import Modal from "react-native-modal";
-const EditClassScreen = ({ navigation }) => {
+const EditClassScreenGVien = ({ navigation }) => {
     const listTypeClass = [
         { label: "LT", value: "LT" },
         { label: "BT", value: "BT" },
@@ -496,4 +496,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default EditClassScreen;
+export default EditClassScreenGVien;

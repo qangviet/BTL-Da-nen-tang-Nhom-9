@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 
-import {
-	Text,
-	View,
-	TouchableOpacity,
-	StyleSheet,
-	ScrollView,
-} from "react-native";
+import { Text, View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 
 import { Dropdown } from "react-native-element-dropdown";
 import { Table, Row, TableWrapper, Cell } from "react-native-table-component";
@@ -38,13 +32,7 @@ const ClassDiemDanh = ({ navigation }) => {
 
 	const widthArr = [50, 120, 200, 120, 100];
 
-	const tableHead = [
-		"STT",
-		"MSSV",
-		"Họ và tên",
-		"Điểm danh",
-		"Tổng số ca vắng",
-	];
+	const tableHead = ["STT", "MSSV", "Họ và tên", "Điểm danh", "Tổng số ca vắng"];
 	const [dsSinhVien, setDsSinhVien] = useState([
 		{
 			stt: 1,
@@ -273,9 +261,7 @@ const ClassDiemDanh = ({ navigation }) => {
 								key={index}
 								className="mx-3 bg-white rounded-lg my-2 border border-gray-300"
 							>
-								<TouchableOpacity
-									onPress={() => displayDescription(index)}
-								>
+								<TouchableOpacity onPress={() => displayDescription(index)}>
 									<Text className="text-lg font-bold px-4 pt-2">
 										{item.name + " " + item.mssv}
 									</Text>
@@ -321,9 +307,7 @@ const ClassDiemDanh = ({ navigation }) => {
 									{list_absent[viewDescription].description}
 								</Text>
 								<View className="flex flex-row gap-x-1 pt-6">
-									<Text className="font-semibold text-base">
-										File đính kèm:
-									</Text>
+									<Text className="font-semibold text-base">File đính kèm:</Text>
 									<TouchableOpacity>
 										<Text className="text-blue-500 underline text-base">
 											{list_absent[viewDescription].image}
@@ -346,9 +330,7 @@ const ClassDiemDanh = ({ navigation }) => {
             border-t border-gray-100 pt-2"
 			>
 				<View>
-					<Text className="text-lg font-semibold">
-						Ngày điểm danh:
-					</Text>
+					<Text className="text-lg font-semibold">Ngày điểm danh:</Text>
 				</View>
 				<View>
 					<Dropdown
@@ -425,14 +407,9 @@ const ClassDiemDanh = ({ navigation }) => {
 														(cellData, index_c) => {
 															return (
 																<Cell
-																	width={
-																		widthArr[
-																			index_c
-																		]
-																	}
+																	width={widthArr[index_c]}
 																	data={
-																		index_c ===
-																		3 ? (
+																		index_c === 3 ? (
 																			<CheckBox
 																				// style={{ flex: 1, padding: 10 }}
 																				className="py-1 self-center"
@@ -442,17 +419,14 @@ const ClassDiemDanh = ({ navigation }) => {
 																						index_c
 																					);
 																				}}
-																				isChecked={
-																					cellData
-																				}
+																				isChecked={cellData}
 																			/>
 																		) : (
 																			cellData
 																		)
 																	}
 																	textStyle={{
-																		textAlign:
-																			"center",
+																		textAlign: "center",
 																		fontSize: 16,
 																		padding: 5,
 																		color: "#000",
@@ -554,4 +528,4 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 	},
 });
-export default ClassDiemDanh;
+export default ClassDiemDanhGVien;
