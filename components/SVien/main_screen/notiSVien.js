@@ -37,11 +37,14 @@ const NotiSVien = ({ navigation }) => {
             <View className="bg-white p-4 ml-2 mr-2 mb-5 rounded-lg shadow justify-between border border-gray-200">
                   <View className="">
                         <View className="h-10 flex-row justify-between">
-                              <Text className="font-bold text-base">{item.title}</Text>
+                              <View>
+                                    <Text className="text-red-700 text-sm mb-2">eSOICT</Text>
+                                    <Text className="font-bold text-base">{item.title}</Text>
+                              </View>
                               <Text className="text-sm">{item.date}</Text>
                         </View>
                   </View>
-                  <View className='w-full h-px bg-gray-300 mb-3' />
+                  <View className='w-full h-px bg-gray-300 mt-6 mb-3' />
                   <View>
                         <Text>
                               {item.short_text.length < 40 ? item.short_text : `${item.short_text.substring(0, 40)}...`}
@@ -97,7 +100,9 @@ const NotiSVien = ({ navigation }) => {
                                                 </Text>
 
                                           </View>
-                                          <ScrollView className="mb-5">
+                                          <ScrollView className="mb-5"
+                                                showsVerticalScrollIndicator={false}
+                                                showsHorizontalScrollIndicator={false}>
                                                 <Text className="text-lg self-center text-justify">
                                                       {selectedNoti ? selectedNoti.content : ''}
                                                 </Text>
