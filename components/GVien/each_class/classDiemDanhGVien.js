@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Text, View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 
@@ -7,8 +7,8 @@ import { Table, Row, TableWrapper, Cell } from "react-native-table-component";
 import CheckBox from "react-native-check-box";
 import Modal from "react-native-modal";
 import Ionicons from "react-native-vector-icons/Ionicons";
-const ClassDiemDanhGVien = ({ navigation }) => {
-	// const listDate = ["01/10/2024", "08/10/2024", "15/10/2024", "22/10/2024", "29/10/2024", ""];
+
+const ClassDiemDanhGVien = () => {
 
 	const listDate = [
 		{ value: "01/10/2024", label: "01/10/2024 (Chỉ xem)" },
@@ -27,8 +27,6 @@ const ClassDiemDanhGVien = ({ navigation }) => {
 		{ value: "31/12/2024", label: "31/12/2024" },
 	];
 	const [dateCheck, setDateCheck] = useState("");
-
-	const [nghihoc, setNghihoc] = useState(3);
 
 	const widthArr = [50, 120, 200, 120, 100];
 
@@ -183,6 +181,41 @@ const ClassDiemDanhGVien = ({ navigation }) => {
 		},
 	]);
 
+	const list_absent = [
+		{
+			name: "Lường Mạnh Tú",
+			mssv: "20215500",
+			title: "Xin nghỉ ốm",
+			description:
+				"Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm .Xin nghỉ ốm Xin nghỉ ốm",
+			image: "Giay_kham.jpg",
+		},
+		{
+			name: "Lường Mạnh Tú",
+			mssv: "20215500",
+			title: "Xin nghỉ ốm",
+			description:
+				"Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm .Xin nghỉ ốm Xin nghỉ ốm",
+			image: "Giay_kham.jpg",
+		},
+		{
+			name: "Lường Mạnh Tú",
+			mssv: "20215500",
+			title: "Xin nghỉ ốm",
+			description:
+				"Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm .Xin nghỉ ốm Xin nghỉ ốm",
+			image: "Giay_kham.jpg",
+		},
+		{
+			name: "Lường Mạnh Tú",
+			mssv: "20215500",
+			title: "Xin nghỉ ốm",
+			description:
+				"Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm .Xin nghỉ ốm Xin nghỉ ốm",
+			image: "Giay_kham.jpg",
+		},
+	];
+
 	const renderItem = (item) => {
 		return (
 			<View style={styles.item}>
@@ -210,40 +243,7 @@ const ClassDiemDanhGVien = ({ navigation }) => {
 
 	const checkAbsent = (date) => {
 		//  Fetch api
-		const list_absent = [
-			{
-				name: "Lường Mạnh Tú",
-				mssv: "20215500",
-				title: "Xin nghỉ ốm",
-				description:
-					"Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm .Xin nghỉ ốm Xin nghỉ ốm",
-				image: "Giay_kham.jpg",
-			},
-			{
-				name: "Lường Mạnh Tú",
-				mssv: "20215500",
-				title: "Xin nghỉ ốm",
-				description:
-					"Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm .Xin nghỉ ốm Xin nghỉ ốm",
-				image: "Giay_kham.jpg",
-			},
-			{
-				name: "Lường Mạnh Tú",
-				mssv: "20215500",
-				title: "Xin nghỉ ốm",
-				description:
-					"Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm .Xin nghỉ ốm Xin nghỉ ốm",
-				image: "Giay_kham.jpg",
-			},
-			{
-				name: "Lường Mạnh Tú",
-				mssv: "20215500",
-				title: "Xin nghỉ ốm",
-				description:
-					"Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm .Xin nghỉ ốm Xin nghỉ ốm",
-				image: "Giay_kham.jpg",
-			},
-		];
+
 		const displayDescription = (absent_index) => {
 			setViewDescription(absent_index);
 		};
@@ -254,7 +254,12 @@ const ClassDiemDanhGVien = ({ navigation }) => {
 
 		return (
 			<>
-				<View className="border-t pt-2 mt-2 border-gray-400">
+				<View className="border-t border-gray-400">
+					<TouchableOpacity onPress={hideAbsent}>
+						<Text className="text-lg pt-2 underline self-center text-red-700">
+							Quay lại điểm danh
+						</Text>
+					</TouchableOpacity>
 					{list_absent.map((item, index) => {
 						return (
 							<View
@@ -327,7 +332,7 @@ const ClassDiemDanhGVien = ({ navigation }) => {
 			<View
 				className="flex flex-row 
             items-center px-4 justify-between
-            border-t border-gray-100 pt-2"
+            border-t border-gray-100"
 			>
 				<View>
 					<Text className="text-lg font-semibold">Ngày điểm danh:</Text>
@@ -359,20 +364,20 @@ const ClassDiemDanhGVien = ({ navigation }) => {
 				checkAbsent(dateCheck)
 			) : (
 				<>
-					<View className="border-t">
+					<View className="border-t border-gray-400">
 						<TouchableOpacity onPress={displayAbsent}>
-							<Text className="text-lg pt-2 underline self-center">
-								Yêu cầu xin vắng mặt ({nghihoc})
+							<Text className="text-lg pt-2 underline self-center text-red-700">
+								Yêu cầu xin vắng mặt ({list_absent.length})
 							</Text>
 						</TouchableOpacity>
 					</View>
-					<View className="max-h-[70%] mt-3">
+					<View className="max-h-[70%] mt-3 ml-1 mr-1">
 						<ScrollView horizontal={true}>
-							<View className="border-t ">
+							<View className="border-t">
 								<Table
 									borderStyle={{
 										borderWidth: 1,
-										borderColor: "gray",
+										borderColor: "darkgray",
 									}}
 								>
 									<Row
@@ -382,16 +387,18 @@ const ClassDiemDanhGVien = ({ navigation }) => {
 											textAlign: "center",
 											fontSize: 16,
 											padding: 5,
-											color: "#000",
+											color: "#fff",
 											fontWeight: "600",
+
 										}}
+										className="bg-red-600"
 									/>
 								</Table>
 								<ScrollView>
 									<Table
 										borderStyle={{
 											borderWidth: 1,
-											borderColor: "#000",
+											borderColor: "lightgray",
 										}}
 									>
 										{dsSinhVien.map((rowData, index_r) => {
@@ -442,8 +449,8 @@ const ClassDiemDanhGVien = ({ navigation }) => {
 								</ScrollView>
 								<Table
 									borderStyle={{
-										borderWidth: 2,
-										borderColor: "#000",
+										borderWidth: 1,
+										borderColor: "darkgray",
 									}}
 								>
 									<Row
@@ -453,6 +460,7 @@ const ClassDiemDanhGVien = ({ navigation }) => {
 											fontSize: 16,
 											padding: 2,
 											fontWeight: "500",
+											color: "white"
 										}}
 										widthArr={[
 											widthArr[0],
@@ -460,6 +468,7 @@ const ClassDiemDanhGVien = ({ navigation }) => {
 											widthArr[3],
 											widthArr[4],
 										]}
+										className="bg-red-600"
 									/>
 								</Table>
 							</View>

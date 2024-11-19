@@ -18,14 +18,14 @@ import { useNavigation } from "@react-navigation/native";
 const StyledView = styled(View);
 const StyledTextInput = styled(TextInput);
 
-const CustomeData = {
+const CustomData = {
 	username: "admin",
 	password: "admin",
 };
 
 const LoginScreen = () => {
 	// Gọi action từ redux
-	const dispacth = useDispatch();
+	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
@@ -34,7 +34,7 @@ const LoginScreen = () => {
 
 	const handleLogin = () => {
 		// Ở đây bạn sẽ thêm logic xác thực đăng nhập thực tế
-		if (username === CustomeData.username && password === CustomeData.password) {
+		if (username === CustomData.username && password === CustomData.password) {
 			// Fetch data from API
 			// ...
 			// Redirect to home screen
@@ -45,13 +45,13 @@ const LoginScreen = () => {
 				token: "fake token",
 				role: 2, // 1: student, 2: teacher
 			};
-			dispacth(
+			dispatch(
 				navigate({
-					screen: "MyClassesScreenGVien",
+					screen: "TabMainGVien",
 					params: PARAMS.userInfo,
 				})
 			);
-			dispacth(
+			dispatch(
 				loginAct({
 					token: PARAMS.token,
 					role: PARAMS.role,

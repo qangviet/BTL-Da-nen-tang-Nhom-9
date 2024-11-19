@@ -1,12 +1,18 @@
-import { Text, View } from 'react-native'
-import React, { Component } from 'react'
+import { View, Text, TouchableOpacity } from 'react-native';
+import React from 'react';
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import LogoHust from "./../../logo";
 
-export default class chat extends Component {
-      render() {
-            return (
-                  <View>
-                        <Text>Chat screen</Text>
+const ChatGVien = () => {
+      return (
+            <View className="h-full">
+                  <View className="bg-red-700 pt-8 pb-3 relative">
+                        <View className="flex justify-center items-center">
+                              <LogoHust width={140} height={25}></LogoHust>
+                        </View>
                   </View>
-            )
-      }
+            </View>
+      )
 }
+
+export default ChatGVien;

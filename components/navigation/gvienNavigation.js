@@ -6,13 +6,15 @@ import MyClassesScreenGVien from "../GVien/main_screen/myClassesGVien";
 import ClassScreenGVien from "../GVien/each_class/tabClassGVien";
 import CreateSurveyGVien from "../GVien/each_class/createSurveyGVien";
 import EditSurveyGVien from "../GVien/each_class/editSurveyGVien";
+import TabMainGVien from "../GVien/main_screen/tabMainGVien";
+import ManageClassesScreenGVien from "../GVien/main_screen/manageClassGVien";
 
 const Stack = createNativeStackNavigator();
 
 const GVienNavigation = () => {
 	return (
 		<NavigationContainer>
-			<Stack.Navigator initialRouteName="MyClassesScreenGVien">
+			<Stack.Navigator initialRouteName="TabMainGVien">
 				<Stack.Screen
 					name="MyClassesScreenGVien"
 					component={MyClassesScreenGVien}
@@ -45,6 +47,25 @@ const GVienNavigation = () => {
 						title: "Sửa bài tập",
 					}}
 				/>
+
+				<Stack.Screen
+					name="ManageClassesScreenGVien"
+					component={ManageClassesScreenGVien}
+					options={{
+						headerShown: false,
+						title: "ManageClassesScreenGVien",
+					}}
+				/>
+
+				<Stack.Screen
+					name="TabMainGVien"
+					component={TabMainGVien}
+					options={{
+						headerShown: false,
+						title: "TabMainGVien",
+					}}
+				/>
+
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

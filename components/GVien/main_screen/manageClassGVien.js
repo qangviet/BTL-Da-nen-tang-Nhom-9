@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
     StyleSheet,
@@ -13,9 +13,26 @@ import {
 import CheckBox from "react-native-check-box";
 import { Table, TableWrapper, Row, Cell, Col } from "react-native-table-component";
 import Modal from "react-native-modal";
-
 import LogoHust from "./../../logo";
-const ClassManagementScreenGVien = ({ navigation }) => {
+
+import { goBack, goBack as goBackMavigation } from "../../../redux/navigationSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { navigate } from "../../../redux/navigationSlice";
+import { useNavigation as useReactNavigation } from "@react-navigation/native";
+
+const ManageClassesScreenGVien = () => {
+    const dispatch = useDispatch();
+    const navigation = useReactNavigation();
+
+    const currentScreen = useSelector((state) => state.navigation.currentScreen);
+    const userInfo = useSelector((state) => state.navigation.params);
+
+    useEffect(() => {
+        if (currentScreen !== "MyClassesScreenGVien") {
+            navigation.navigate(currentScreen);
+        }
+    }, [currentScreen]);
+
     const [tableHead] = useState([
         "Mã học phần",
         "Mã lớp học",
@@ -110,6 +127,11 @@ const ClassManagementScreenGVien = ({ navigation }) => {
         },
     ]);
 
+    function goBack() {
+        dispatch(goBackMavigation());
+        console.log("Go back!");
+    }
+
     const selectRow = (index, cellIndex) => {
         let temp = [...tableData];
         temp[index][cellIndex] = !temp[index][cellIndex];
@@ -130,7 +152,7 @@ const ClassManagementScreenGVien = ({ navigation }) => {
         <ScrollView>
             <View className="bg-red-700 pt-10 pb-5 relative">
                 <View className="absolute left-3 top-8">
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => goBack()}>
                         <FontAwesome name="long-arrow-left" size={26} color="white" />
                     </TouchableOpacity>
                 </View>
@@ -332,4 +354,4 @@ const styles = StyleSheet.create({
     dataWrapper: { marginTop: -1 },
     row: { height: 40, backgroundColor: "#fff" },
 });
-export default ClassManagementScreenGVien;
+export default ManageClassesScreenGVien;
