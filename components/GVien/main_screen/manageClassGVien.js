@@ -15,7 +15,7 @@ import { Table, TableWrapper, Row, Cell, Col } from "react-native-table-componen
 import Modal from "react-native-modal";
 import LogoHust from "./../../logo";
 
-import { goBack, goBack as goBackMavigation } from "../../../redux/navigationSlice";
+import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
@@ -25,7 +25,7 @@ const ManageClassesScreenGVien = () => {
     const navigation = useReactNavigation();
 
     const currentScreen = useSelector((state) => state.navigation.currentScreen);
-    const userInfo = useSelector((state) => state.navigation.params);
+    const params = useSelector((state) => state.navigation.params);
 
     useEffect(() => {
         if (currentScreen !== "MyClassesScreenGVien") {
@@ -129,7 +129,24 @@ const ManageClassesScreenGVien = () => {
 
     function goBack() {
         dispatch(goBackMavigation());
-        console.log("Go back!");
+    }
+
+    function goCreateClass() {
+        dispatch(
+            navigate({
+                screen: "CreateClassScreenGVien",
+                params: {}
+            })
+        );
+    }
+
+    function goEditClass() {
+        dispatch(
+            navigate({
+                screen: "EditClassScreenGVien",
+                params: {}
+            })
+        );
     }
 
     const selectRow = (index, cellIndex) => {
@@ -147,6 +164,8 @@ const ManageClassesScreenGVien = () => {
     const closeModalListClass = (e) => {
         setIsOpenModal(false);
     };
+
+
 
     return (
         <ScrollView>
@@ -234,7 +253,7 @@ const ManageClassesScreenGVien = () => {
                     className="flex justify-center items-center
                  bg-red-700 rounded-lg px-5 py-1"
                 >
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => goCreateClass()}>
                         <Text className="text-white italic font-bold text-lg">Tạo lớp học</Text>
                     </TouchableOpacity>
                 </View>
@@ -242,7 +261,7 @@ const ManageClassesScreenGVien = () => {
                     className="flex justify-center items-center
                  bg-red-700 rounded-lg px-5 py-1"
                 >
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => goEditClass()}>
                         <Text className="text-white italic font-bold text-lg">Chỉnh sửa</Text>
                     </TouchableOpacity>
                 </View>

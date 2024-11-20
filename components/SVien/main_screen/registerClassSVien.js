@@ -1,11 +1,35 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity } from "react-native";
 import CheckBox from "react-native-check-box";
 import { Table, TableWrapper, Row, Cell, Col } from "react-native-table-component";
 
 import LogoHust from "./../../logo";
-const RegisterClassScreenSVien = ({ navigation }) => {
+
+import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { navigate } from "../../../redux/navigationSlice";
+import { useNavigation as useReactNavigation } from "@react-navigation/native";
+
+const RegisterClassScreenSVien = () => {
+    const dispatch = useDispatch();
+    const navigation = useReactNavigation();
+
+    const currentScreen = useSelector((state) => state.navigation.currentScreen);
+    const userInfo = useSelector((state) => state.navigation.params);
+
+    useEffect(() => {
+        if (currentScreen !== "RegisterClassScreenSVien") {
+            navigation.navigate(currentScreen);
+        }
+    }, [currentScreen]);
+
+    function goBack() {
+        dispatch(goBackMavigation());
+        // console.log("Go back!");
+    }
+
+
     const [tableHead] = useState([
         "Mã học phần",
         "Mã lớp học",
@@ -55,7 +79,7 @@ const RegisterClassScreenSVien = ({ navigation }) => {
         <View>
             <View className="bg-red-700 pt-8 pb-5 relative">
                 <View className="absolute left-3 top-8">
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => goBack()}>
                         <FontAwesome name="long-arrow-left" size={26} color="white" />
                     </TouchableOpacity>
                 </View>

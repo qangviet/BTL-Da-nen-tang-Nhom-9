@@ -24,7 +24,6 @@ const CreateSurveyGVien = () => {
 	const dispatch = useDispatch();
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
-	const params = useSelector((state) => state.navigation.params);
 
 	useEffect(() => {
 		// Theo dõi thay đổi currentScreen để sync với navigation system
@@ -35,7 +34,7 @@ const CreateSurveyGVien = () => {
 
 	function goBack() {
 		dispatch(goBackNavigation());
-		console.log("Go back!");
+		// console.log("Go back!");
 	}
 
 	const [surveyTitle, setSurveyTitle] = useState("");
@@ -89,7 +88,7 @@ const CreateSurveyGVien = () => {
 						</TouchableOpacity>
 					</View>
 					<View className="flex justify-center items-center">
-						<LogoHust width={110} height={21}></LogoHust>
+						<LogoHust width={140} height={25}></LogoHust>
 						<Text className="text-white text-[24px] pt-3">CREATE SURVEY</Text>
 					</View>
 				</View>

@@ -7,9 +7,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
 
-import MyClassesScreenGVien from './myClassesGVien';
-import ManageClassesScreenGVien from './manageClassGVien';
-
 const HomeSVien = () => {
       const dispatch = useDispatch();
       const navigation = useReactNavigation();
@@ -24,21 +21,21 @@ const HomeSVien = () => {
       const goToMyClasses = () => {
             dispatch(
                   navigate({
-                        screen: "MyClassesScreenGVien",
+                        screen: "MyClassesScreenSVien",
                         params: {}
                   })
             );
             console.log("Go to: Danh sách lớp")
       }
 
-      const goToManageClasses = () => {
+      const goToRegisterClasses = () => {
             dispatch(
                   navigate({
-                        screen: "ManageClassesScreenGVien",
+                        screen: "RegisterClassScreenSVien",
                         params: {}
                   })
             );
-            console.log("Go to: Quản lý lớp")
+            console.log("Go to: Đăng ký lớp")
       }
 
       return (
@@ -58,8 +55,8 @@ const HomeSVien = () => {
                         <TouchableOpacity onPress={() => goToMyClasses()} className="m-10 h-20 self-center justify-center border">
                               <Text>Danh sách lớp</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => goToManageClasses()} className="h-20 self-center justify-center border">
-                              <Text>Quản lý lớp</Text>
+                        <TouchableOpacity onPress={() => goToRegisterClasses()} className="h-20 self-center justify-center border">
+                              <Text>Đăng ký lớp</Text>
                         </TouchableOpacity>
                   </View>
 

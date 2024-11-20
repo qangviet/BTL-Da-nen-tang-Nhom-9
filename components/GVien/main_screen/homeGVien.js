@@ -7,9 +7,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
 
-import MyClassesScreenGVien from './myClassesGVien';
-import ManageClassesScreenGVien from './manageClassGVien';
-
 const HomeGVien = () => {
       const dispatch = useDispatch();
       const navigation = useReactNavigation();

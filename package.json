@@ -39,7 +39,8 @@
     "react-native-table-component": "^1.2.2",
     "react-native-ui-datepicker": "^2.0.4",
     "react-navigation": "^5.0.0",
-    "react-redux": "^9.1.2"
+    "react-redux": "^9.1.2",
+    "react-native-pager-view": "6.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

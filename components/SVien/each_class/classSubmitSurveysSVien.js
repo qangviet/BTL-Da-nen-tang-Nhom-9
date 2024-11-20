@@ -1,22 +1,35 @@
 import { Text, View, FlatList, TouchableOpacity, TextInput, Modal } from 'react-native'
-import React, { Component, useState } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 import LogoHust from '../../logo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const ClassSubmitSurveysSVien = ({ navigation }) => {
+import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { navigate } from "../../../redux/navigationSlice";
+import { useNavigation as useReactNavigation } from "@react-navigation/native";
 
-      const survey1 = {
-            title: "Bài tập tích phân đường",
-            description: "Làm bài 1, 2, 3",
-            file: "Tichphanduong.docx"
+const ClassSubmitSurveysSVien = () => {
+
+      const dispatch = useDispatch();
+      const navigation = useReactNavigation();
+
+      const currentScreen = useSelector((state) => state.navigation.currentScreen);
+      const params = useSelector((state) => state.navigation.params);
+
+      useEffect(() => {
+            if (currentScreen !== "ClassSubmitSurveysSVien") {
+                  navigation.navigate(currentScreen);
+            }
+      }, [currentScreen]);
+
+      function goBack() {
+            dispatch(goBackMavigation());
+            // console.log("Go back!");
       }
 
-      const survey2 = {
-            title: "Bài tập tích phân đường",
-            description: "",
-            file: ""
-      }
+      const survey = params.assignment;
+      console.log(survey);
 
       const [show_file, setFile] = useState(false);
       const [submitVisible, setsubmitVisible] = useState(false);
@@ -25,7 +38,7 @@ const ClassSubmitSurveysSVien = ({ navigation }) => {
             <View>
                   <View className="bg-red-700 pt-10 pb-5 relative">
                         <View className="absolute left-3 top-8">
-                              <TouchableOpacity>
+                              <TouchableOpacity onPress={() => goBack()}>
                                     <FontAwesome name="long-arrow-left" size={26} color="white" />
                               </TouchableOpacity>
                         </View>
@@ -34,27 +47,27 @@ const ClassSubmitSurveysSVien = ({ navigation }) => {
                               <Text className="text-white text-[24px] pt-3">SUBMIT SURVEY</Text>
                         </View>
                   </View>
-                  <View className="mt-5 ml-10 mr-10">
+                  {survey && <View className="mt-5 ml-10 mr-10">
                         <TextInput
                               className="font-medium border 
                                     border-red-700 px-5 py-3 text-lg"
-                              placeholder={survey1.title}
+                              placeholder={survey.name}
                               placeholderTextColor="crimson"
                               style={{ color: 'crimson' }}
                               editable={false}
                         />
 
-                        {survey1.description && <TextInput
+                        {survey.description && <TextInput
                               className="font-medium border 
                                     border-red-700 px-5 py-3 text-lg mt-4 h-20"
-                              placeholder={survey1.description}
+                              placeholder={survey.description}
                               placeholderTextColor="crimson"
                               style={{ color: 'crimson', justifyContent: 'flex-start' }}
                               editable={false}
                         />}
 
-                        {survey1.file && <TouchableOpacity className="rounded-lg bg-red-700 h-10 justify-center mt-5 w-72 self-center" onPress={() => setFile(true)}>
-                              <Text className="self-center italic font-bold text-white text-base">{survey1.file}</Text>
+                        {survey.file && <TouchableOpacity className="rounded-lg bg-red-700 h-10 justify-center mt-5 w-72 self-center" onPress={() => setFile(true)}>
+                              <Text className="self-center italic font-bold text-white text-base">{survey.file}</Text>
                         </TouchableOpacity>}
 
                         <TextInput
@@ -80,7 +93,7 @@ const ClassSubmitSurveysSVien = ({ navigation }) => {
                               <Text className="self-center italic font-bold text-white text-base">Submit</Text>
                         </TouchableOpacity>
 
-                  </View>
+                  </View>}
                   <Modal
                         animationType="fade"
                         transparent={true}
