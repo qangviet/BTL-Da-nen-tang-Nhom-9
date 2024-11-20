@@ -13,6 +13,8 @@ import EditSurveyGVien from "./editSurveyGVien.js";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { goBack as goBackMavigation } from "../../../redux/navigationSlice.js";
+import api from "../../API/api.js";
+
 const ClassScreenGVien = () => {
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
@@ -20,18 +22,32 @@ const ClassScreenGVien = () => {
 	const class_name = "Phát triển ứng dụng đa nền tảng";
 	const class_teacher = "Nguyễn Tiến Thành";
 
-	const currentScreen = useSelector((state) => state.navigation.currentScreen);
+	const state = useSelector((state) => state.navigation);
+	console.log("state: ", state);
+
 	useEffect(() => {
 		// Theo dõi thay đổi currentScreen để sync với navigation system
-		if (currentScreen) {
-			navigation.navigate(currentScreen);
+		if (state.currentScreen !== "ClassScreenGVien") {
+			navigation.navigate(state.currentScreen);
 		}
-	}, [currentScreen]);
+	}, [state.currentScreen]);
 
 	function goBack() {
 		dispatch(goBackMavigation());
 		console.log("Go back!");
 	}
+
+	// useEffect(() => {
+	// 	api.get("/it5023e/get_material_info")
+	// 		.then((response) => {
+	// 			console.log("get_material_info: ", response.data);
+	// 			console.log(response);
+	// 		})
+	// 		.catch((error) => {
+	// 			console.error("Error: ", error);
+	// 		});
+	// 	console.log("get_material_info");
+	// }, [state.currentScreen]);
 
 	const Tab = createMaterialTopTabNavigator();
 

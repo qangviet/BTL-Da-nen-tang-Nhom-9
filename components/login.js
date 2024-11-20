@@ -64,6 +64,12 @@ const LoginScreen = () => {
 		}
 	};
 
+	const [hidePassword, setHidePassword] = useState(true);
+
+	const viewPassword = () => {
+		setHidePassword((prev) => !prev);
+	};
+
 	return (
 		<View style={styles.container}>
 			<View>
@@ -94,10 +100,10 @@ const LoginScreen = () => {
 					className="bg-transparents text-white 
                     rounded-full py-3 px-12 text-base font-medium"
 					placeholder="Mật khẩu"
-					secureTextEntry
 					value={password}
 					onChangeText={setPassword}
 					placeholderTextColor="#e6e8e6"
+					secureTextEntry={hidePassword}
 					onFocus={() => setFocusIndex(1)}
 					style={[focusIndex == 1 ? styles.inputFocused : styles.input]}
 				/>
@@ -105,7 +111,9 @@ const LoginScreen = () => {
 					<Fontisto name="locked" size={20} color="white" />
 				</View>
 				<View className="absolute top-1/2 right-4 -translate-y-[10px]">
-					<Ionicons name="eye-off-outline" size={20} color="white" />
+					<TouchableOpacity onPress={viewPassword}>
+						<Ionicons name="eye-off-outline" size={20} color="white" />
+					</TouchableOpacity>
 				</View>
 			</StyledView>
 
@@ -131,7 +139,9 @@ const LoginScreen = () => {
 				onPress={() => navigation.navigate("RegisterScreen")}
 				style={{ marginTop: 10 }}
 			>
-				<Text style={styles.forgotPassword}>Chưa có tài khoản? Đăng ký</Text>
+				<Text className="underline" style={styles.forgotPassword}>
+					Chưa có tài khoản? Đăng ký
+				</Text>
 			</TouchableOpacity>
 		</View>
 	);

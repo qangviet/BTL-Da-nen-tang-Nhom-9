@@ -16,14 +16,12 @@ import { useNavigation as useReactNavigation } from "@react-navigation/native";
 const MyClassesScreenGVien = () => {
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
-	const currentScreen = useSelector((state) => state.navigation.currentScreen);
-
-	const userInfo = useSelector((state) => state.navigation.params);
+	const state = useSelector((state) => state.navigation);
 	useEffect(() => {
-		if (currentScreen !== "MyClassesScreenGVien") {
-			navigation.navigate(currentScreen);
+		if (state.currentScreen !== "MyClassesScreenGVien") {
+			navigation.navigate(state.currentScreen);
 		}
-	}, [currentScreen]);
+	}, [state.currentScreen]);
 
 	const CLASSES = [
 		{ id: "0", name: "Phát triển ứng dụng đa nền tảng", teacher: "Nguyễn Tiến Thành" },
