@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	View,
 	Text,
@@ -16,7 +16,29 @@ import dayjs from "dayjs";
 import Modal from "react-native-modal";
 import { Ionicons } from "@expo/vector-icons";
 
+import { navigate } from "../../../redux/navigationSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
+import { goBack as goBackMavigation } from "../../../redux/navigationSlice.js";
+
 const EditSurveyGVien = () => {
+
+	const navigation = useNavigation();
+	const dispatch = useDispatch();
+	const currentScreen = useSelector((state) => state.navigation.currentScreen);
+	const params = useSelector((state) => state.navigation.params);
+
+	useEffect(() => {
+		// Theo dõi thay đổi currentScreen để sync với navigation system
+		if (currentScreen) {
+			navigation.navigate(currentScreen);
+		}
+	}, [currentScreen]);
+
+	function goBack() {
+		dispatch(goBackMavigation());
+	}
+
 	const [surveyTitle, setSurveyTitle] = useState("");
 	const [questions, setQuestions] = useState([""]);
 
@@ -76,12 +98,14 @@ const EditSurveyGVien = () => {
 		setModalConfirmDelete(false);
 	};
 
+	const survey = params.survey;
+
 	return (
 		<>
-			<View>
+			{survey && <View>
 				<View className="bg-red-700 pt-10 pb-5 relative">
 					<View className="absolute left-3 top-8">
-						<TouchableOpacity>
+						<TouchableOpacity onPress={() => goBack()}>
 							<FontAwesome name="long-arrow-left" size={26} color="white" />
 						</TouchableOpacity>
 					</View>
@@ -94,6 +118,7 @@ const EditSurveyGVien = () => {
 					<TextInput
 						placeholder="Tên bài kiểm tra*"
 						placeholderTextColor={"#e86456"}
+						defaultValue={survey.name}
 						className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 					/>
 					<TextInput
@@ -104,6 +129,7 @@ const EditSurveyGVien = () => {
 						multiline={true}
 						numberOfLines={5}
 						placeholderTextColor={"#e86456"}
+						defaultValue={survey.description}
 						className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 					/>
 					<Text className="self-center text-lg font-semibold text-red-600 italic">
@@ -113,7 +139,7 @@ const EditSurveyGVien = () => {
 						<TouchableOpacity className="px-3 py-2 rounded-2xl bg-red-600 w-[60%] mx-auto mt-3">
 							<View className="self-center flex flex-row items-center gap-x-2">
 								<Text className="text-white font-semibold text-lg italic">
-									Tải tài liệu lên
+									{survey.file !== "" ? survey.file : "Tải tài liệu lên"}
 								</Text>
 								<Entypo name="triangle-up" size={24} color="white" />
 							</View>
@@ -130,7 +156,7 @@ const EditSurveyGVien = () => {
 							>
 								{
 									<Text className="text-red-500">
-										{checkDate[0] ? formatDate(startDate) : "Chọn ngày"}
+										{survey.start ? survey.start : "Chọn ngày"}
 									</Text>
 								}
 							</TouchableOpacity>
@@ -153,7 +179,7 @@ const EditSurveyGVien = () => {
 							>
 								{
 									<Text className="text-red-500">
-										{checkDate[1] ? formatDate(endDate) : "Chọn ngày"}
+										{survey.end ? survey.end : "Chọn ngày"}
 									</Text>
 								}
 							</TouchableOpacity>
@@ -188,7 +214,7 @@ const EditSurveyGVien = () => {
 						</View>
 					</View>
 				</View>
-			</View>
+			</View>}
 			<Modal isVisible={modalConfirmSave} onBackdropPress={closeModalConfirmSave}>
 				<View className="bg-gray-200 rounded-md pb-5">
 					<View className="flex flex-row justify-end items-center mt-3 px-3">

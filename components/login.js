@@ -18,9 +18,14 @@ import { useNavigation } from "@react-navigation/native";
 const StyledView = styled(View);
 const StyledTextInput = styled(TextInput);
 
-const CustomData = {
-	username: "admin",
-	password: "admin",
+const TeacherLogin = {
+	username: "teacher",
+	password: "teacher",
+};
+
+const StudentLogin = {
+	username: "student",
+	password: "student",
 };
 
 const LoginScreen = () => {
@@ -34,7 +39,7 @@ const LoginScreen = () => {
 
 	const handleLogin = () => {
 		// Ở đây bạn sẽ thêm logic xác thực đăng nhập thực tế
-		if (username === CustomData.username && password === CustomData.password) {
+		if (username === TeacherLogin.username && password === TeacherLogin.password) {
 			// Fetch data from API
 			// ...
 			// Redirect to home screen
@@ -57,6 +62,30 @@ const LoginScreen = () => {
 					role: PARAMS.role,
 				})
 			);
+		} else if (username === StudentLogin.username && password === StudentLogin.password) {
+			// Fetch data from API
+			// ...
+			// Redirect to home screen
+			const PARAMS = {
+				userInfo: {
+					name: "Lường Mạnh Tú",
+				},
+				token: "fake token",
+				role: 1, // 1: student, 2: teacher
+			};
+			dispatch(
+				navigate({
+					screen: "TabMainSVien",
+					params: PARAMS.userInfo,
+				})
+			);
+			dispatch(
+				loginAct({
+					token: PARAMS.token,
+					role: PARAMS.role,
+				})
+			);
+
 		} else if (username === "" || password === "") {
 			alert("Chưa nhập đủ thông tin!");
 		} else {

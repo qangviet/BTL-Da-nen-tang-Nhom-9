@@ -11,7 +11,16 @@ import {
 
 import Modal from "react-native-modal";
 import { Ionicons } from "@expo/vector-icons";
+
+import { navigate } from "../../../redux/navigationSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
+
 const ViewSurveysGVien = ({ idSurvey }) => {
+
+	const navigation = useNavigation();
+	const dispatch = useDispatch();
+
 	// Fetch data
 	const data = {
 		id: "1",
@@ -19,6 +28,7 @@ const ViewSurveysGVien = ({ idSurvey }) => {
 		description: "des",
 		start: "4/11/2024 - 12:00",
 		end: "5/11/2024 - 20:00",
+		file: "",
 		submitted: [
 			{
 				mssv: "20215515",
@@ -175,24 +185,35 @@ const ViewSurveysGVien = ({ idSurvey }) => {
 		setViewSubmitted(-1);
 	};
 
+	function goEditSurvey() {
+		dispatch(
+			navigate({
+				screen: "EditSurveyGVien",
+				params: {
+					survey: data
+				}
+			})
+		);
+	}
+
 	return (
-		<>
+		<View className="h-[91%]">
 			<View>
-				<View className="bg-white pt-3 px-4 gap-y-1 shadow-lg pb-2 flex flex-row border-b-2 border-gray-300">
+				<View className="bg-slate-500 pt-3 px-4 gap-y-1 shadow-lg pb-2 flex flex-row border-b-2 border-gray-300">
 					<View>
-						<Text className="text-2xl font-extrabold">{data.name}</Text>
+						<Text className="text-2xl font-extrabold text-white">{data.name}</Text>
 						<View className="flex flex-row items-center gap-x-1">
-							<Text className="text-lg font-bold w-20">Bắt đầu: </Text>
-							<Text className="text-lg">{data.start}</Text>
+							<Text className="text-lg font-bold w-20 text-white">Bắt đầu: </Text>
+							<Text className="text-lg text-white">{data.start}</Text>
 						</View>
-						<View className="flex flex-row items-center gap-x-1">
-							<Text className="text-lg font-bold w-20">Kết thúc: </Text>
-							<Text className="text-lg">{data.start}</Text>
+						<View className="flex flex-row items-center gap-x-1 text-white">
+							<Text className="text-lg font-bold w-20 text-white">Kết thúc: </Text>
+							<Text className="text-lg text-white">{data.start}</Text>
 						</View>
 					</View>
 					<View className="flex justify-center items-center w-40">
-						<TouchableOpacity className="px-2 py-1">
-							<Text className="text-blue-500 underline text-lg">Sửa</Text>
+						<TouchableOpacity className="px-2 py-1" onPress={() => goEditSurvey()}>
+							<Text className="italic underline text-lg text-white">Chỉnh sửa</Text>
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -293,7 +314,7 @@ const ViewSurveysGVien = ({ idSurvey }) => {
 					</View>
 				</Modal>
 			)}
-		</>
+		</View>
 	);
 };
 

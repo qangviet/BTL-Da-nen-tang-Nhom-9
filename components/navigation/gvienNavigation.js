@@ -8,7 +8,9 @@ import CreateSurveyGVien from "../GVien/each_class/createSurveyGVien";
 import EditSurveyGVien from "../GVien/each_class/editSurveyGVien";
 import TabMainGVien from "../GVien/main_screen/tabMainGVien";
 import ManageClassesScreenGVien from "../GVien/main_screen/manageClassGVien";
-
+import CreateClassScreenGVien from "../GVien/main_screen/createClassGVien";
+import EditClassScreenGVien from "../GVien/main_screen/editClassGVien";
+import NotiGVien from "../GVien/main_screen/notiGVien";
 const Stack = createNativeStackNavigator();
 
 const GVienNavigation = () => {
@@ -66,6 +68,31 @@ const GVienNavigation = () => {
 					}}
 				/>
 
+				<Stack.Screen
+					name="CreateClassScreenGVien"
+					component={CreateClassScreenGVien}
+					options={{
+						headerShown: false,
+						title: "CreateClassScreenGVien",
+					}}
+				/>
+
+				<Stack.Screen
+					name="EditClassScreenGVien"
+					component={EditClassScreenGVien}
+					options={{
+						headerShown: false,
+						title: "EditClassScreenGVien",
+					}}
+				/>
+				<Stack.Screen
+					name="NotiGVien"
+					component={NotiGVien}
+					options={{
+						headerShown: false,
+						title: "NotiGVien",
+					}}
+				/>
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

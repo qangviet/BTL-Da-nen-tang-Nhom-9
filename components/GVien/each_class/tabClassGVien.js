@@ -23,7 +23,10 @@ const ClassScreenGVien = ({ route }) => {
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const params = useSelector((state) => state.navigation.params);
 
-	console.log(">>> PARAMS: ", params);
+	console.log(params);
+
+	// 0 - docs, 1 - surveys, 2 - diemdanh
+	const [tabMode, setTabMode] = useState(0);
 
 	const state = useSelector((state) => state.navigation);
 	useEffect(() => {
@@ -35,7 +38,7 @@ const ClassScreenGVien = ({ route }) => {
 
 	function goBack() {
 		dispatch(goBackMavigation());
-		console.log("Go back!");
+		// console.log("Go back!");
 	}
 
 	// useEffect(() => {
@@ -75,9 +78,33 @@ const ClassScreenGVien = ({ route }) => {
 					},
 				}}
 			>
-				<Tab.Screen name="Tài liệu" component={ClassDocs} />
-				<Tab.Screen name="Bài tập" component={ClassSurveys} />
-				<Tab.Screen name="Điểm danh" component={ClassDiemDanhGVien} />
+				<Tab.Screen
+					name="Tài liệu"
+					component={ClassDocs}
+					// listeners={() => ({
+					// 	swipeEnd: (e) => {
+					// 		setTabMode(0);
+					// 	},
+					// })}
+				/>
+				<Tab.Screen
+					name="Bài tập"
+					component={ClassSurveys}
+					// listeners={() => ({
+					// 	swipeEnd: (e) => {
+					// 		setTabMode(1);
+					// 	},
+					// })}
+				/>
+				<Tab.Screen
+					name="Điểm danh"
+					component={ClassDiemDanhGVien}
+					// listeners={() => ({
+					// 	swipeEnd: (e) => {
+					// 		setTabMode(2);
+					// 	},
+					// })}
+				/>
 			</Tab.Navigator>
 		);
 	};
@@ -90,7 +117,7 @@ const ClassScreenGVien = ({ route }) => {
 				screen: "CreateSurveyGVien",
 			})
 		);
-		console.log("Go to class: Create survey");
+		console.log("Go to: Create survey");
 	};
 
 	return (

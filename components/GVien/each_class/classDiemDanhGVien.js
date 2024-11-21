@@ -270,7 +270,7 @@ const ClassDiemDanhGVien = () => {
 									<Text className="text-lg font-bold px-4 pt-2">
 										{item.name + " " + item.mssv}
 									</Text>
-									<Text className="px-5 pt-1 pb-2 text-lg font-mono">
+									<Text className="px-5 pt-1 pb-2 text-lg">
 										- {item.title}
 									</Text>
 								</TouchableOpacity>
@@ -301,7 +301,7 @@ const ClassDiemDanhGVien = () => {
 								<Text className="text-2xl font-bold">
 									{list_absent[viewDescription].title}
 								</Text>
-								<Text className="text-base mt-1 pl-2 font-mono text-gray-500">
+								<Text className="text-base mt-1 pl-2 text-gray-500">
 									{list_absent[viewDescription].mssv} -{" "}
 									{list_absent[viewDescription].name}
 								</Text>

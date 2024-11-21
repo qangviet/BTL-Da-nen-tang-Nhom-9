@@ -13,10 +13,10 @@ import {
 } from "react-native";
 import React, { useRef, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { LogoHust } from "./logo";
+import { LogoHust, LogoBK } from "../../logo";
 import { Ionicons } from "@expo/vector-icons";
 
-const Profile = () => {
+const ProfileGVien = () => {
 	let drawer = useRef(null);
 	// let drawer = null;
 
@@ -29,7 +29,7 @@ const Profile = () => {
 	};
 
 	const navigationView = () => (
-		<ImageBackground source={require("../assets/drawer.jpg")} style={styles.imageDrawer}>
+		<ImageBackground source={require("../../../assets/drawer.jpg")} style={styles.imageDrawer}>
 			<View className="m-20">
 				<LogoHust width={140} height={25}></LogoHust>
 			</View>
@@ -66,15 +66,22 @@ const Profile = () => {
 			renderNavigationView={navigationView}
 		>
 			<View className="h-full">
-				<View className="bg-red-700 pt-8 pb-3 flex-row items-center justify-between">
-					<View className="flex-1">
-						<Text className="text-white self-center ml-10 text-lg">
-							Thông tin sinh viên
+				<View className="bg-red-700 pt-10 pb-5 relative z-10">
+					<View className="flex justify-center items-center">
+						<Text className="text-xl text-white font-semibold">
+							Thông tin giảng viên
 						</Text>
 					</View>
-					<TouchableOpacity className="mr-3" onPress={() => openRightDrawer()}>
-						<Ionicons name="ellipsis-vertical" size={20} color="white" />
-					</TouchableOpacity>
+					<View className="absolute right-4 top-12">
+						<TouchableOpacity onPress={openRightDrawer}>
+							<View className="relative">
+								<Ionicons name="ellipsis-vertical" size={24} color="white" />
+							</View>
+						</TouchableOpacity>
+					</View>
+					<View className="absolute left-5 top-14">
+						<LogoBK width={32} height={48} className="mx-auto"></LogoBK>
+					</View>
 				</View>
 				<ScrollView
 					showsVerticalScrollIndicator={false}
@@ -82,11 +89,14 @@ const Profile = () => {
 					className="h-full"
 				>
 					<View style={styles.shadow}>
-						<ImageBackground source={require("../assets/bg.jpg")} style={styles.image}>
+						<ImageBackground
+							source={require("../../../assets/bg.jpg")}
+							style={styles.image}
+						>
 							<View className="bg-white p-2 m-4 flex-1 flex-row justify-between rounded-xl">
 								<Image
 									className="w-[25%] h-full rounded-lg"
-									source={require("../assets/avt.jpg")}
+									source={require("../../../assets/avt.jpg")}
 								/>
 								<View className="flex-1 pl-3">
 									<Text className="flex-1 text-lg font-bold mb-2">
@@ -155,7 +165,7 @@ const Profile = () => {
 								<Image
 									resizeMode="contain"
 									className="self-center h-52"
-									source={require("../assets/qrcode.png")}
+									source={require("../../../assets/qrcode.png")}
 								/>
 							</View>
 
@@ -163,7 +173,7 @@ const Profile = () => {
 								<Text className="text-xs mb-2">Barcode:</Text>
 								<Image
 									className="self-center w-full"
-									source={require("../assets/barcode.png")}
+									source={require("../../../assets/barcode.png")}
 								/>
 							</View>
 						</View>
@@ -204,4 +214,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default Profile;
+export default ProfileGVien;

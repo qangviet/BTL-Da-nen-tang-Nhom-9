@@ -1,13 +1,13 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import HomeGVien from "./homeGVien";
-import ChatGVien from "./chatGVien";
-import ProfileGVien from "./profileGVien";
+import HomeSVien from "./homeSVien";
+import ChatSVien from "./chatSVien";
+import ProfileSVien from "./profileSVien";
 import { Ionicons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
 
-const TabMainGVien = () => {
+const TabMainSVien = () => {
 	return (
 		<Tab.Navigator
 			screenOptions={({ route }) => ({
@@ -45,11 +45,11 @@ const TabMainGVien = () => {
 				headerShown: false, // Ẩn header cho tất cả các màn hình
 			})}
 		>
-			<Tab.Screen name="Home" component={HomeGVien} />
-			<Tab.Screen name="Chat" component={ChatGVien} />
-			<Tab.Screen name="Profile" component={ProfileGVien} />
+			<Tab.Screen name="Home" component={HomeSVien} />
+			<Tab.Screen name="Chat" component={ChatSVien} />
+			<Tab.Screen name="Profile" component={ProfileSVien} />
 		</Tab.Navigator>
 	);
 };
 
-export default TabMainGVien;
+export default TabMainSVien;

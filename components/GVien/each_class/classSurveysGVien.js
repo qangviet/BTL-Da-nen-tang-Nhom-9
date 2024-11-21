@@ -2,6 +2,7 @@ import { Text, View, FlatList } from "react-native";
 import React, { Component, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import ViewSurveysGVien from "./viewSurveysGVien";
+
 const ClassSurveysGVien = ({ navigation }) => {
 	function viewAssignment(name) {
 		console.log("Viewing " + name)
@@ -69,7 +70,19 @@ const ClassSurveysGVien = ({ navigation }) => {
 	const sortedDates_pastdue = Object.keys(grouped_pastdue).sort((a, b) => new parseDate(b) - new parseDate(a));
 	const sortedDates_completed = Object.keys(grouped_completed).sort((a, b) => new parseDate(b) - new parseDate(a));
 
-	return (
+	const [viewSurvey, setViewSurvey] = useState(-1);
+
+	return viewSurvey !== -1 ? (
+		<View className="justify-between">
+			<ViewSurveysGVien idSurvey={viewSurvey} />
+			<View className="justify-center items-center bg-white h-[9%] border-t border-gray-400">
+				<TouchableOpacity className="bg-red-600 rounded-lg p-2 w-24" onPress={() => setViewSurvey(-1)}>
+					<Text className="self-center text-white font-bold">Đóng</Text>
+				</TouchableOpacity>
+			</View>
+		</View>
+	) : (
+		// return (
 		<View>
 			<View className="flex flex-row justify-between p-3">
 				{['Sắp tới', 'Quá hạn', 'Đã hoàn thành'].map((label, index) => (
@@ -92,7 +105,7 @@ const ClassSurveysGVien = ({ navigation }) => {
 						<View className="mb-2">
 							<Text className="text-lg ml-3 mb-2 font-bold">{item}</Text>
 							{grouped_upcoming[item].map((assignment, index) => (
-								<TouchableOpacity key={index} className="bg-white p-4 mb-2 ml-2 mr-2 rounded-lg shadow justify-between border border-gray-200 flex-row">
+								<TouchableOpacity key={index} className="bg-white p-4 mb-2 ml-2 mr-2 rounded-lg shadow justify-between border border-gray-200 flex-row" onPress={() => setViewSurvey(index)}>
 									<View>
 										<Text className="text-base">{assignment.name}</Text>
 										<Text className="text-s mt-1 italic">Đóng lúc 11h59</Text>

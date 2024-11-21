@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
 	StyleSheet,
 	Image,
@@ -17,7 +17,24 @@ import { FontAwesome } from "@expo/vector-icons";
 import { LogoHust } from "./../../logo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Modal from "react-native-modal";
-const CreateClassScreenGVien = ({ navigation }) => {
+
+import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigation as useReactNavigation } from "@react-navigation/native";
+
+const CreateClassScreenGVien = () => {
+	const dispatch = useDispatch();
+	const navigation = useReactNavigation();
+
+	const currentScreen = useSelector((state) => state.navigation.currentScreen);
+	const params = useSelector((state) => state.navigation.params);
+
+	useEffect(() => {
+		if (currentScreen !== "CreateClassScreenGVien") {
+			navigation.navigate(currentScreen);
+		}
+	}, [currentScreen]);
+
 	const listTypeClass = [
 		{ label: "LT", value: "LT" },
 		{ label: "BT", value: "BT" },
@@ -147,6 +164,10 @@ const CreateClassScreenGVien = ({ navigation }) => {
 		setIsOpenModal(false);
 	};
 
+	function goBack() {
+		dispatch(goBackMavigation());
+	}
+
 	const renderItem = (item, value) => {
 		return (
 			<>
@@ -164,7 +185,7 @@ const CreateClassScreenGVien = ({ navigation }) => {
 		<View>
 			<View className="bg-red-700 pt-10 pb-5 relative">
 				<View className="absolute left-3 top-8">
-					<TouchableOpacity>
+					<TouchableOpacity onPress={() => goBack()}>
 						<FontAwesome name="long-arrow-left" size={26} color="white" />
 					</TouchableOpacity>
 				</View>

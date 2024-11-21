@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
 	StyleSheet,
 	Image,
@@ -18,7 +18,29 @@ import { LogoHust } from "./../../logo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 import Modal from "react-native-modal";
-const EditClassScreenGVien = ({ navigation }) => {
+
+import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { navigate } from "../../../redux/navigationSlice";
+import { useNavigation as useReactNavigation } from "@react-navigation/native";
+
+const EditClassScreenGVien = () => {
+	const dispatch = useDispatch();
+	const navigation = useReactNavigation();
+
+	const currentScreen = useSelector((state) => state.navigation.currentScreen);
+	const params = useSelector((state) => state.navigation.params);
+
+	useEffect(() => {
+		if (currentScreen !== "MyClassesScreenGVien") {
+			navigation.navigate(currentScreen);
+		}
+	}, [currentScreen]);
+
+	function goBack() {
+		dispatch(goBackMavigation());
+	}
+
 	const listTypeClass = [
 		{ label: "LT", value: "LT" },
 		{ label: "BT", value: "BT" },
@@ -26,50 +48,60 @@ const EditClassScreenGVien = ({ navigation }) => {
 		{ label: "TH", value: "TH" },
 	];
 	const listTime = [
-		{ label: "Tuần 1", value: "Tuần 1" },
-		{ label: "Tuần 2", value: "Tuần 2" },
-		{ label: "Tuần 3", value: "Tuần 3" },
-		{ label: "Tuần 4", value: "Tuần 4" },
-		{ label: "Tuần 5", value: "Tuần 5" },
-		{ label: "Tuần 6", value: "Tuần 6" },
-		{ label: "Tuần 7", value: "Tuần 7" },
-		{ label: "Tuần 8", value: "Tuần 8" },
-		{ label: "Tuần 9", value: "Tuần 9" },
-		{ label: "Tuần 10", value: "Tuần 10" },
-		{ label: "Tuần 11", value: "Tuần 11" },
-		{ label: "Tuần 12", value: "Tuần 12" },
-		{ label: "Tuần 13", value: "Tuần 13" },
-		{ label: "Tuần 14", value: "Tuần 14" },
-		{ label: "Tuần 15", value: "Tuần 15" },
-		{ label: "Tuần 16", value: "Tuần 16" },
-		{ label: "Tuần 17", value: "Tuần 17" },
-		{ label: "Tuần 18", value: "Tuần 18" },
-		{ label: "Tuần 19", value: "Tuần 19" },
-		{ label: "Tuần 20", value: "Tuần 20" },
-		{ label: "Tuần 21", value: "Tuần 21" },
-		{ label: "Tuần 22", value: "Tuần 22" },
-		{ label: "Tuần 23", value: "Tuần 23" },
-		{ label: "Tuần 24", value: "Tuần 24" },
-		{ label: "Tuần 25", value: "Tuần 25" },
-		{ label: "Tuần 26", value: "Tuần 26" },
-		{ label: "Tuần 27", value: "Tuần 27" },
-		{ label: "Tuần 28", value: "Tuần 28" },
-		{ label: "Tuần 29", value: "Tuần 29" },
-		{ label: "Tuần 30", value: "Tuần 30" },
-		{ label: "Tuần 31", value: "Tuần 31" },
-		{ label: "Tuần 32", value: "Tuần 32" },
-		{ label: "Tuần 33", value: "Tuần 33" },
-		{ label: "Tuần 34", value: "Tuần 34" },
-		{ label: "Tuần 35", value: "Tuần 35" },
-		{ label: "Tuần 36", value: "Tuần 36" },
-		{ label: "Tuần 37", value: "Tuần 37" },
-		{ label: "Tuần 38", value: "Tuần 38" },
-		{ label: "Tuần 39", value: "Tuần 39" },
-		{ label: "Tuần 40", value: "Tuần 40" },
+		{ label: "1", value: "1" },
+		{ label: "2", value: "2" },
+		{ label: "3", value: "3" },
+		{ label: "4", value: "4" },
+		{ label: "5", value: "5" },
+		{ label: "6", value: "6" },
+		{ label: "7", value: "7" },
+		{ label: "8", value: "8" },
+		{ label: "9", value: "9" },
+		{ label: "10", value: "10" },
+		{ label: "11", value: "11" },
+		{ label: "12", value: "12" },
+		{ label: "13", value: "13" },
+		{ label: "14", value: "14" },
+		{ label: "15", value: "15" },
+		{ label: "16", value: "16" },
+		{ label: "17", value: "17" },
+		{ label: "18", value: "18" },
+		{ label: "19", value: "19" },
+		{ label: "20", value: "20" },
+		{ label: "21", value: "21" },
+		{ label: "22", value: "22" },
+		{ label: "23", value: "23" },
+		{ label: "24", value: "24" },
+		{ label: "25", value: "25" },
+		{ label: "26", value: "26" },
+		{ label: "27", value: "27" },
+		{ label: "28", value: "28" },
+		{ label: "29", value: "29" },
+		{ label: "30", value: "30" },
+		{ label: "31", value: "31" },
+		{ label: "32", value: "32" },
+		{ label: "33", value: "33" },
+		{ label: "34", value: "34" },
+		{ label: "35", value: "35" },
+		{ label: "36", value: "36" },
+		{ label: "37", value: "37" },
+		{ label: "38", value: "38" },
+		{ label: "39", value: "39" },
+		{ label: "40", value: "40" },
+		{ label: "41", value: "41" },
+		{ label: "42", value: "42" },
+		{ label: "43", value: "43" },
+		{ label: "44", value: "44" },
+		{ label: "45", value: "45" },
+		{ label: "46", value: "46" },
+		{ label: "47", value: "47" },
+		{ label: "48", value: "48" },
+		{ label: "49", value: "49" },
+		{ label: "50", value: "50" },
+		{ label: "51", value: "51" },
+		{ label: "52", value: "52" },
+		{ label: "53", value: "53" },
 	];
-	const [startTime, setStartTime] = useState(null);
-	const [endTime, setEndTime] = useState(null);
-	const [typeClass, setTypeClass] = useState(null);
 
 	const [listClass, setListClass] = useState([
 		{
@@ -138,6 +170,42 @@ const EditClassScreenGVien = ({ navigation }) => {
 		},
 	]);
 
+	const currentClass = {
+		id_class: "103268",
+		id_class_attached: "103269",
+		id_subject: "PH1110",
+		name_subject: "Vật lý đại cương VI",
+		semester: "Kỳ hè-C",
+		type_class: "BT",
+		status: "Đăng ký chính thức",
+		credit: "80",
+		number_student: 0,
+		name_academic: "VVLKT",
+		start_week: "47",
+		end_week: "51",
+		times: [
+			{
+				day_in_week: 2,
+				time: "15:05-17:35",
+				classroom: "D9-102",
+			},
+			{
+				day_in_week: 6,
+				time: "15:05-17:35",
+				classroom: "D9-101",
+			},
+			{
+				day_in_week: 5,
+				time: "12:30-15:00",
+				classroom: "D9-101",
+			},
+		],
+	};
+
+	const [startTime, setStartTime] = useState(currentClass.start_week);
+	const [endTime, setEndTime] = useState(currentClass.end_week);
+	const [typeClass, setTypeClass] = useState(currentClass.type_class);
+
 	const [isOpenModal, setIsOpenModal] = useState(false);
 
 	const openModalListClass = () => {
@@ -179,38 +247,44 @@ const EditClassScreenGVien = ({ navigation }) => {
 		setConfirmDelete(false);
 	};
 
+	// console.log(currentClass.end_week);
+
 	return (
 		<View>
 			<View className="bg-red-700 pt-10 pb-5 relative">
 				<View className="absolute left-3 top-8">
-					<TouchableOpacity>
+					<TouchableOpacity onPress={() => goBack()}>
 						<FontAwesome name="long-arrow-left" size={26} color="white" />
 					</TouchableOpacity>
 				</View>
 				<View className="flex justify-center items-center">
 					<LogoHust width={110} height={21}></LogoHust>
-					<Text className="text-white text-[24px] pt-3">CREATE CLASS</Text>
+					<Text className="text-white text-[24px] pt-3">EDIT CLASS</Text>
 				</View>
 			</View>
 			<View className="mt-10 w-[85%] mx-auto">
 				<TextInput
 					placeholder="Mã lớp*"
 					placeholderTextColor={"#e86456"}
+					defaultValue={currentClass.id_class}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 				/>
 				<TextInput
 					placeholder="Mã lớp kèm*"
 					placeholderTextColor={"#e86456"}
+					defaultValue={currentClass.id_class_attached}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 				/>
 				<TextInput
 					placeholder="Tên lớp*"
 					placeholderTextColor={"#e86456"}
+					defaultValue={currentClass.name_subject}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 				/>
 				<TextInput
 					placeholder="Mã học phần*"
 					placeholderTextColor={"#e86456"}
+					defaultValue={currentClass.id_subject}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 				/>
 				<View>
@@ -282,6 +356,7 @@ const EditClassScreenGVien = ({ navigation }) => {
 				<TextInput
 					placeholder="Số lượng sinh viên tối đa*"
 					placeholderTextColor={"#e86456"}
+					defaultValue={currentClass.credit}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 				/>
 				<View className="flex flex-row">

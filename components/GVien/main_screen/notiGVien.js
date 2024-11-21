@@ -19,12 +19,12 @@ const styles = {
 	],
 };
 
-const NotiSVien = () => {
+const NotiGVien = () => {
 	const dispatch = useDispatch();
 	const state = useSelector((state) => state.navigation);
 	const navigation = useNavigation();
 	useEffect(() => {
-		if (state.currentScreen !== "NotiSVien") {
+		if (state.currentScreen !== "NotiGVien") {
 			navigation.navigate(state.currentScreen);
 		}
 	}, [state.currentScreen]);
@@ -174,4 +174,4 @@ const NotiSVien = () => {
 	);
 };
 
-export default NotiSVien;
+export default NotiGVien;

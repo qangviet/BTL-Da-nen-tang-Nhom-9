@@ -7,11 +7,28 @@ import {
 	TouchableOpacity,
 	FlatList,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { LogoHust } from "./../../logo";
 
-const MyClassesScreenSVien = ({ navigation }) => {
+import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { navigate } from "../../../redux/navigationSlice";
+import { useNavigation as useReactNavigation } from "@react-navigation/native";
+
+const MyClassesScreenSVien = () => {
+	const dispatch = useDispatch();
+	const navigation = useReactNavigation();
+
+	const currentScreen = useSelector((state) => state.navigation.currentScreen);
+	const userInfo = useSelector((state) => state.navigation.params);
+
+	useEffect(() => {
+		if (currentScreen !== "MyClassesScreenSVien") {
+			navigation.navigate(currentScreen);
+		}
+	}, [currentScreen]);
+
 	const CLASSES = [
 		{ id: "0", name: "Phát triển ứng dụng đa nền tảng", teacher: "Nguyễn Tiến Thành" },
 		{ id: "1", name: "Tính toán tiến hóa", teacher: "Huỳnh Thị Thanh Bình" },
@@ -27,19 +44,27 @@ const MyClassesScreenSVien = ({ navigation }) => {
 
 		{ id: "extra", name: "extra", teacher: "extra" },
 	];
-
-	function goToClass(name) {
-		console.log("Go to class: ", name);
+	function goToClass(item) {
+		dispatch(
+			navigate({
+				screen: "ClassScreenSVien",
+				params: {
+					classInfo: item,
+				},
+			})
+		);
+		console.log("Go to class: ", item.name);
 	}
 
 	function goBack() {
-		console.log("Go back!");
+		dispatch(goBackMavigation());
+		// console.log("Go back!");
 	}
 
 	const Item = ({ item }) => (
 		<TouchableOpacity
 			className="bg-white p-4 m-2 rounded-lg shadow flex-row justify-between items-center"
-			onPress={() => goToClass(item.name)}
+			onPress={() => goToClass(item)}
 		>
 			<View>
 				<Text className="text-lg">{item.name}</Text>

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import React from "react";
+import React, { useEffect } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { LogoHust } from "./../../logo.js";
 
@@ -9,12 +9,27 @@ import ClassDocs from "./classDocsSVien.js";
 import ClassSurveys from "./classSurveysSVien.js";
 import ClassXinNghi from "./classXinNghiSVien.js";
 
-const ClassScreenSVien = ({ navigation }) => {
-	const class_name = "Phát triển ứng dụng đa nền tảng";
-	const class_teacher = "Nguyễn Tiến Thành";
+import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { navigate } from "../../../redux/navigationSlice";
+import { useNavigation as useReactNavigation } from "@react-navigation/native";
+
+const ClassScreenSVien = () => {
+	const dispatch = useDispatch();
+	const navigation = useReactNavigation();
+
+	const currentScreen = useSelector((state) => state.navigation.currentScreen);
+	const params = useSelector((state) => state.navigation.params);
+
+	useEffect(() => {
+		if (currentScreen !== "RegisterClassScreenSVien") {
+			navigation.navigate(currentScreen);
+		}
+	}, [currentScreen]);
 
 	function goBack() {
-		console.log("Go back!");
+		dispatch(goBackMavigation());
+		// console.log("Go back!");
 	}
 
 	const Tab = createMaterialTopTabNavigator();
@@ -63,10 +78,16 @@ const ClassScreenSVien = ({ navigation }) => {
 					<LogoHust width={140} height={25}></LogoHust>
 				</View>
 
-				<Text className="mt-4 ml-2 mr-2 text-xl self-center text-white font-bold">
-					{class_name}
-				</Text>
-				<Text className="mt-1 ml-2 mr-2 self-center text-white">{class_teacher}</Text>
+				{params.classInfo ? (
+					<View>
+						<Text className="mt-4 ml-2 mr-2 text-xl self-center text-white font-bold">
+							{params.classInfo.name}
+						</Text>
+						<Text className="mt-1 ml-2 mr-2 self-center text-white">
+							{params.classInfo.teacher}
+						</Text>
+					</View>
+				) : null}
 			</View>
 
 			<TabNavigator />

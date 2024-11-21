@@ -5,9 +5,8 @@ import { navigate } from "../../../redux/navigationSlice";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LogoHust, LogoBK } from "../../logo";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useToast } from "react-native-toast-notifications";
-const HomeGVien = () => {
+const HomeSVien = () => {
 	const toast = useToast();
 
 	const dispatch = useDispatch();
@@ -30,7 +29,7 @@ const HomeGVien = () => {
 		console.log("Go to: Danh sách lớp");
 	};
 
-	const goToManageClasses = () => {
+	const gotoManagementClass = () => {
 		dispatch(
 			navigate({
 				screen: "ManageClassesScreenGVien",
@@ -39,6 +38,17 @@ const HomeGVien = () => {
 		);
 		console.log("Go to: Quản lý lớp");
 	};
+
+	const gotoNotification = () => {
+		dispatch(
+			navigate({
+				screen: "NotiGVien",
+				params: {},
+			})
+		);
+		console.log("Go to: Thông báo");
+	};
+
 	const functionIsDeveloping = () => {
 		toast.show("Chức năng đang được phát triển", {
 			animationType: "slide-in",
@@ -55,7 +65,7 @@ const HomeGVien = () => {
 						<LogoHust width={130} height={25}></LogoHust>
 					</View>
 					<View className="absolute right-4 top-12">
-						<TouchableOpacity>
+						<TouchableOpacity onPress={gotoNotification}>
 							<View className="relative">
 								<View
 									className="bg-red-500 rounded-full h-6 w-6 
@@ -86,7 +96,7 @@ const HomeGVien = () => {
 								</View>
 								<View>
 									<Text className="font-bold text-lg">Trương Quang Việt</Text>
-									<Text className="text-sm">Sinh viên</Text>
+									<Text className="text-sm">Giảng viên</Text>
 								</View>
 							</View>
 							<View className="mr-1">
@@ -109,11 +119,11 @@ const HomeGVien = () => {
 								</View>
 								<View className="pt-3">
 									<Text className="self-center text-base font-bold">
-										Thời khóa biểu
+										Lịch dạy
 									</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
-											Tra cứu thời khóa biểu, lịch thi
+											Tra cứu lịch dạy
 										</Text>
 									</View>
 								</View>
@@ -129,16 +139,18 @@ const HomeGVien = () => {
 								</View>
 								<View className="pt-3 ">
 									<Text className="self-center text-base font-bold">Đồ án</Text>
-									<Text className="self-center text-sm font-[650]">
-										Thông tin các đồ án
-									</Text>
+									<View className="flex flex-row justify-center items-center">
+										<Text className="text-center text-sm font-[650] flex-wrap">
+											Thông tin các đồ án hướng dẫn
+										</Text>
+									</View>
 								</View>
 							</View>
 						</View>
 						<View className="flex flex-row justify-center mb-5 ">
 							<View className="flex items-center basis-[45%]">
 								<View className="shadow-lg bg-white rounded-xl flex justify-center items-center w-[100px] h-[100px]">
-									<TouchableOpacity>
+									<TouchableOpacity onPress={goToMyClasses}>
 										<Image
 											source={require("../../../assets/dslop_icon.png")}
 											style={{ width: 78, height: 78 }}
@@ -151,14 +163,14 @@ const HomeGVien = () => {
 									</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
-											Thông tin các lớp của sinh viên
+											Thông tin các lớp của dạy
 										</Text>
 									</View>
 								</View>
 							</View>
 							<View className="flex items-center basis-[45%]">
 								<View className="shadow-lg bg-white rounded-xl flex justify-center items-center w-[100px] h-[100px]">
-									<TouchableOpacity>
+									<TouchableOpacity onPress={gotoManagementClass}>
 										<Image
 											source={require("../../../assets/dklop_icon.png")}
 											style={{ width: 70, height: 70 }}
@@ -167,11 +179,13 @@ const HomeGVien = () => {
 								</View>
 								<View className="pt-3">
 									<Text className="self-center text-base font-bold">
-										Đăng ký lớp
+										Quản lý lớp
 									</Text>
-									<Text className="self-center text-sm font-[650]">
-										Đăng ký lớp cho học kỳ
-									</Text>
+									<View className="flex flex-row justify-center items-center">
+										<Text className="text-center text-sm font-[650] flex-wrap">
+											Tạo các lớp mới và quản lý lớp
+										</Text>
+									</View>
 								</View>
 							</View>
 						</View>
@@ -196,64 +210,6 @@ const HomeGVien = () => {
 									</View>
 								</View>
 							</View>
-							<View className="flex items-center basis-[45%]">
-								<View className="shadow-lg bg-white rounded-xl flex justify-center items-center w-[100px] h-[100px]">
-									<TouchableOpacity onPress={functionIsDeveloping}>
-										<Image
-											source={require("../../../assets/ketquaht_icon.png")}
-											style={{ width: 77, height: 77 }}
-										/>
-									</TouchableOpacity>
-								</View>
-								<View className="pt-3">
-									<Text className="self-center text-base font-bold">
-										Kết quả học tập
-									</Text>
-									<Text className="self-center text-sm font-[650]">
-										Thông tin kết quả học tập
-									</Text>
-								</View>
-							</View>
-						</View>
-						<View className="flex flex-row justify-center mb-5 ">
-							<View className="flex items-center basis-[45%]">
-								<View className="shadow-lg bg-white rounded-xl flex justify-center items-center w-[100px] h-[100px]">
-									<TouchableOpacity onPress={functionIsDeveloping}>
-										<Image
-											source={require("../../../assets/bieumau.png")}
-											style={{ width: 78, height: 78 }}
-										/>
-									</TouchableOpacity>
-								</View>
-								<View className="pt-3">
-									<Text className="self-center text-base font-bold">
-										Biểu mẫu online
-									</Text>
-									<View className="flex flex-row justify-center items-center">
-										<Text className="text-center text-sm font-[650] flex-wrap">
-											Bảng điểm, chứng nhận sv, giấy giới thiệu...
-										</Text>
-									</View>
-								</View>
-							</View>
-							<View className="flex items-center basis-[45%]">
-								<View className="shadow-lg bg-white rounded-xl flex justify-center items-center w-[100px] h-[100px]">
-									<TouchableOpacity onPress={functionIsDeveloping}>
-										<Image
-											source={require("../../../assets/hocphi.png")}
-											style={{ width: 75, height: 75 }}
-										/>
-									</TouchableOpacity>
-								</View>
-								<View className="pt-3">
-									<Text className="self-center text-base font-bold">Học phí</Text>
-									<View className="flex flex-row justify-center items-center">
-										<Text className="text-center text-sm font-[650] flex-wrap">
-											Thông tin chi tiết về học phí
-										</Text>
-									</View>
-								</View>
-							</View>
 						</View>
 					</View>
 				</View>
@@ -262,4 +218,4 @@ const HomeGVien = () => {
 	);
 };
 
-export default HomeGVien;
+export default HomeSVien;
