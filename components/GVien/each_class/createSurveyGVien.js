@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	View,
 	Text,
@@ -15,7 +15,29 @@ import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import Modal from "react-native-modal";
 
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
+import { goBack as goBackNavigation } from "../../../redux/navigationSlice.js";
+
 const CreateSurveyGVien = () => {
+	const navigation = useNavigation();
+	const dispatch = useDispatch();
+
+	const currentScreen = useSelector((state) => state.navigation.currentScreen);
+	const params = useSelector((state) => state.navigation.params);
+
+	useEffect(() => {
+		// Theo dõi thay đổi currentScreen để sync với navigation system
+		if (currentScreen) {
+			navigation.navigate(currentScreen);
+		}
+	}, [currentScreen]);
+
+	function goBack() {
+		dispatch(goBackNavigation());
+		console.log("Go back!");
+	}
+
 	const [surveyTitle, setSurveyTitle] = useState("");
 	const [questions, setQuestions] = useState([""]);
 
@@ -58,11 +80,11 @@ const CreateSurveyGVien = () => {
 	const [endDate, setEndDate] = useState(dayjs());
 
 	return (
-		<>
+		<View>
 			<View>
 				<View className="bg-red-700 pt-10 pb-5 relative">
 					<View className="absolute left-3 top-8">
-						<TouchableOpacity>
+						<TouchableOpacity onPress={() => goBack()}>
 							<FontAwesome name="long-arrow-left" size={26} color="white" />
 						</TouchableOpacity>
 					</View>
@@ -213,7 +235,7 @@ const CreateSurveyGVien = () => {
 					</View>
 				</View>
 			</Modal>
-		</>
+		</View>
 	);
 };
 

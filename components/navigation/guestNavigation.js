@@ -5,7 +5,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import LoginScreen from "../login";
 import RegisterScreen from "../register";
-import MyClassesScreenGVien from "../GVien/main_screen/myClassesGVien";
 
 const Stack = createNativeStackNavigator();
 

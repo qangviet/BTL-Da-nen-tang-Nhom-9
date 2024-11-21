@@ -3,14 +3,18 @@ import { LogBox } from "react-native";
 LogBox.ignoreAllLogs();
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
-
+import { ToastProvider } from "react-native-toast-notifications";
 import MainNavigation from "./components/navigation/mainNavigation";
-import HomeScreen from "./components/Home/home";
+import NotificationScreen from "./components/notification";
+import NotiSVien from "./components/SVien/main_screen/notiSVien";
 const App = () => {
 	return (
-		<HomeScreen />
+		// <NotiSVien></NotiSVien>
+		<NotificationScreen></NotificationScreen>
 		// <Provider store={store}>
-		// 	<MainNavigation />
+		// 	<ToastProvider>
+		// 		<MainNavigation />
+		// 	</ToastProvider>
 		// </Provider>
 	);
 };

@@ -9,14 +9,17 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import LogoHust from "./../../logo";
+import { LogoHust } from "./../../logo";
+import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
+
 const MyClassesScreenGVien = () => {
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
 	const state = useSelector((state) => state.navigation);
+	console.log("Current screen: ", state);
 	useEffect(() => {
 		if (state.currentScreen !== "MyClassesScreenGVien") {
 			navigation.navigate(state.currentScreen);
@@ -38,26 +41,27 @@ const MyClassesScreenGVien = () => {
 
 		{ id: "extra", name: "extra", teacher: "extra" },
 	];
-	function goToClass(name) {
+	function goToClass(item) {
 		dispatch(
 			navigate({
 				screen: "ClassScreenGVien",
 				params: {
-					name: name,
+					classInfo: item,
 				},
 			})
 		);
-		console.log("Go to class: ", name);
+		console.log("Go to class: ", item.name);
 	}
 
 	function goBack() {
+		dispatch(goBackMavigation());
 		console.log("Go back!");
 	}
 
 	const Item = ({ item }) => (
 		<TouchableOpacity
 			className="bg-white p-4 m-2 rounded-lg shadow flex-row justify-between items-center"
-			onPress={() => goToClass(item.name)}
+			onPress={() => goToClass(item)}
 		>
 			<View>
 				<Text className="text-lg">{item.name}</Text>

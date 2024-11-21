@@ -9,7 +9,7 @@ import {
 	ScrollView,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import LogoHust from "../../logo";
+import { LogoHust } from "../../logo";
 import Entypo from "@expo/vector-icons/Entypo";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";

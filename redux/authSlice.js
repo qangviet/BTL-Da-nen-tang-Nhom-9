@@ -4,7 +4,7 @@ const authSlice = createSlice({
 	name: "auth",
 	initialState: {
 		token: null,
-		role: 0, // 1 - GVien, 2 - SVien
+		role: 0, // 0 - Guest, 1 - GVien, 2 - SVien
 	},
 	reducers: {
 		loginAct: (state, action) => {

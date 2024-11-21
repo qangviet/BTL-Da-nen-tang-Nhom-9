@@ -3,28 +3,29 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import React, { useState, useEffect } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import LogoHust from "./../../logo";
+import { LogoHust } from "./../../logo";
 
 import ClassDocs from "./classDocsGVien.js";
 import ClassSurveys from "./classSurveysGVien.js";
 import ClassDiemDanhGVien from "./classDiemDanhGVien.js";
-// import CreateSurveyGVien from "./createSurveyGVien.js";
-import EditSurveyGVien from "./editSurveyGVien.js";
+import CreateSurveyGVien from "./createSurveyGVien.js";
+
+import { navigate } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { goBack as goBackMavigation } from "../../../redux/navigationSlice.js";
 import api from "../../API/api.js";
 
-const ClassScreenGVien = () => {
+const ClassScreenGVien = ({ route }) => {
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
 
-	const class_name = "Phát triển ứng dụng đa nền tảng";
-	const class_teacher = "Nguyễn Tiến Thành";
+	const currentScreen = useSelector((state) => state.navigation.currentScreen);
+	const params = useSelector((state) => state.navigation.params);
+
+	console.log(">>> PARAMS: ", params);
 
 	const state = useSelector((state) => state.navigation);
-	console.log("state: ", state);
-
 	useEffect(() => {
 		// Theo dõi thay đổi currentScreen để sync với navigation system
 		if (state.currentScreen !== "ClassScreenGVien") {
@@ -72,13 +73,11 @@ const ClassScreenGVien = () => {
 						marginLeft: 63,
 						marginBottom: 3,
 					},
-					// tabBarActiveTintColor: 'blac', // Màu chữ khi tab đang chọn
-					// tabBarInactiveTintColor: 'gray', // Màu chữ khi tab không chọn
 				}}
 			>
 				<Tab.Screen name="Tài liệu" component={ClassDocs} />
 				<Tab.Screen name="Bài tập" component={ClassSurveys} />
-				<Tab.Screen name="Xin Nghỉ" component={ClassDiemDanhGVien} />
+				<Tab.Screen name="Điểm danh" component={ClassDiemDanhGVien} />
 			</Tab.Navigator>
 		);
 	};
@@ -86,45 +85,46 @@ const ClassScreenGVien = () => {
 	const [changeScreen, setChangeScreen] = React.useState(false);
 
 	const openCreateSurveys = () => {
-		setChangeScreen(true);
+		dispatch(
+			navigate({
+				screen: "CreateSurveyGVien",
+			})
+		);
+		console.log("Go to class: Create survey");
 	};
 
 	return (
 		<>
-			{changeScreen ? (
-				<EditSurveyGVien />
-			) : (
-				<NavigationContainer independent={true}>
-					<View className="bg-red-700 pt-8 pb-3 relative">
-						<View className="absolute left-3 top-8">
-							<TouchableOpacity onPress={() => goBack()}>
-								<FontAwesome name="long-arrow-left" size={26} color="white" />
-							</TouchableOpacity>
-						</View>
-						<View className="flex justify-center items-center">
-							<LogoHust width={140} height={25}></LogoHust>
-						</View>
-						<View className="absolute right-3 top-8">
-							<TouchableOpacity onPress={openCreateSurveys}>
-								<FontAwesome name="plus" size={24} color="white" />
-							</TouchableOpacity>
-						</View>
-
-						{/* class_name + class_teacher */}
-						<Text className="mt-4 ml-2 mr-2 text-xl self-center text-white font-bold">
-							{class_name}
-						</Text>
-						<Text className="mt-1 ml-2 mr-2 self-center text-white">
-							{class_teacher}
-						</Text>
+			<NavigationContainer independent={true}>
+				<View className="bg-red-700 pt-8 pb-3 relative">
+					<View className="absolute left-3 top-8">
+						<TouchableOpacity onPress={() => goBack()}>
+							<FontAwesome name="long-arrow-left" size={26} color="white" />
+						</TouchableOpacity>
+					</View>
+					<View className="flex justify-center items-center">
+						<LogoHust width={140} height={25}></LogoHust>
+					</View>
+					<View className="absolute right-3 top-8">
+						<TouchableOpacity onPress={openCreateSurveys}>
+							<FontAwesome name="plus" size={24} color="white" />
+						</TouchableOpacity>
 					</View>
 
-					{/* <Text className="mt-2 ml-2 mr-2 text-lg">{class_name}</Text> */}
+					{params.classInfo ? (
+						<View>
+							<Text className="mt-4 ml-2 mr-2 text-xl self-center text-white font-bold">
+								{params.classInfo.name}
+							</Text>
+							<Text className="mt-1 ml-2 mr-2 self-center text-white">
+								{params.classInfo.teacher}
+							</Text>
+						</View>
+					) : null}
+				</View>
 
-					{/* Tabs: Tài liệu, Bài tập, Xin nghỉ/Điểm danh */}
-					<TabNavigator />
-				</NavigationContainer>
-			)}
+				<TabNavigator />
+			</NavigationContainer>
 		</>
 	);
 };
