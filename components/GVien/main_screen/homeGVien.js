@@ -60,11 +60,11 @@ const HomeSVien = () => {
 		<>
 			<View className="bg-[#dfe1e2]">
 				{/* <NavigationContainer independent={true}> */}
-				<View className="bg-red-700 pt-12 pb-5 relative z-10">
+				<View className="bg-red-700 pt-10 pb-5 relative z-10">
 					<View className="flex justify-center items-center">
 						<LogoHust width={130} height={25}></LogoHust>
 					</View>
-					<View className="absolute right-4 top-12">
+					{/* <View className="absolute right-4 top-12">
 						<TouchableOpacity onPress={gotoNotification}>
 							<View className="relative">
 								<View
@@ -76,7 +76,7 @@ const HomeSVien = () => {
 								<Ionicons name="notifications" size={24} color="white" />
 							</View>
 						</TouchableOpacity>
-					</View>
+					</View> */}
 					<View className="absolute left-5 top-14">
 						<LogoBK width={32} height={48} className="mx-auto"></LogoBK>
 					</View>

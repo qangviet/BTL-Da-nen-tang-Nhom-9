@@ -29,12 +29,12 @@ const ChatSVien = () => {
 	};
 
 	return (
-		<View className="h-full">
-			<View className="bg-red-700 pt-10 pb-5 relative z-10">
+		<View className="bg-[#dfe1e2]">
+			<View className="bg-red-700 pt-10 pb-4 relative z-10">
 				<View className="flex justify-center items-center">
 					<Text className="text-xl text-white font-semibold">Nhắn tin</Text>
 				</View>
-				<View className="absolute right-4 top-12">
+				<View className="absolute right-4 top-10">
 					<TouchableOpacity onPress={gotoNotification}>
 						<View className="relative">
 							<View

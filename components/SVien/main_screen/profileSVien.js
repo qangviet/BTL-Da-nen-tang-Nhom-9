@@ -15,8 +15,13 @@ import React, { useRef, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { LogoHust, LogoBK } from "../../logo";
 import { Ionicons } from "@expo/vector-icons";
+import { logoutAct } from "../../../redux/authSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigation as useReactNavigation } from "@react-navigation/native";
 
 const Profile = () => {
+	const dispatch = useDispatch();
+
 	let drawer = useRef(null);
 	// let drawer = null;
 
@@ -26,6 +31,9 @@ const Profile = () => {
 
 	const logOut = () => {
 		console.log("LOGGING OUT!");
+		dispatch(
+			logoutAct()
+		);
 	};
 
 	const navigationView = () => (
@@ -66,7 +74,7 @@ const Profile = () => {
 			renderNavigationView={navigationView}
 		>
 			<View className="h-full">
-				<View className="bg-red-700 pt-10 pb-5 relative z-10">
+				<View className="bg-red-700 pt-10 pb-4 relative z-10">
 					<View className="flex justify-center items-center">
 						<Text className="text-xl text-white font-semibold">
 							Thông tin sinh viên

@@ -15,8 +15,13 @@ import React, { useRef, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { LogoHust, LogoBK } from "../../logo";
 import { Ionicons } from "@expo/vector-icons";
+import { logoutAct } from "../../../redux/authSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigation as useReactNavigation } from "@react-navigation/native";
 
 const ProfileGVien = () => {
+	const dispatch = useDispatch();
+
 	let drawer = useRef(null);
 	// let drawer = null;
 
@@ -26,6 +31,9 @@ const ProfileGVien = () => {
 
 	const logOut = () => {
 		console.log("LOGGING OUT!");
+		dispatch(
+			logoutAct()
+		);
 	};
 
 	const navigationView = () => (
