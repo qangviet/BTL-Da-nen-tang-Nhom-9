@@ -73,10 +73,10 @@ const ProfileGVien = () => {
 						</Text>
 					</View>
 					<View className="absolute right-4 top-12">
-						<TouchableOpacity onPress={openRightDrawer}>
-							<View className="relative">
-								<Ionicons name="ellipsis-vertical" size={24} color="white" />
-							</View>
+						<TouchableOpacity onPress={() => drawer.current.openDrawer()}>
+							{/* <View className="relative"> */}
+							<Ionicons name="ellipsis-vertical" size={24} color="white" />
+							{/* </View> */}
 						</TouchableOpacity>
 					</View>
 					<View className="absolute left-5 top-14">
