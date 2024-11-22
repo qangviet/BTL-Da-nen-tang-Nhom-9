@@ -7,6 +7,7 @@ import ClassScreenSVien from "../SVien/each_class/tabClassSVien";
 import TabMainSVien from "../SVien/main_screen/tabMainSVien";
 import ClassSubmitSurveysSVien from "../SVien/each_class/classSubmitSurveysSVien";
 import NotiSVien from "../SVien/main_screen/notiSVien";
+import RegisterClassScreenSVien from "../SVien/main_screen/registerClassSVien";
 const Stack = createNativeStackNavigator();
 
 const SVienNavigation = () => {
