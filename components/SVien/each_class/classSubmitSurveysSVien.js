@@ -28,6 +28,7 @@ const ClassSubmitSurveysSVien = () => {
 	}
 
 	const survey = params.assignment;
+	const mode = params.mode;
 	console.log(survey);
 
 	const [show_file, setFile] = useState(false);
@@ -71,7 +72,7 @@ const ClassSubmitSurveysSVien = () => {
 					{survey.file && (
 						<TouchableOpacity
 							className="rounded-lg bg-red-700 h-10 justify-center mt-5 w-72 self-center"
-							onPress={() => setFile(true)}
+							// onPress={() => setFile(true)}
 						>
 							<Text className="self-center italic font-bold text-white text-base">
 								{survey.file}
@@ -79,13 +80,30 @@ const ClassSubmitSurveysSVien = () => {
 						</TouchableOpacity>
 					)}
 
-					<TextInput
+					{(mode == 0) &&<TextInput
 						className="font-medium border 
                                     border-red-700 px-5 py-3 text-lg mt-4 h-40"
 						placeholder="Trả lời"
 						placeholderTextColor="crimson"
 						style={{ color: "crimson", justifyContent: "flex-start" }}
-					/>
+					/>}
+					{(mode == 1) &&<TextInput
+						className="font-medium border 
+                                    border-red-700 px-5 py-3 text-lg mt-4 h-40"
+						placeholder="Trả lời"
+						placeholderTextColor="crimson"
+						editable={false}
+						style={{ color: "crimson", justifyContent: "flex-start" }}
+					/>}
+					{(mode == 2) && <TextInput
+						className="font-medium border 
+                                    border-red-700 px-5 py-3 text-lg mt-4 h-40"
+						placeholder="Trả lời"
+						placeholderTextColor="crimson"
+						editable={false}
+						defaultValue={survey.your_ans}
+						style={{ color: "crimson", justifyContent: "flex-start" }}
+					/>}
 
 					<View>
 						<Text className="mt-2 text-lg italic font-bold text-red-700 self-center">
@@ -93,25 +111,53 @@ const ClassSubmitSurveysSVien = () => {
 						</Text>
 					</View>
 
-					<TouchableOpacity
+					{mode == 0 && <TouchableOpacity
 						className="rounded-lg bg-red-700 h-10 justify-center mt-3 w-56 self-center"
 						onPress={() => setFile(true)}
 					>
 						<Text className="self-center italic font-bold text-white text-base">
 							Tải tài liệu lên
 						</Text>
-					</TouchableOpacity>
+					</TouchableOpacity>}
+					{mode == 1 && <TouchableOpacity
+						className="rounded-lg bg-red-700 h-10 justify-center mt-3 w-56 self-center"
+						disabled={true}
+					>
+						<Text className="self-center italic font-bold text-white text-base">
+							Tải tài liệu lên
+						</Text>
+					</TouchableOpacity>}
+					{mode == 2 && <TouchableOpacity
+						className="rounded-lg bg-red-700 h-10 justify-center mt-3 w-56 self-center"
+						disabled={true}
+					>
+						{(survey.your_file !== "") && <Text className="self-center italic font-bold text-white text-base">
+							{survey.your_file}
+						</Text>}
+						{(survey.your_file === "") && <Text className="self-center italic font-bold text-white text-base">
+							Tải tài liệu lên
+						</Text>}
+					</TouchableOpacity>}
+					
 
 					{show_file && <Text className="self-center mt-1 text-s">Bai1.docx</Text>}
 
-					<TouchableOpacity
+					{mode == 0 && <TouchableOpacity
 						className="rounded-lg bg-red-700 h-10 justify-center mt-5 w-32 self-center"
 						onPress={() => setsubmitVisible(true)}
 					>
 						<Text className="self-center italic font-bold text-white text-base">
 							Submit
 						</Text>
-					</TouchableOpacity>
+					</TouchableOpacity>}
+					{(mode == 1 || mode == 2) && <TouchableOpacity
+						className="rounded-lg bg-red-700 h-10 justify-center mt-5 w-32 self-center"
+						disabled={true}
+					>
+						<Text className="self-center italic font-bold text-white text-base">
+							Submit
+						</Text>
+					</TouchableOpacity>}
 				</View>
 			)}
 			<Modal animationType="fade" transparent={true} visible={submitVisible}>
