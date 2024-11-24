@@ -46,7 +46,7 @@ const LoginScreen = () => {
 				const response = await api.post("/it4788/login", {
 					email: username,
 					password: password,
-					deviceId: 0, // Nếu có deviceId
+					device_id: 0, // Nếu có deviceId
 				});
 	
 				// Kiểm tra nếu mã phản hồi là "1000"

@@ -22,7 +22,7 @@ const RegisterScreen = ({ navigation }) => {
 	const [open, setOpen] = useState(false);
 	const [value, setValue] = useState(null);
 	const [items, setItems] = useState([
-		{ label: "Teacher", value: "Giảng viên" },
+		{ label: "Lecturer", value: "Giảng viên" },
 		{ label: "Student", value: "Sinh viên" },
 	]);
 
@@ -43,7 +43,7 @@ const RegisterScreen = ({ navigation }) => {
 			email: email,
 			password: password,
 			uuid: Math.floor(Math.random() * 900000) + 100000, // UUID 6 chữ số ngẫu nhiên
-			role: value === "Giảng viên" ? "TEACHER" : "STUDENT", // Teacher/Student -> GIẢNG VIÊN/SINH VIÊN
+			role: value === "Giảng viên" ? "LECTURER" : "STUDENT", // Teacher/Student -> GIẢNG VIÊN/SINH VIÊN
 		};
 	
 		try {
