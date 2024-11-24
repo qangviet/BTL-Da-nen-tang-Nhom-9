@@ -43,6 +43,8 @@ const LoginScreen = () => {
 		// Ở đây bạn sẽ thêm logic xác thực đăng nhập thực tế
 		if (!(username === "" || password === "")) {
 			try {
+				console.log(username);
+				console.log(password);
 				const response = await api.post("/it4788/login", {
 					email: username,
 					password: password,
@@ -213,9 +215,12 @@ const LoginScreen = () => {
 					<Fontisto name="locked" size={20} color="white" />
 				</View>
 				<View className="absolute top-1/2 right-4 -translate-y-[10px]">
-					<TouchableOpacity onPress={viewPassword}>
+					{hidePassword && <TouchableOpacity onPress={viewPassword}>
 						<Ionicons name="eye-off-outline" size={20} color="white" />
-					</TouchableOpacity>
+					</TouchableOpacity>}
+					{!hidePassword && <TouchableOpacity onPress={viewPassword}>
+						<Ionicons name="eye-outline" size={20} color="white" />
+					</TouchableOpacity>}
 				</View>
 			</StyledView>
 

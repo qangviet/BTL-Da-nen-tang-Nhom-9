@@ -15,8 +15,13 @@ import React, { useRef, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { LogoHust, LogoBK } from "../../logo";
 import { Ionicons } from "@expo/vector-icons";
+import { logoutAct } from "../../../redux/authSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigation as useReactNavigation } from "@react-navigation/native";
 
 const ProfileGVien = () => {
+	const dispatch = useDispatch();
+
 	let drawer = useRef(null);
 	// let drawer = null;
 
@@ -26,6 +31,9 @@ const ProfileGVien = () => {
 
 	const logOut = () => {
 		console.log("LOGGING OUT!");
+		dispatch(
+			logoutAct()
+		);
 	};
 
 	const navigationView = () => (
@@ -73,10 +81,10 @@ const ProfileGVien = () => {
 						</Text>
 					</View>
 					<View className="absolute right-4 top-12">
-						<TouchableOpacity onPress={openRightDrawer}>
-							<View className="relative">
-								<Ionicons name="ellipsis-vertical" size={24} color="white" />
-							</View>
+						<TouchableOpacity onPress={() => drawer.current.openDrawer()}>
+							{/* <View className="relative"> */}
+							<Ionicons name="ellipsis-vertical" size={24} color="white" />
+							{/* </View> */}
 						</TouchableOpacity>
 					</View>
 					<View className="absolute left-5 top-14">
