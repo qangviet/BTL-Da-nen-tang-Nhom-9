@@ -60,11 +60,11 @@ const HomeSVien = () => {
 		<>
 			<View className="bg-[#dfe1e2]">
 				{/* <NavigationContainer independent={true}> */}
-				<View className="bg-red-700 pt-12 pb-5 relative z-10">
+				<View className="bg-red-700 pt-10 pb-5 relative z-10">
 					<View className="flex justify-center items-center">
 						<LogoHust width={130} height={25}></LogoHust>
 					</View>
-					<View className="absolute right-4 top-12">
+					{/* <View className="absolute right-4 top-12">
 						<TouchableOpacity onPress={gotoNotification}>
 							<View className="relative">
 								<View
@@ -76,7 +76,7 @@ const HomeSVien = () => {
 								<Ionicons name="notifications" size={24} color="white" />
 							</View>
 						</TouchableOpacity>
-					</View>
+					</View> */}
 					<View className="absolute left-5 top-14">
 						<LogoBK width={32} height={48} className="mx-auto"></LogoBK>
 					</View>
@@ -107,46 +107,6 @@ const HomeSVien = () => {
 						</View>
 					</View>
 					<View className="mx-2">
-						<View className="flex flex-row justify-center mb-5 ">
-							<View className="flex items-center basis-[45%]">
-								<View className="shadow-lg bg-white rounded-xl flex justify-center items-center w-[100px] h-[100px]">
-									<TouchableOpacity onPress={functionIsDeveloping}>
-										<Image
-											source={require("../../../assets/calendar_icon.png")}
-											style={{ width: 60, height: 60 }}
-										/>
-									</TouchableOpacity>
-								</View>
-								<View className="pt-3">
-									<Text className="self-center text-base font-bold">
-										Lịch dạy
-									</Text>
-									<View className="flex flex-row justify-center items-center">
-										<Text className="text-center text-sm font-[650] flex-wrap">
-											Tra cứu lịch dạy
-										</Text>
-									</View>
-								</View>
-							</View>
-							<View className="flex items-center basis-[45%]">
-								<View className="shadow-lg bg-white rounded-xl flex justify-center items-center w-[100px] h-[100px]">
-									<TouchableOpacity onPress={functionIsDeveloping}>
-										<Image
-											source={require("../../../assets/thesis_icon.png")}
-											style={{ width: 70, height: 70 }}
-										/>
-									</TouchableOpacity>
-								</View>
-								<View className="pt-3 ">
-									<Text className="self-center text-base font-bold">Đồ án</Text>
-									<View className="flex flex-row justify-center items-center">
-										<Text className="text-center text-sm font-[650] flex-wrap">
-											Thông tin các đồ án hướng dẫn
-										</Text>
-									</View>
-								</View>
-							</View>
-						</View>
 						<View className="flex flex-row justify-center mb-5 ">
 							<View className="flex items-center basis-[45%]">
 								<View className="shadow-lg bg-white rounded-xl flex justify-center items-center w-[100px] h-[100px]">
@@ -184,6 +144,46 @@ const HomeSVien = () => {
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
 											Tạo các lớp mới và quản lý lớp
+										</Text>
+									</View>
+								</View>
+							</View>
+						</View>
+						<View className="flex flex-row justify-center mb-5 ">
+							<View className="flex items-center basis-[45%]">
+								<View className="shadow-lg bg-white rounded-xl flex justify-center items-center w-[100px] h-[100px]">
+									<TouchableOpacity onPress={functionIsDeveloping}>
+										<Image
+											source={require("../../../assets/calendar_icon.png")}
+											style={{ width: 60, height: 60 }}
+										/>
+									</TouchableOpacity>
+								</View>
+								<View className="pt-3">
+									<Text className="self-center text-base font-bold">
+										Lịch dạy
+									</Text>
+									<View className="flex flex-row justify-center items-center">
+										<Text className="text-center text-sm font-[650] flex-wrap">
+											Tra cứu lịch dạy
+										</Text>
+									</View>
+								</View>
+							</View>
+							<View className="flex items-center basis-[45%]">
+								<View className="shadow-lg bg-white rounded-xl flex justify-center items-center w-[100px] h-[100px]">
+									<TouchableOpacity onPress={functionIsDeveloping}>
+										<Image
+											source={require("../../../assets/thesis_icon.png")}
+											style={{ width: 70, height: 70 }}
+										/>
+									</TouchableOpacity>
+								</View>
+								<View className="pt-3 ">
+									<Text className="self-center text-base font-bold">Đồ án</Text>
+									<View className="flex flex-row justify-center items-center">
+										<Text className="text-center text-sm font-[650] flex-wrap">
+											Thông tin các đồ án hướng dẫn
 										</Text>
 									</View>
 								</View>

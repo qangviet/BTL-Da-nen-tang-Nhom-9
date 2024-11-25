@@ -13,6 +13,11 @@ const HomeSVien = () => {
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
 
+	const param = useSelector((state) => state.navigation.params);
+
+	//console.log(param);
+
+
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	useEffect(() => {
 		if (currentScreen !== "HomeSVien") {
@@ -24,7 +29,7 @@ const HomeSVien = () => {
 		dispatch(
 			navigate({
 				screen: "MyClassesScreenSVien",
-				params: {},
+				params: param,
 			})
 		);
 		console.log("Go to: Danh sách lớp");
@@ -34,7 +39,7 @@ const HomeSVien = () => {
 		dispatch(
 			navigate({
 				screen: "RegisterClassScreenSVien",
-				params: {},
+				params: param,
 			})
 		);
 		console.log("Go to: Quản lý lớp");
@@ -44,7 +49,7 @@ const HomeSVien = () => {
 		dispatch(
 			navigate({
 				screen: "NotiSVien",
-				params: {},
+				params: param,
 			})
 		);
 		console.log("Go to: Thông báo");
@@ -61,11 +66,11 @@ const HomeSVien = () => {
 		<>
 			<View className="bg-[#dfe1e2]">
 				{/* <NavigationContainer independent={true}> */}
-				<View className="bg-red-700 pt-12 pb-5 relative z-10">
+				<View className="bg-red-700 pt-10 pb-5 relative z-10">
 					<View className="flex justify-center items-center">
 						<LogoHust width={130} height={25}></LogoHust>
 					</View>
-					<View className="absolute right-4 top-12">
+					<View className="absolute right-4 top-10">
 						<TouchableOpacity onPress={gotoNotification}>
 							<View className="relative">
 								<View
@@ -95,10 +100,15 @@ const HomeSVien = () => {
 										color="#b5b5b5"
 									/>
 								</View>
-								<View>
-									<Text className="font-bold text-lg">Trương Quang Việt</Text>
-									<Text className="text-sm">Sinh viên</Text>
+								{param && param.userInfo ? 
+								(<View>
+									<Text className="font-bold text-lg">{param.userInfo.name}</Text>
+									<Text className="text-sm">{param.role === 1 ? "Sinh viên" : "Giáo viên"}</Text>
 								</View>
+								) : (
+								<Text className="text-red-500">Không tìm thấy thông tin người dùng</Text>
+								)}
+
 							</View>
 							<View className="mr-1">
 								<TouchableOpacity>

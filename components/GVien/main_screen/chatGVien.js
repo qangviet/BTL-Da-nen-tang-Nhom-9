@@ -34,7 +34,7 @@ const ChatGVien = () => {
 				<View className="flex justify-center items-center">
 					<Text className="text-xl text-white font-semibold">Nhắn tin</Text>
 				</View>
-				<View className="absolute right-4 top-12">
+				{/* <View className="absolute right-4 top-12">
 					<TouchableOpacity onPress={gotoNotification}>
 						<View className="relative">
 							<View
@@ -46,7 +46,7 @@ const ChatGVien = () => {
 							<Ionicons name="notifications" size={24} color="white" />
 						</View>
 					</TouchableOpacity>
-				</View>
+				</View> */}
 				<View className="absolute left-5 top-14">
 					<LogoBK width={32} height={48} className="mx-auto"></LogoBK>
 				</View>

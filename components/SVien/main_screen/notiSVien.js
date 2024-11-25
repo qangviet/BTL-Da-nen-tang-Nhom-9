@@ -4,6 +4,10 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { goBack } from "../../../redux/navigationSlice";
 import { useNavigation } from "@react-navigation/native";
+import api from "../../api";
+
+
+
 const styles = {
 	read: [
 		"bg-white",
@@ -18,10 +22,27 @@ const styles = {
 		"Chưa đọc",
 	],
 };
+function formatDateTime(dateString) {
+    const date = new Date(dateString);
+
+    // Lấy giờ, phút, giây
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    // Lấy ngày, tháng, năm
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+    const year = date.getFullYear();
+
+    // Kết hợp thành chuỗi định dạng
+    return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
+}
 
 const NotiSVien = () => {
 	const dispatch = useDispatch();
 	const state = useSelector((state) => state.navigation);
+	const param = useSelector((state) => state.navigation.params);
 	const navigation = useNavigation();
 	useEffect(() => {
 		if (state.currentScreen !== "NotiSVien") {
@@ -29,57 +50,89 @@ const NotiSVien = () => {
 		}
 	}, [state.currentScreen]);
 
-	const testData = [
-		{
-			title: "Test thông báo",
-			content: "Nội dung thông báo Nội dung thông báo Nội dung thông báo Nội dung thông báo",
-			date: "19/11/2024",
-			description:
-				"Mô tả thông báo Mô tả thông báo Mô tả thông báo Mô tả thông báo Mô tả thông báo",
-			status: "unread",
-		},
-		{
-			title: "Test thông báo",
-			content: "Nội dung thông báo",
-			date: "19/11/2024",
-			description: "Mô tả thông báo",
-			status: "read",
-		},
-		{
-			title: "Test thông báo",
-			content: "Nội dung thông báo",
-			date: "19/11/2024",
-			description: "Mô tả thông báo",
-			status: "unread",
-		},
-		{
-			title: "Test thông báo",
-			content: "Nội dung thông báo",
-			date: "19/11/2024",
-			description: "Mô tả thông báo",
-			status: "unread",
-		},
-		{
-			title: "Test thông báo",
-			content: "Nội dung thông báo",
-			date: "19/11/2024",
-			description: "Mô tả thông báo Mô tả thông báo Mô tả thông báo Mô tả thông báo",
-			status: "read",
-		},
-	];
+    const [notifications, setNotifications] = useState([]);
+
+
+    const fetchNotifications = async () => {
+		try {
+			const response = await api.post("/it5023e/get_notifications", {
+				token: param.token,
+				index: 0,
+				count: 4,
+			});
+	
+			const data = response.data.data;
+	
+			// Chuyển đổi dữ liệu từ API thành định dạng cần dùng
+			const formattedData = data.map((item) => ({
+				id: item.id,
+				title: item.title_push_notification,
+				content: item.type,
+				date: formatDateTime(item.sent_time),
+				description: item.message,
+				status: item.status === "UNREAD" ? "unread" : "read",
+			}));
+	
+			// Cập nhật state
+			setNotifications(formattedData);
+		} catch (error) {
+			console.error("Error fetching notifications:", error);
+		}
+	};
+	
+    useEffect(() => {
+        fetchNotifications();
+    }, [param.token]);
 
 	const goBackScreen = () => {
 		dispatch(goBack());
+	};
+	// Hàm gọi API để đánh dấu thông báo đã đọc
+	const markNotificationAsRead = async (notificationId) => {
+		try {
+			// Gọi API để đánh dấu thông báo đã đọc
+			const response = await api.post("/it5023e/mark_notification_as_read", {
+				token: param.token, // Lấy token từ param
+				notification_id: notificationId, // ID của thông báo
+			});
+
+			// Kiểm tra phản hồi từ API
+			if (response.status === 200) {
+				console.log("Notification marked as read successfully");
+				// Gọi lại hàm fetchNotifications để cập nhật danh sách
+				await fetchNotifications();
+			} else {
+				console.error("Failed to mark notification as read:", response.data);
+			}
+		} catch (error) {
+			console.error("Error marking notification as read:", error);
+		}
 	};
 
 	const [modalViewNoti, setModalViewNoti] = useState(false);
 	const [selectedNoti, setSelectedNoti] = useState(null);
 
-	const openModalViewNoti = (index) => {
-		setSelectedNoti(testData[index]);
-		setModalViewNoti(true);
+	// const openModalViewNoti = (index) => {
+	// 	setSelectedNoti(notifications[index]);
+	// 	setModalViewNoti(true);
+	// };
+
+	// const closeModelViewNoti = () => {
+	// 	setModalViewNoti(false);
+	// };
+	// Cập nhật hàm openModalViewNoti để gọi markNotificationAsRead
+	const openModalViewNoti = async (index) => {
+		const selectedNotification = notifications[index]; // Lấy thông báo được chọn
+		setSelectedNoti(selectedNotification); // Lưu thông báo để hiển thị trong modal
+		setModalViewNoti(true); // Hiển thị modal
+
+		// Nếu thông báo chưa đọc, gọi API để đánh dấu đã đọc
+		if (selectedNotification.status === "unread") {
+			await markNotificationAsRead(selectedNotification.id);
+		}
 	};
 
+	// Hàm đóng modal
 	const closeModelViewNoti = () => {
 		setModalViewNoti(false);
 	};
@@ -98,7 +151,8 @@ const NotiSVien = () => {
 			</View>
 			<ScrollView className="bg-[#dee1e1]" showsVerticalScrollIndicator={false}>
 				<View className="my-6">
-					{testData.map((item, index) => {
+					{notifications.map((item, index) => {
+						//console.log("Rendering notifications:", notifications);
 						const lstyle = item.status === "read" ? styles.read : styles.unread;
 						return (
 							<View
