@@ -21,7 +21,9 @@ import Modal from "react-native-modal";
 import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
-
+import DateTimePicker from "react-native-ui-datepicker";
+import dayjs from "dayjs";
+import Feather from "@expo/vector-icons/Feather";
 const CreateClassScreenGVien = () => {
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
@@ -41,50 +43,6 @@ const CreateClassScreenGVien = () => {
 		{ label: "LT+BT", value: "LT+BT" },
 		{ label: "TH", value: "TH" },
 	];
-	const listTime = [
-		{ label: "Tuần 1", value: "Tuần 1" },
-		{ label: "Tuần 2", value: "Tuần 2" },
-		{ label: "Tuần 3", value: "Tuần 3" },
-		{ label: "Tuần 4", value: "Tuần 4" },
-		{ label: "Tuần 5", value: "Tuần 5" },
-		{ label: "Tuần 6", value: "Tuần 6" },
-		{ label: "Tuần 7", value: "Tuần 7" },
-		{ label: "Tuần 8", value: "Tuần 8" },
-		{ label: "Tuần 9", value: "Tuần 9" },
-		{ label: "Tuần 10", value: "Tuần 10" },
-		{ label: "Tuần 11", value: "Tuần 11" },
-		{ label: "Tuần 12", value: "Tuần 12" },
-		{ label: "Tuần 13", value: "Tuần 13" },
-		{ label: "Tuần 14", value: "Tuần 14" },
-		{ label: "Tuần 15", value: "Tuần 15" },
-		{ label: "Tuần 16", value: "Tuần 16" },
-		{ label: "Tuần 17", value: "Tuần 17" },
-		{ label: "Tuần 18", value: "Tuần 18" },
-		{ label: "Tuần 19", value: "Tuần 19" },
-		{ label: "Tuần 20", value: "Tuần 20" },
-		{ label: "Tuần 21", value: "Tuần 21" },
-		{ label: "Tuần 22", value: "Tuần 22" },
-		{ label: "Tuần 23", value: "Tuần 23" },
-		{ label: "Tuần 24", value: "Tuần 24" },
-		{ label: "Tuần 25", value: "Tuần 25" },
-		{ label: "Tuần 26", value: "Tuần 26" },
-		{ label: "Tuần 27", value: "Tuần 27" },
-		{ label: "Tuần 28", value: "Tuần 28" },
-		{ label: "Tuần 29", value: "Tuần 29" },
-		{ label: "Tuần 30", value: "Tuần 30" },
-		{ label: "Tuần 31", value: "Tuần 31" },
-		{ label: "Tuần 32", value: "Tuần 32" },
-		{ label: "Tuần 33", value: "Tuần 33" },
-		{ label: "Tuần 34", value: "Tuần 34" },
-		{ label: "Tuần 35", value: "Tuần 35" },
-		{ label: "Tuần 36", value: "Tuần 36" },
-		{ label: "Tuần 37", value: "Tuần 37" },
-		{ label: "Tuần 38", value: "Tuần 38" },
-		{ label: "Tuần 39", value: "Tuần 39" },
-		{ label: "Tuần 40", value: "Tuần 40" },
-	];
-	const [startTime, setStartTime] = useState(null);
-	const [endTime, setEndTime] = useState(null);
 	const [typeClass, setTypeClass] = useState(null);
 
 	const [listClass, setListClass] = useState([
@@ -168,6 +126,26 @@ const CreateClassScreenGVien = () => {
 		dispatch(goBackMavigation());
 	}
 
+	const [modalStartDate, setModalStartDate] = useState(false);
+	const [startDate, setStartDate] = useState(null);
+	const [modalEndDate, setModalEndDate] = useState(false);
+	const [endDate, setEndDate] = useState(null);
+
+	const chooseStartDate = () => {
+		setModalStartDate(true);
+	};
+	const closeModalStartDate = () => {
+		setModalStartDate(false);
+	};
+	const chooseEndDate = () => {
+		setModalEndDate(true);
+	};
+	const closeModalEndDate = () => {
+		setModalEndDate(false);
+	};
+	const formatDate = (date) => {
+		return dayjs(date).format("DD/MM/YYYY");
+	};
 	const renderItem = (item, value) => {
 		return (
 			<>
@@ -181,6 +159,7 @@ const CreateClassScreenGVien = () => {
 			</>
 		);
 	};
+
 	return (
 		<View>
 			<View className="bg-red-700 pt-10 pb-5 relative">
@@ -237,48 +216,32 @@ const CreateClassScreenGVien = () => {
 						renderItem={(item) => renderItem(item, typeClass)}
 					/>
 				</View>
-				<View className="flex flex-row justify-between">
+				<View className="flex flex-row justify-between my-2">
 					<View className="basis-[48%] ">
-						<Dropdown
-							style={styles.dropdown}
-							placeholderStyle={styles.placeholderStyle}
-							selectedTextStyle={styles.selectedTextStyle}
-							inputSearchStyle={styles.inputSearchStyle}
-							iconStyle={styles.iconStyle}
-							data={listTime}
-							search
-							maxHeight={300}
-							labelField="label"
-							valueField="value"
-							placeholder="Bắt đầu*"
-							searchPlaceholder="Tìm kiếm..."
-							value={startTime}
-							onChange={(item) => {
-								setStartTime(item.value);
-							}}
-							renderItem={(item) => renderItem(item, startTime)}
-						/>
+						<TouchableOpacity
+							className="py-2 px-2 bg-white border border-red-500 relative"
+							onPress={chooseStartDate}
+						>
+							<Text className="text-red-400 text-lg">
+								{startDate ? formatDate(startDate) : "Bắt đầu*"}
+							</Text>
+							<View className="absolute right-2 top-3">
+								<Feather name="chevron-down" size={22} color="#f87171" />
+							</View>
+						</TouchableOpacity>
 					</View>
 					<View className="basis-[48%] ">
-						<Dropdown
-							style={styles.dropdown}
-							placeholderStyle={styles.placeholderStyle}
-							selectedTextStyle={styles.selectedTextStyle}
-							inputSearchStyle={styles.inputSearchStyle}
-							iconStyle={styles.iconStyle}
-							data={listTime}
-							maxHeight={300}
-							search
-							labelField="label"
-							valueField="value"
-							placeholder="Kết thúc*"
-							searchPlaceholder="Tìm kiếm..."
-							value={endTime}
-							onChange={(item) => {
-								setEndTime(item.value);
-							}}
-							renderItem={(item) => renderItem(item, endTime)}
-						/>
+						<TouchableOpacity
+							className="py-2 px-2 bg-white border border-red-500 relative"
+							onPress={chooseEndDate}
+						>
+							<Text className="text-red-400 text-lg">
+								{endDate ? formatDate(endDate) : "Kết thúc*"}
+							</Text>
+							<View className="absolute right-2 top-3">
+								<Feather name="chevron-down" size={22} color="#f87171" />
+							</View>
+						</TouchableOpacity>
 					</View>
 				</View>
 				<TextInput
@@ -386,6 +349,64 @@ const CreateClassScreenGVien = () => {
 							})}
 						</ScrollView>
 					</ScrollView>
+				</View>
+			</Modal>
+			<Modal isVisible={modalStartDate} onBackdropPress={closeModalStartDate}>
+				<View className="px-6 bg-gray-200 rounded-lg pb-5">
+					<View className="mt-2">
+						<DateTimePicker
+							mode="single"
+							date={startDate}
+							initialView="day"
+							timePicker={false}
+							onChange={(params) => {
+								setStartDate(params.date);
+							}}
+						/>
+					</View>
+					{startDate && (
+						<View className="flex flex-row gap-x-1 items-center">
+							<Text>Thời gian bắt đầu:</Text>
+							<Text className="text-md font-semibold">{formatDate(startDate)}</Text>
+						</View>
+					)}
+					<View className="flex justify-end flex-row mt-4 mb-2">
+						<TouchableOpacity
+							className="bg-blue-500 py-2 w-[30%] rounded-lg"
+							onPress={closeModalStartDate}
+						>
+							<Text className="text-white font-mediu self-center">Xong</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+			</Modal>
+			<Modal isVisible={modalEndDate} onBackdropPress={closeModalEndDate}>
+				<View className="px-6 bg-gray-200 rounded-lg pb-5">
+					<View className="mt-2">
+						<DateTimePicker
+							mode="single"
+							date={endDate}
+							initialView="day"
+							timePicker={false}
+							onChange={(params) => {
+								setEndDate(params.date);
+							}}
+						/>
+					</View>
+					{endDate && (
+						<View className="flex flex-row gap-x-1 items-center">
+							<Text>Thời gian kết thúc:</Text>
+							<Text className="text-md font-semibold">{formatDate(endDate)}</Text>
+						</View>
+					)}
+					<View className="flex justify-end flex-row mt-4 mb-2">
+						<TouchableOpacity
+							className="bg-blue-500 py-2 w-[30%] rounded-lg"
+							onPress={closeModalEndDate}
+						>
+							<Text className="text-white font-mediu self-center">Xong</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
 			</Modal>
 		</View>
