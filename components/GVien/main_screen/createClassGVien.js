@@ -21,13 +21,14 @@ import Modal from "react-native-modal";
 import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
+import api from "../../api";
 
 const CreateClassScreenGVien = () => {
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
-	const params = useSelector((state) => state.navigation.params);
+	const param = useSelector((state) => state.navigation.params);
 
 	useEffect(() => {
 		if (currentScreen !== "CreateClassScreenGVien") {
@@ -38,54 +39,18 @@ const CreateClassScreenGVien = () => {
 	const listTypeClass = [
 		{ label: "LT", value: "LT" },
 		{ label: "BT", value: "BT" },
-		{ label: "LT+BT", value: "LT+BT" },
-		{ label: "TH", value: "TH" },
+		{ label: "LT_BT", value: "LT_BT" },
 	];
 	const listTime = [
-		{ label: "Tuần 1", value: "Tuần 1" },
-		{ label: "Tuần 2", value: "Tuần 2" },
-		{ label: "Tuần 3", value: "Tuần 3" },
-		{ label: "Tuần 4", value: "Tuần 4" },
-		{ label: "Tuần 5", value: "Tuần 5" },
-		{ label: "Tuần 6", value: "Tuần 6" },
-		{ label: "Tuần 7", value: "Tuần 7" },
-		{ label: "Tuần 8", value: "Tuần 8" },
-		{ label: "Tuần 9", value: "Tuần 9" },
-		{ label: "Tuần 10", value: "Tuần 10" },
-		{ label: "Tuần 11", value: "Tuần 11" },
-		{ label: "Tuần 12", value: "Tuần 12" },
-		{ label: "Tuần 13", value: "Tuần 13" },
-		{ label: "Tuần 14", value: "Tuần 14" },
-		{ label: "Tuần 15", value: "Tuần 15" },
-		{ label: "Tuần 16", value: "Tuần 16" },
-		{ label: "Tuần 17", value: "Tuần 17" },
-		{ label: "Tuần 18", value: "Tuần 18" },
-		{ label: "Tuần 19", value: "Tuần 19" },
-		{ label: "Tuần 20", value: "Tuần 20" },
-		{ label: "Tuần 21", value: "Tuần 21" },
-		{ label: "Tuần 22", value: "Tuần 22" },
-		{ label: "Tuần 23", value: "Tuần 23" },
-		{ label: "Tuần 24", value: "Tuần 24" },
-		{ label: "Tuần 25", value: "Tuần 25" },
-		{ label: "Tuần 26", value: "Tuần 26" },
-		{ label: "Tuần 27", value: "Tuần 27" },
-		{ label: "Tuần 28", value: "Tuần 28" },
-		{ label: "Tuần 29", value: "Tuần 29" },
-		{ label: "Tuần 30", value: "Tuần 30" },
-		{ label: "Tuần 31", value: "Tuần 31" },
-		{ label: "Tuần 32", value: "Tuần 32" },
-		{ label: "Tuần 33", value: "Tuần 33" },
-		{ label: "Tuần 34", value: "Tuần 34" },
-		{ label: "Tuần 35", value: "Tuần 35" },
-		{ label: "Tuần 36", value: "Tuần 36" },
-		{ label: "Tuần 37", value: "Tuần 37" },
-		{ label: "Tuần 38", value: "Tuần 38" },
-		{ label: "Tuần 39", value: "Tuần 39" },
-		{ label: "Tuần 40", value: "Tuần 40" },
+		{ label: "Start", value: "2024-03-30"},
+		{ label: "End", value: "2024-07-03" },
 	];
 	const [startTime, setStartTime] = useState(null);
 	const [endTime, setEndTime] = useState(null);
 	const [typeClass, setTypeClass] = useState(null);
+	const [classId, setClassId] = useState("");
+    const [className, setClassName] = useState("");
+	const [maxStudentAmount, setMaxStudentAmount] = useState("");
 
 	const [listClass, setListClass] = useState([
 		{
@@ -153,7 +118,41 @@ const CreateClassScreenGVien = () => {
 			],
 		},
 	]);
+	//Call API create_class
+	const handleCreateClass = async () => {
+		console.log("Tạo lớp học đã được nhấn");
+        if (!classId || !className || !typeClass || !startTime || !endTime || !maxStudentAmount) {
+			Alert.alert("Thông báo", "Vui lòng nhập đầy đủ thông tin lớp học.");
+			return;
+		}	
+		console.log("Token:", param.token);
+		console.log("Tên lớp học:", className);
+		console.log("Số lượng sinh viên tối đa:", maxStudentAmount);
+		console.log("Loại lớp học:", typeClass);
+		console.log("Thời gian bắt đầu:", startTime);
+		console.log("Thời gian kết thúc:", endTime);
+        try {
+            const response = await api.post("/it5023e/create_class", {
+				token: param.token,
+                class_id: classId,
+                class_name: className,
+                class_type: typeClass,
+                start_date: startTime,
+                end_date: endTime,
+                max_student_amount: parseInt(maxStudentAmount),
+            });
 
+            if (response.status === 200) {
+                Alert.alert("Thành công", "Lớp học đã được tạo thành công!");
+                dispatch(goBackMavigation());
+            } else {
+                Alert.alert("Thất bại", "Tạo lớp học không thành công. Vui lòng thử lại.");
+            }
+        } catch (error) {
+            Alert.alert("Lỗi", "Không thể kết nối với server. Vui lòng kiểm tra kết nối mạng.");
+            console.error(error);
+        }
+    };
 	const [isOpenModal, setIsOpenModal] = useState(false);
 
 	const openModalListClass = () => {
@@ -199,6 +198,8 @@ const CreateClassScreenGVien = () => {
 					placeholder="Mã lớp*"
 					placeholderTextColor={"#e86456"}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
+					value={classId} // Liên kết với state
+    				onChangeText={(text) => setClassId(text)} // Cập nhật state
 				/>
 				<TextInput
 					placeholder="Mã lớp kèm*"
@@ -209,6 +210,8 @@ const CreateClassScreenGVien = () => {
 					placeholder="Tên lớp*"
 					placeholderTextColor={"#e86456"}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
+					value={className}
+    				onChangeText={(text) => setClassName(text)}
 				/>
 				<TextInput
 					placeholder="Mã học phần*"
@@ -285,9 +288,11 @@ const CreateClassScreenGVien = () => {
 					placeholder="Số lượng sinh viên tối đa*"
 					placeholderTextColor={"#e86456"}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
+					onChangeText={(text) => setMaxStudentAmount(text)}
+    				keyboardType="numeric" // Chỉ nhập số
 				/>
 				<View className="mx-auto py-2 px-4 bg-red-700 rounded-lg mt-10">
-					<TouchableOpacity>
+					<TouchableOpacity onPress={handleCreateClass}>
 						<Text className="text-white italic text-xl font-bold">Tạo lớp học</Text>
 					</TouchableOpacity>
 				</View>
