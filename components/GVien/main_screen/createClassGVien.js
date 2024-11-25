@@ -22,6 +22,9 @@ import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
 import api from "../../api";
+import DateTimePicker from "react-native-ui-datepicker";
+import dayjs from "dayjs";
+import Feather from "@expo/vector-icons/Feather";
 
 const CreateClassScreenGVien = () => {
 	const dispatch = useDispatch();
@@ -167,6 +170,26 @@ const CreateClassScreenGVien = () => {
 		dispatch(goBackMavigation());
 	}
 
+	const [modalStartDate, setModalStartDate] = useState(false);
+	const [startDate, setStartDate] = useState(null);
+	const [modalEndDate, setModalEndDate] = useState(false);
+	const [endDate, setEndDate] = useState(null);
+
+	const chooseStartDate = () => {
+		setModalStartDate(true);
+	};
+	const closeModalStartDate = () => {
+		setModalStartDate(false);
+	};
+	const chooseEndDate = () => {
+		setModalEndDate(true);
+	};
+	const closeModalEndDate = () => {
+		setModalEndDate(false);
+	};
+	const formatDate = (date) => {
+		return dayjs(date).format("DD/MM/YYYY");
+	};
 	const renderItem = (item, value) => {
 		return (
 			<>
@@ -180,6 +203,7 @@ const CreateClassScreenGVien = () => {
 			</>
 		);
 	};
+
 	return (
 		<View>
 			<View className="bg-red-700 pt-10 pb-5 relative">
@@ -240,48 +264,32 @@ const CreateClassScreenGVien = () => {
 						renderItem={(item) => renderItem(item, typeClass)}
 					/>
 				</View>
-				<View className="flex flex-row justify-between">
+				<View className="flex flex-row justify-between my-2">
 					<View className="basis-[48%] ">
-						<Dropdown
-							style={styles.dropdown}
-							placeholderStyle={styles.placeholderStyle}
-							selectedTextStyle={styles.selectedTextStyle}
-							inputSearchStyle={styles.inputSearchStyle}
-							iconStyle={styles.iconStyle}
-							data={listTime}
-							search
-							maxHeight={300}
-							labelField="label"
-							valueField="value"
-							placeholder="Bắt đầu*"
-							searchPlaceholder="Tìm kiếm..."
-							value={startTime}
-							onChange={(item) => {
-								setStartTime(item.value);
-							}}
-							renderItem={(item) => renderItem(item, startTime)}
-						/>
+						<TouchableOpacity
+							className="py-2 px-2 bg-white border border-red-500 relative"
+							onPress={chooseStartDate}
+						>
+							<Text className="text-red-400 text-lg">
+								{startDate ? formatDate(startDate) : "Bắt đầu*"}
+							</Text>
+							<View className="absolute right-2 top-3">
+								<Feather name="chevron-down" size={22} color="#f87171" />
+							</View>
+						</TouchableOpacity>
 					</View>
 					<View className="basis-[48%] ">
-						<Dropdown
-							style={styles.dropdown}
-							placeholderStyle={styles.placeholderStyle}
-							selectedTextStyle={styles.selectedTextStyle}
-							inputSearchStyle={styles.inputSearchStyle}
-							iconStyle={styles.iconStyle}
-							data={listTime}
-							maxHeight={300}
-							search
-							labelField="label"
-							valueField="value"
-							placeholder="Kết thúc*"
-							searchPlaceholder="Tìm kiếm..."
-							value={endTime}
-							onChange={(item) => {
-								setEndTime(item.value);
-							}}
-							renderItem={(item) => renderItem(item, endTime)}
-						/>
+						<TouchableOpacity
+							className="py-2 px-2 bg-white border border-red-500 relative"
+							onPress={chooseEndDate}
+						>
+							<Text className="text-red-400 text-lg">
+								{endDate ? formatDate(endDate) : "Kết thúc*"}
+							</Text>
+							<View className="absolute right-2 top-3">
+								<Feather name="chevron-down" size={22} color="#f87171" />
+							</View>
+						</TouchableOpacity>
 					</View>
 				</View>
 				<TextInput
@@ -391,6 +399,64 @@ const CreateClassScreenGVien = () => {
 							})}
 						</ScrollView>
 					</ScrollView>
+				</View>
+			</Modal>
+			<Modal isVisible={modalStartDate} onBackdropPress={closeModalStartDate}>
+				<View className="px-6 bg-gray-200 rounded-lg pb-5">
+					<View className="mt-2">
+						<DateTimePicker
+							mode="single"
+							date={startDate}
+							initialView="day"
+							timePicker={false}
+							onChange={(params) => {
+								setStartDate(params.date);
+							}}
+						/>
+					</View>
+					{startDate && (
+						<View className="flex flex-row gap-x-1 items-center">
+							<Text>Thời gian bắt đầu:</Text>
+							<Text className="text-md font-semibold">{formatDate(startDate)}</Text>
+						</View>
+					)}
+					<View className="flex justify-end flex-row mt-4 mb-2">
+						<TouchableOpacity
+							className="bg-blue-500 py-2 w-[30%] rounded-lg"
+							onPress={closeModalStartDate}
+						>
+							<Text className="text-white font-mediu self-center">Xong</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+			</Modal>
+			<Modal isVisible={modalEndDate} onBackdropPress={closeModalEndDate}>
+				<View className="px-6 bg-gray-200 rounded-lg pb-5">
+					<View className="mt-2">
+						<DateTimePicker
+							mode="single"
+							date={endDate}
+							initialView="day"
+							timePicker={false}
+							onChange={(params) => {
+								setEndDate(params.date);
+							}}
+						/>
+					</View>
+					{endDate && (
+						<View className="flex flex-row gap-x-1 items-center">
+							<Text>Thời gian kết thúc:</Text>
+							<Text className="text-md font-semibold">{formatDate(endDate)}</Text>
+						</View>
+					)}
+					<View className="flex justify-end flex-row mt-4 mb-2">
+						<TouchableOpacity
+							className="bg-blue-500 py-2 w-[30%] rounded-lg"
+							onPress={closeModalEndDate}
+						>
+							<Text className="text-white font-mediu self-center">Xong</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
 			</Modal>
 		</View>
