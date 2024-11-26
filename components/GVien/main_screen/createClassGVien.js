@@ -48,7 +48,7 @@ const CreateClassScreenGVien = () => {
 
 	const [typeClass, setTypeClass] = useState(null);
 	const [classId, setClassId] = useState("");
-    	const [className, setClassName] = useState("");
+    const [className, setClassName] = useState("");
 	const [maxStudentAmount, setMaxStudentAmount] = useState("");
 	const modifyDate = (dateString) => {
 		return new Date(dateString).toISOString().split('T')[0];

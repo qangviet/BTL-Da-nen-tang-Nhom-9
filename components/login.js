@@ -50,6 +50,7 @@ const LoginScreen = () => {
 							name: userData.name,
 							email: userData.email,
 							avatar: userData.avatar,
+							id: userData.id,
 						},
 						token: userData.token,
 						role: userData.role === "STUDENT" ? 1 : 2, // Role: 1 -> student, 2 -> teacher

@@ -33,10 +33,11 @@ const EditClassScreenGVien = () => {
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const param = useSelector((state) => state.navigation.params);
-	console.log(param)
+	console.log(param);
+	
 
 	useEffect(() => {
-		if (currentScreen !== "MyClassesScreenGVien") {
+		if (currentScreen !== "EditClassScreenGVien") {
 			navigation.navigate(currentScreen);
 		}
 	}, [currentScreen]);
@@ -45,48 +46,17 @@ const EditClassScreenGVien = () => {
 		dispatch(goBackMavigation());
 	}
 
-	const listTypeClass = [
-		{ label: "LT", value: "LT" },
-		{ label: "BT", value: "BT" },
-		{ label: "LT_BT", value: "LT_BT" },
+	const listStatus = [
+		{ label: "COMPLETED", value: "COMPLETED" },
+		{ label: "UPCOMING", value: "UPCOMING" },
+		{ label: "ACTIVE", value: "ACTIVE" },
 	];
 
-	const currentClass = {
-		id_class: "103268",
-		id_class_attached: "103269",
-		id_subject: "PH1110",
-		name_subject: "Vật lý đại cương VI",
-		semester: "Kỳ hè-C",
-		type_class: "BT",
-		status: "Đăng ký chính thức",
-		credit: "80",
-		number_student: 0,
-		name_academic: "VVLKT",
-		start_week: "47",
-		end_week: "51",
-		times: [
-			{
-				day_in_week: 2,
-				time: "15:05-17:35",
-				classroom: "D9-102",
-			},
-			{
-				day_in_week: 6,
-				time: "15:05-17:35",
-				classroom: "D9-101",
-			},
-			{
-				day_in_week: 5,
-				time: "12:30-15:00",
-				classroom: "D9-101",
-			},
-		],
-	};
-
 	const [modalStartDate, setModalStartDate] = useState(false);
-	const [startDate, setStartDate] = useState(null);
+	//const [startDate, setStartDate] = useState(null);
 	const [modalEndDate, setModalEndDate] = useState(false);
-	const [endDate, setEndDate] = useState(null);
+	//const [endDate, setEndDate] = useState(null);
+
 
 	const chooseStartDate = () => {
 		setModalStartDate(true);
@@ -101,16 +71,27 @@ const EditClassScreenGVien = () => {
 		setModalEndDate(false);
 	};
 	const formatDate = (date) => {
-		return dayjs(date).format("DD/MM/YYYY");
+		if (date!=null)
+		{
+			return dayjs(date).format("DD/MM/YYYY");
+		}
+		else return date;
 	};
 
-	const [startTime, setStartTime] = useState(currentClass.start_week);
-	const [endTime, setEndTime] = useState(currentClass.end_week);
-	const [typeClass, setTypeClass] = useState(currentClass.type_class);
+	const modifyDate = (dateString) => {
+		return new Date(dateString).toISOString().split('T')[0];
+	  };
 
+	const [startDate, setStartDate] = useState(param.classData[3]);
+	const [endDate, setEndDate] = useState(param.classData[4]);
+	//const [typeClass, setTypeClass] = useState(param.classData[2]);
+	const [classID, setClassID] = useState(param.classData[0]);
+	const [className, setClassName] = useState(param.classData[1]);
+	const [typeStatus, setTypeStatus] = useState(param.classData[5]);
 	const [isOpenModal, setIsOpenModal] = useState(false);
 
 	const openModalListClass = () => {
+
 		setIsOpenModal(true);
 	};
 
@@ -168,22 +149,24 @@ const EditClassScreenGVien = () => {
 				<TextInput
 					placeholder="Mã lớp*"
 					placeholderTextColor={"#e86456"}
-					defaultValue={currentClass.id_class}
+					value={classID}
+    				onChangeText={(text) => setClassID(text)}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 				/>
-				<TextInput
+				{/* <TextInput
 					placeholder="Tên lớp*"
 					placeholderTextColor={"#e86456"}
 					defaultValue={currentClass.name_subject}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
-				/>
+				/> */}
 				<TextInput
-					placeholder="Mã học phần*"
+					placeholder="Tên lớp*"
 					placeholderTextColor={"#e86456"}
-					defaultValue={currentClass.id_subject}
+					value={className}
+    				onChangeText={(text) => setClassName(text)}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 				/>
-				<View>
+				{/* <View>
 					<Dropdown
 						style={styles.dropdown}
 						placeholderStyle={styles.placeholderStyle}
@@ -204,7 +187,7 @@ const EditClassScreenGVien = () => {
 						)}
 						renderItem={(item) => renderItem(item, typeClass)}
 					/>
-				</View>
+				</View> */}
 				
 				<View className="flex flex-row justify-between my-2">
 					<View className="basis-[48%] ">
@@ -213,7 +196,7 @@ const EditClassScreenGVien = () => {
 							onPress={chooseStartDate}
 						>
 							<Text className="text-red-400 text-lg">
-								{startDate ? formatDate(startDate) : "Bắt đầu*"}
+								{startDate ? modifyDate(startDate) : "Bắt đầu*"}
 							</Text>
 							<View className="absolute right-2 top-3">
 								<Feather name="chevron-down" size={22} color="#f87171" />
@@ -226,7 +209,7 @@ const EditClassScreenGVien = () => {
 							onPress={chooseEndDate}
 						>
 							<Text className="text-red-400 text-lg">
-								{endDate ? formatDate(endDate) : "Kết thúc*"}
+								{endDate ? modifyDate(endDate) : "Kết thúc*"}
 							</Text>
 							<View className="absolute right-2 top-3">
 								<Feather name="chevron-down" size={22} color="#f87171" />
@@ -235,12 +218,29 @@ const EditClassScreenGVien = () => {
 					</View>
 				</View>
 
-				<TextInput
-					placeholder="Số lượng sinh viên tối đa*"
-					placeholderTextColor={"#e86456"}
-					defaultValue={currentClass.credit}
-					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
-				/>
+				<View>
+					<Dropdown
+						style={styles.dropdown}
+						placeholderStyle={styles.placeholderStyle}
+						selectedTextStyle={styles.selectedTextStyle}
+						inputSearchStyle={styles.inputSearchStyle}
+						iconStyle={styles.iconStyle}
+						data={listStatus}
+						maxHeight={300}
+						labelField="label"
+						valueField="value"
+						placeholder="Status*"
+						value={typeStatus}
+						onChange={(item) => {
+							setTypeStatus(item.value);
+						}}
+						renderLeftIcon={() => (
+							<AntDesign style={styles.icon} color="black" name="Safety" size={20} />
+						)}
+						renderItem={(item) => renderItem(item, typeClass)}
+					/>
+				</View>
+
 				<View className="flex flex-row">
 					<View className="mx-auto py-2 px-4 bg-red-700 rounded-lg mt-10">
 						<TouchableOpacity onPress={openModalConfirmDelete}>
@@ -324,14 +324,14 @@ const EditClassScreenGVien = () => {
 							initialView="day"
 							timePicker={false}
 							onChange={(params) => {
-								setStartDate(params.date);
+								setStartDate(formatDate(params.date));
 							}}
 						/>
 					</View>
 					{startDate && (
 						<View className="flex flex-row gap-x-1 items-center">
 							<Text>Thời gian bắt đầu:</Text>
-							<Text className="text-md font-semibold">{formatDate(startDate)}</Text>
+							<Text className="text-md font-semibold">{startDate}</Text>
 						</View>
 					)}
 					<View className="flex justify-end flex-row mt-4 mb-2">
@@ -353,14 +353,14 @@ const EditClassScreenGVien = () => {
 							initialView="day"
 							timePicker={false}
 							onChange={(params) => {
-								setEndDate(params.date);
+								setEndDate(formatDate(params.date));
 							}}
 						/>
 					</View>
 					{endDate && (
 						<View className="flex flex-row gap-x-1 items-center">
 							<Text>Thời gian kết thúc:</Text>
-							<Text className="text-md font-semibold">{formatDate(endDate)}</Text>
+							<Text className="text-md font-semibold">{endDate}</Text>
 						</View>
 					)}
 					<View className="flex justify-end flex-row mt-4 mb-2">
