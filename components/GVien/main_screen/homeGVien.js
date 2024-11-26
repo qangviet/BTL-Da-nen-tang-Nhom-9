@@ -6,11 +6,12 @@ import { useNavigation as useReactNavigation } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LogoHust, LogoBK } from "../../logo";
 import { useToast } from "react-native-toast-notifications";
-const HomeSVien = () => {
+const HomeGVien = () => {
 	const toast = useToast();
-	const param = useSelector((state) => state.navigation.params)
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
+	const param = useSelector((state) => state.navigation.params)
+	//console.log(param)
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	useEffect(() => {
@@ -55,7 +56,6 @@ const HomeSVien = () => {
 			duration: 1000,
 		});
 	};
-
 	return (
 		<>
 			<View className="bg-[#dfe1e2]">
@@ -222,4 +222,4 @@ const HomeSVien = () => {
 	);
 };
 
-export default HomeSVien;
+export default HomeGVien;

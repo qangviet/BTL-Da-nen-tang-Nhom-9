@@ -32,6 +32,7 @@ const CreateClassScreenGVien = () => {
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const param = useSelector((state) => state.navigation.params);
+	//console.log(param)
 
 	useEffect(() => {
 		if (currentScreen !== "CreateClassScreenGVien") {
@@ -44,16 +45,14 @@ const CreateClassScreenGVien = () => {
 		{ label: "BT", value: "BT" },
 		{ label: "LT_BT", value: "LT_BT" },
 	];
-	const listTime = [
-		{ label: "Start", value: "2024-03-30"},
-		{ label: "End", value: "2024-07-03" },
-	];
-	const [startTime, setStartTime] = useState(null);
-	const [endTime, setEndTime] = useState(null);
+
 	const [typeClass, setTypeClass] = useState(null);
 	const [classId, setClassId] = useState("");
     const [className, setClassName] = useState("");
 	const [maxStudentAmount, setMaxStudentAmount] = useState("");
+	const modifyDate = (dateString) => {
+		return new Date(dateString).toISOString().split('T')[0];
+	  };
 
 	const [listClass, setListClass] = useState([
 		{
@@ -121,41 +120,6 @@ const CreateClassScreenGVien = () => {
 			],
 		},
 	]);
-	//Call API create_class
-	const handleCreateClass = async () => {
-		console.log("Tạo lớp học đã được nhấn");
-        if (!classId || !className || !typeClass || !startTime || !endTime || !maxStudentAmount) {
-			Alert.alert("Thông báo", "Vui lòng nhập đầy đủ thông tin lớp học.");
-			return;
-		}	
-		console.log("Token:", param.token);
-		console.log("Tên lớp học:", className);
-		console.log("Số lượng sinh viên tối đa:", maxStudentAmount);
-		console.log("Loại lớp học:", typeClass);
-		console.log("Thời gian bắt đầu:", startTime);
-		console.log("Thời gian kết thúc:", endTime);
-        try {
-            const response = await api.post("/it5023e/create_class", {
-				token: param.token,
-                class_id: classId,
-                class_name: className,
-                class_type: typeClass,
-                start_date: startTime,
-                end_date: endTime,
-                max_student_amount: parseInt(maxStudentAmount),
-            });
-
-            if (response.status === 200) {
-                Alert.alert("Thành công", "Lớp học đã được tạo thành công!");
-                dispatch(goBackMavigation());
-            } else {
-                Alert.alert("Thất bại", "Tạo lớp học không thành công. Vui lòng thử lại.");
-            }
-        } catch (error) {
-            Alert.alert("Lỗi", "Không thể kết nối với server. Vui lòng kiểm tra kết nối mạng.");
-            console.error(error);
-        }
-    };
 	const [isOpenModal, setIsOpenModal] = useState(false);
 
 	const openModalListClass = () => {
@@ -190,6 +154,42 @@ const CreateClassScreenGVien = () => {
 	const formatDate = (date) => {
 		return dayjs(date).format("DD/MM/YYYY");
 	};
+	//Call API create_class
+	const handleCreateClass = async () => {
+		console.log("Tạo lớp học đã được nhấn");
+        // if (!classId || !className || !typeClass || !startDate || !endDate || !maxStudentAmount ) {
+		// 	Alert.alert("Thông báo", "Vui lòng nhập đầy đủ thông tin lớp học.");
+		// 	return;
+		// }	
+		console.log("Token:", param.token);
+		console.log("Tên lớp học:", className);
+		console.log("Số lượng sinh viên tối đa:", maxStudentAmount);
+		console.log("Loại lớp học:", typeClass);
+		console.log("Thời gian bắt đầu:", modifyDate(startDate));
+		console.log("Thời gian kết thúc:", modifyDate(endDate));
+		console.log("So luong svien max:", parseInt(maxStudentAmount))
+        try {
+            const response = await api.post("/it5023e/create_class", {
+				token: param.token,
+                class_id: classId,
+                class_name: className,
+                class_type: typeClass,
+                start_date: modifyDate(startDate),
+                end_date: modifyDate(endDate),
+                max_student_amount: parseInt(maxStudentAmount),
+            });
+
+            if (response.status === 200) {
+                Alert.alert("Thành công", "Lớp học đã được tạo thành công!");
+                dispatch(goBackMavigation());
+            } else {
+                Alert.alert("Thất bại", "Tạo lớp học không thành công. Vui lòng thử lại.");
+            }
+        } catch (error) {
+            Alert.alert("Lỗi", "Không thể kết nối với server. Vui lòng kiểm tra kết nối mạng.");
+            console.error(error);
+        }
+    };
 	const renderItem = (item, value) => {
 		return (
 			<>

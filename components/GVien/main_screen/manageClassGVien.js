@@ -25,7 +25,7 @@ const ManageClassesScreenGVien = () => {
 	const navigation = useReactNavigation();
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
-	const params = useSelector((state) => state.navigation.params);
+	const param = useSelector((state) => state.navigation.params);
 
 	useEffect(() => {
 		if (currentScreen !== "MyClassesScreenGVien") {
@@ -135,7 +135,7 @@ const ManageClassesScreenGVien = () => {
 		dispatch(
 			navigate({
 				screen: "CreateClassScreenGVien",
-				params: {},
+				params: param,
 			})
 		);
 	}
@@ -144,7 +144,7 @@ const ManageClassesScreenGVien = () => {
 		dispatch(
 			navigate({
 				screen: "EditClassScreenGVien",
-				params: {},
+				params: param,
 			})
 		);
 	}
