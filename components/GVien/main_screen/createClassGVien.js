@@ -88,7 +88,7 @@ const CreateClassScreenGVien = () => {
 			],
 		},
 		{
-			id_class: "103268",
+			id_class: "103269",
 			id_class_attached: "103269",
 			id_subject: "PH1110",
 			name_subject: "Vật lý đại cương I",
@@ -156,40 +156,44 @@ const CreateClassScreenGVien = () => {
 	};
 	//Call API create_class
 	const handleCreateClass = async () => {
+		console.log()
+		console.log()
 		console.log("Tạo lớp học đã được nhấn");
         // if (!classId || !className || !typeClass || !startDate || !endDate || !maxStudentAmount ) {
 		// 	Alert.alert("Thông báo", "Vui lòng nhập đầy đủ thông tin lớp học.");
 		// 	return;
 		// }	
 		console.log("Token:", param.token);
+		console.log("Id lop: ", classId);
 		console.log("Tên lớp học:", className);
 		console.log("Số lượng sinh viên tối đa:", maxStudentAmount);
 		console.log("Loại lớp học:", typeClass);
 		console.log("Thời gian bắt đầu:", modifyDate(startDate));
 		console.log("Thời gian kết thúc:", modifyDate(endDate));
 		console.log("So luong svien max:", parseInt(maxStudentAmount))
-        try {
-            const response = await api.post("/it5023e/create_class", {
+		try {
+			const response = await api.post("/it5023e/create_class", {
 				token: param.token,
-                class_id: classId,
-                class_name: className,
-                class_type: typeClass,
-                start_date: modifyDate(startDate),
-                end_date: modifyDate(endDate),
-                max_student_amount: parseInt(maxStudentAmount),
-            });
+				class_id: classId,
+				class_name: className,
+				class_type: typeClass,
+				start_date: modifyDate(startDate),
+				end_date: modifyDate(endDate),
+				max_student_amount: parseInt(maxStudentAmount),
+			});
 
-            if (response.status === 200) {
-                Alert.alert("Thành công", "Lớp học đã được tạo thành công!");
-                dispatch(goBackMavigation());
-            } else {
-                Alert.alert("Thất bại", "Tạo lớp học không thành công. Vui lòng thử lại.");
-            }
-        } catch (error) {
-            Alert.alert("Lỗi", "Không thể kết nối với server. Vui lòng kiểm tra kết nối mạng.");
-            console.error(error);
-        }
-    };
+
+			if (response.status === 200) {
+			Alert.alert("Thành công", "Lớp học đã được tạo thành công!");
+			dispatch(goBackMavigation());
+			} else {
+			Alert.alert("Thất bại", "Tạo lớp học không thành công. Vui lòng thử lại.");
+			}
+		} catch (error) {
+			Alert.alert("Lỗi", "Không thể kết nối với server. Vui lòng kiểm tra kết nối mạng.");
+			console.error(error);
+		}
+	};
 	const renderItem = (item, value) => {
 		return (
 			<>
