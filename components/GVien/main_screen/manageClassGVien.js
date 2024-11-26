@@ -19,6 +19,7 @@ import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
+import api from "../../api";
 
 const ManageClassesScreenGVien = () => {
 	const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const ManageClassesScreenGVien = () => {
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const param = useSelector((state) => state.navigation.params);
+	//console.log(param)
 
 	useEffect(() => {
 		if (currentScreen !== "MyClassesScreenGVien") {
@@ -34,31 +36,63 @@ const ManageClassesScreenGVien = () => {
 	}, [currentScreen]);
 
 	const [tableHead] = useState([
-		"Mã học phần",
 		"Mã lớp học",
-		"Mã lớp kèm",
-		"Tên lớp học",
-		"Số TC",
+		"Tên lớp học ",
+		"Loại",
+		"Ngày bắt đầu",
+		"Ngày kết thúc",
+		"Trạng thái",
 		"Chọn",
 	]);
-	const [widthArr] = useState([70, 80, 80, 130, 70, 70]);
+	const [widthArr] = useState([70, 130, 80, 130, 130, 70, 70]);
 	const sumTC = 16;
-	const [tableData, setTableData] = useState([
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", true],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", true],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", true],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", true],
-	]);
+	// const [tableData, setTableData] = useState([
+	// 	["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2024-01-01", "2024-03-03", "Active",true],
+	// 	["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2024-01-01", "2024-03-03", "Active",false],
+	// ]);
+	const [tableData, setTableData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (currentScreen !== "MyClassesScreenGVien") {
+            navigation.navigate(currentScreen);
+        }
+    }, [currentScreen]);
+
+    useEffect(() => {
+        // Hàm gọi API để lấy danh sách lớp
+        const fetchClassList = async () => {
+            setIsLoading(true);
+            try {
+                const response = await api.post("/it5023e/get_class_list", {
+                    token: param.token,
+                    role: param.role == 2 ? "LECTURER" : "STUDENT",
+                    account_id: "24",
+                    pageable_request: null,
+                });
+                const pageContent = response.data.data.page_content;
+                // Map dữ liệu để phù hợp với cấu trúc tableData
+                const formattedData = pageContent.map((item) => [
+                    item.class_id,
+                    item.class_name,
+                    item.class_type,
+                    item.start_date,
+                    item.end_date,
+                    item.status,
+                    false, // Cột checkbox mặc định là false
+                ]);
+                setTableData(formattedData);
+            } catch (error) {
+                console.error("Error fetching class list:", error);
+				console.error("Error Data:", error.response.data); 
+				console.error("Error Status:", error.response.status);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchClassList();
+    }, []);
 
 	const [listClass, setListClass] = useState([
 		{
@@ -252,7 +286,7 @@ const ManageClassesScreenGVien = () => {
                  bg-red-700 rounded-lg px-5 py-1"
 				>
 					<TouchableOpacity onPress={() => goCreateClass()}>
-						<Text className="text-white italic font-bold text-lg">Tạo lớp học</Text>
+						<Text className="text-white italic font-bold text-lg">Tạo lớp học mới</Text>
 					</TouchableOpacity>
 				</View>
 				<View
