@@ -6,7 +6,7 @@ import { useNavigation as useReactNavigation } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LogoHust, LogoBK } from "../../logo";
 import { useToast } from "react-native-toast-notifications";
-const HomeSVien = () => {
+const HomeGVien = () => {
 	const toast = useToast();
 
 	const dispatch = useDispatch();
@@ -18,6 +18,9 @@ const HomeSVien = () => {
 			navigation.navigate(currentScreen);
 		}
 	}, [currentScreen]);
+	const state = useSelector((state) => state.navigation);
+	console.log("Current screen: ", state.currentScreen);
+	console.log("Params: ", state.params);
 
 	const goToMyClasses = () => {
 		dispatch(
@@ -218,4 +221,4 @@ const HomeSVien = () => {
 	);
 };
 
-export default HomeSVien;
+export default HomeGVien;
