@@ -130,6 +130,78 @@ const EditClassScreenGVien = () => {
 		setConfirmDelete(false);
 	};
 
+
+	const saveClassInfo = async () => {
+		console.log("Saving class info:");
+		setConfirmSave(false);
+		if (!classID || !className || !typeStatus || !startDate || !endDate ) {
+			alert("Vui lòng nhập đầy đủ thông tin lớp học!");
+			return;
+		}
+		try {
+			const response = await api.post("/it5023e/edit_class", {
+					token: param.token,
+			    class_id: classID,
+			    class_name: className,
+			    status: typeStatus,
+			    start_date: modifyDate(startDate),
+			    end_date: modifyDate(endDate),
+				});
+				
+	
+			if (response.status === 200) {
+			    alert("Lớp học đã được lưu thành công!");
+					console.log(response.data);
+					goBack();
+			} else {
+			    alert("Chỉnh sửa lớp học không thành công. Vui lòng thử lại.");
+			}
+		  } catch (error) {
+				// console.error(error.response.data.meta.code);
+				if (error.response.data.meta.code === "1004") {
+					console.error("Error Data:", error.response.data); 
+					console.error("Error Status:", error.response.status);
+					alert("Lớp đã tồn tại");
+				} else {
+					alert("Thông tin lớp không hợp lệ");
+					console.error("Error:", error.message);
+				}
+			}
+		};
+		
+	const deleteClass = async () => {
+		console.log("Deleting class");
+		setConfirmDelete(false);
+		try {
+			const response = await api.post("/it5023e/delete_class", {
+					token: param.token,
+			    role: param.role == 1 ? "STUDENT" : "LECTURER",
+				account_id = param.userInfo.id,
+				class_id: classID
+				});
+				
+	
+			if (response.status === 200) {
+			    alert("Lớp học đã được xóa thành công!");
+					console.log(response.data);
+					goBack();
+			} else {
+			    alert("Xóa lớp học không thành công. Vui lòng thử lại.");
+			}
+		  } catch (error) {
+				// console.error(error.response.data.meta.code);
+				if (error.response.data.meta.code === "9994") {
+					console.error("Error Data:", error.response.data); 
+					console.error("Error Status:", error.response.status);
+					alert("Lớp không tồn tại");
+				} else {
+					alert("Thông tin lớp không hợp lệ");
+					console.error("Error:", error.message);
+				}
+			}
+		};
+	}
+
 	// console.log(currentClass.end_week);
 
 	return (
@@ -253,63 +325,55 @@ const EditClassScreenGVien = () => {
 						</TouchableOpacity>
 					</View>
 				</View>
-				<View className="mx-auto mt-8 ">
-					<TouchableOpacity onPress={() => openModalListClass()}>
-						<Text className="text-lg text-red-600 underline font-semibold italic">
-							Thông tin danh sách các lớp mở
-						</Text>
-					</TouchableOpacity>
-				</View>
 			</View>
 			<Modal isVisible={confirmSave} onBackdropPress={() => closeModalConfirmSave()}>
-				<View className="bg-gray-300 rounded-xl self-center">
+				<View className="bg-white rounded-xl self-center">
 					<View>
 						<View className="self-end px-3 py-3">
 							<TouchableOpacity onPress={closeModalConfirmSave}>
 								<AntDesign name="close" size={24} color="gray" />
 							</TouchableOpacity>
 						</View>
-						<View className="border-t border-gray-400"></View>
+					
 					</View>
 					<Text className="text-xl font-semibold self-center px-5 py-2 my-3">
 						Xác nhận lưu thông tin lớp học?
 					</Text>
 					<View className="flex flex-row justify-end px-5 py-3">
 						<View className="bg-blue-400 px-4 py-2 rounded-lg mx-2">
-							<TouchableOpacity>
-								<Text className="text-base">Hủy</Text>
+							<TouchableOpacity onPress={() => setConfirmSave(false)}>
+								<Text className="text-base text-white">Hủy</Text>
 							</TouchableOpacity>
 						</View>
-						<View className="bg-red-400 px-4 py-2 mx-2 rounded-lg">
-							<TouchableOpacity>
-								<Text className="text-base">Lưu</Text>
+						<View className="bg-red-600 px-4 py-2 mx-2 rounded-lg">
+							<TouchableOpacity onPress={() => saveClassInfo()}>
+								<Text className="text-base text-white">Lưu</Text>
 							</TouchableOpacity>
 						</View>
 					</View>
 				</View>
 			</Modal>
 			<Modal isVisible={confirmDelete} onBackdropPress={() => closeModalConfirmDelete()}>
-				<View className="bg-gray-300 rounded-xl self-center">
+				<View className="bg-white rounded-xl self-center">
 					<View>
 						<View className="self-end px-3 py-3">
 							<TouchableOpacity onPress={closeModalConfirmDelete}>
 								<AntDesign name="close" size={24} color="gray" />
 							</TouchableOpacity>
 						</View>
-						<View className="border-t border-gray-400"></View>
 					</View>
 					<Text className="text-xl font-semibold self-center px-5 py-2 my-3">
 						Xác nhận xóa lớp học?
 					</Text>
 					<View className="flex flex-row justify-end px-5 py-3">
 						<View className="bg-blue-400 px-4 py-2 rounded-lg mx-2">
-							<TouchableOpacity>
-								<Text className="text-base">Hủy</Text>
+							<TouchableOpacity onPress={() => setConfirmDelete(false)}>
+								<Text className="text-base text-white">Hủy</Text>
 							</TouchableOpacity>
 						</View>
-						<View className="bg-red-400 px-4 py-2 mx-2 rounded-lg">
-							<TouchableOpacity>
-								<Text className="text-base">Xóa</Text>
+						<View className="bg-red-600 px-4 py-2 mx-2 rounded-lg">
+							<TouchableOpacity onPress={() => deleteClass()}>
+								<Text className="text-base text-white">Xóa</Text>
 							</TouchableOpacity>
 						</View>
 					</View>
