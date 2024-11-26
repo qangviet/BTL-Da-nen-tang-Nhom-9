@@ -18,7 +18,9 @@ import { LogoHust } from "./../../logo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 import Modal from "react-native-modal";
-
+import DateTimePicker from "react-native-ui-datepicker";
+import dayjs from "dayjs";
+import Feather from "@expo/vector-icons/Feather";
 import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
@@ -44,131 +46,8 @@ const EditClassScreenGVien = () => {
 	const listTypeClass = [
 		{ label: "LT", value: "LT" },
 		{ label: "BT", value: "BT" },
-		{ label: "LT+BT", value: "LT+BT" },
-		{ label: "TH", value: "TH" },
+		{ label: "LT_BT", value: "LT_BT" },
 	];
-	const listTime = [
-		{ label: "1", value: "1" },
-		{ label: "2", value: "2" },
-		{ label: "3", value: "3" },
-		{ label: "4", value: "4" },
-		{ label: "5", value: "5" },
-		{ label: "6", value: "6" },
-		{ label: "7", value: "7" },
-		{ label: "8", value: "8" },
-		{ label: "9", value: "9" },
-		{ label: "10", value: "10" },
-		{ label: "11", value: "11" },
-		{ label: "12", value: "12" },
-		{ label: "13", value: "13" },
-		{ label: "14", value: "14" },
-		{ label: "15", value: "15" },
-		{ label: "16", value: "16" },
-		{ label: "17", value: "17" },
-		{ label: "18", value: "18" },
-		{ label: "19", value: "19" },
-		{ label: "20", value: "20" },
-		{ label: "21", value: "21" },
-		{ label: "22", value: "22" },
-		{ label: "23", value: "23" },
-		{ label: "24", value: "24" },
-		{ label: "25", value: "25" },
-		{ label: "26", value: "26" },
-		{ label: "27", value: "27" },
-		{ label: "28", value: "28" },
-		{ label: "29", value: "29" },
-		{ label: "30", value: "30" },
-		{ label: "31", value: "31" },
-		{ label: "32", value: "32" },
-		{ label: "33", value: "33" },
-		{ label: "34", value: "34" },
-		{ label: "35", value: "35" },
-		{ label: "36", value: "36" },
-		{ label: "37", value: "37" },
-		{ label: "38", value: "38" },
-		{ label: "39", value: "39" },
-		{ label: "40", value: "40" },
-		{ label: "41", value: "41" },
-		{ label: "42", value: "42" },
-		{ label: "43", value: "43" },
-		{ label: "44", value: "44" },
-		{ label: "45", value: "45" },
-		{ label: "46", value: "46" },
-		{ label: "47", value: "47" },
-		{ label: "48", value: "48" },
-		{ label: "49", value: "49" },
-		{ label: "50", value: "50" },
-		{ label: "51", value: "51" },
-		{ label: "52", value: "52" },
-		{ label: "53", value: "53" },
-	];
-
-	const [listClass, setListClass] = useState([
-		{
-			id_class: "103268",
-			id_class_attached: "103269",
-			id_subject: "PH1110",
-			name_subject: "Vật lý đại cương I",
-			semester: "Kỳ hè-C",
-			type_class: "BT",
-			status: "Đăng ký chính thức",
-			credit: 80,
-			number_student: 0,
-			name_academic: "VVLKT",
-			times: [
-				{
-					day_in_week: 2,
-					time: "15:05-17:35",
-					week_time: "47-51",
-					classroom: "D9-102",
-				},
-				{
-					day_in_week: 6,
-					time: "15:05-17:35",
-					week_time: "47-51",
-					classroom: "D9-101",
-				},
-				{
-					day_in_week: 5,
-					time: "12:30-15:00",
-					week_time: "47-51",
-					classroom: "D9-101",
-				},
-			],
-		},
-		{
-			id_class: "103268",
-			id_class_attached: "103269",
-			id_subject: "PH1110",
-			name_subject: "Vật lý đại cương I",
-			semester: "Kỳ hè-C",
-			type_class: "BT",
-			status: "Đăng ký chính thức",
-			credit: 80,
-			number_student: 0,
-			name_academic: "VVLKT",
-			times: [
-				{
-					day_in_week: 2,
-					time: "15:05-17:35",
-					week_time: "47-51",
-					classroom: "D9-102",
-				},
-				{
-					day_in_week: 6,
-					time: "15:05-17:35",
-					week_time: "47-51",
-					classroom: "D9-101",
-				},
-				{
-					day_in_week: 5,
-					time: "12:30-15:00",
-					week_time: "47-51",
-					classroom: "D9-101",
-				},
-			],
-		},
-	]);
 
 	const currentClass = {
 		id_class: "103268",
@@ -200,6 +79,27 @@ const EditClassScreenGVien = () => {
 				classroom: "D9-101",
 			},
 		],
+	};
+
+	const [modalStartDate, setModalStartDate] = useState(false);
+	const [startDate, setStartDate] = useState(null);
+	const [modalEndDate, setModalEndDate] = useState(false);
+	const [endDate, setEndDate] = useState(null);
+
+	const chooseStartDate = () => {
+		setModalStartDate(true);
+	};
+	const closeModalStartDate = () => {
+		setModalStartDate(false);
+	};
+	const chooseEndDate = () => {
+		setModalEndDate(true);
+	};
+	const closeModalEndDate = () => {
+		setModalEndDate(false);
+	};
+	const formatDate = (date) => {
+		return dayjs(date).format("DD/MM/YYYY");
 	};
 
 	const [startTime, setStartTime] = useState(currentClass.start_week);
@@ -270,12 +170,6 @@ const EditClassScreenGVien = () => {
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 				/>
 				<TextInput
-					placeholder="Mã lớp kèm*"
-					placeholderTextColor={"#e86456"}
-					defaultValue={currentClass.id_class_attached}
-					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
-				/>
-				<TextInput
 					placeholder="Tên lớp*"
 					placeholderTextColor={"#e86456"}
 					defaultValue={currentClass.name_subject}
@@ -309,50 +203,36 @@ const EditClassScreenGVien = () => {
 						renderItem={(item) => renderItem(item, typeClass)}
 					/>
 				</View>
-				<View className="flex flex-row justify-between">
+				
+				<View className="flex flex-row justify-between my-2">
 					<View className="basis-[48%] ">
-						<Dropdown
-							style={styles.dropdown}
-							placeholderStyle={styles.placeholderStyle}
-							selectedTextStyle={styles.selectedTextStyle}
-							inputSearchStyle={styles.inputSearchStyle}
-							iconStyle={styles.iconStyle}
-							data={listTime}
-							search
-							maxHeight={300}
-							labelField="label"
-							valueField="value"
-							placeholder="Bắt đầu*"
-							searchPlaceholder="Tìm kiếm..."
-							value={startTime}
-							onChange={(item) => {
-								setStartTime(item.value);
-							}}
-							renderItem={(item) => renderItem(item, startTime)}
-						/>
+						<TouchableOpacity
+							className="py-2 px-2 bg-white border border-red-500 relative"
+							onPress={chooseStartDate}
+						>
+							<Text className="text-red-400 text-lg">
+								{startDate ? formatDate(startDate) : "Bắt đầu*"}
+							</Text>
+							<View className="absolute right-2 top-3">
+								<Feather name="chevron-down" size={22} color="#f87171" />
+							</View>
+						</TouchableOpacity>
 					</View>
 					<View className="basis-[48%] ">
-						<Dropdown
-							style={styles.dropdown}
-							placeholderStyle={styles.placeholderStyle}
-							selectedTextStyle={styles.selectedTextStyle}
-							inputSearchStyle={styles.inputSearchStyle}
-							iconStyle={styles.iconStyle}
-							data={listTime}
-							maxHeight={300}
-							search
-							labelField="label"
-							valueField="value"
-							placeholder="Kết thúc*"
-							searchPlaceholder="Tìm kiếm..."
-							value={endTime}
-							onChange={(item) => {
-								setEndTime(item.value);
-							}}
-							renderItem={(item) => renderItem(item, endTime)}
-						/>
+						<TouchableOpacity
+							className="py-2 px-2 bg-white border border-red-500 relative"
+							onPress={chooseEndDate}
+						>
+							<Text className="text-red-400 text-lg">
+								{endDate ? formatDate(endDate) : "Kết thúc*"}
+							</Text>
+							<View className="absolute right-2 top-3">
+								<Feather name="chevron-down" size={22} color="#f87171" />
+							</View>
+						</TouchableOpacity>
 					</View>
 				</View>
+
 				<TextInput
 					placeholder="Số lượng sinh viên tối đa*"
 					placeholderTextColor={"#e86456"}
@@ -433,93 +313,62 @@ const EditClassScreenGVien = () => {
 					</View>
 				</View>
 			</Modal>
-			<Modal isVisible={isOpenModal} onBackdropPress={(e) => closeModalListClass(e)}>
-				<View className="h-[70%] bg-gray-200 ">
-					<ScrollView horizontal={true}>
-						<ScrollView>
-							{listClass.map((item) => {
-								const header_row = [];
-								header_row.push(item.id_class);
-								header_row.push(item.id_subject);
-								header_row.push(item.name_subject);
-								header_row.push(item.semester);
-								header_row.push(item.type_class);
-								header_row.push(item.status);
-								header_row.push(item.credit);
-								header_row.push(item.number_student);
-								header_row.push(item.name_academic);
-
-								let header_row_time = [
-									"Thứ",
-									"Thời gian",
-									"Tuần học",
-									"Phòng học",
-									"Mã lớp",
-								];
-
-								return (
-									<View className="mb-5 pt-2">
-										<Table
-											borderStyle={{ borderWidth: 1, borderColor: "#a8a8a8" }}
-										>
-											<Row
-												data={header_row}
-												widthArr={[60, 60, 150, 100, 40, 90, 40, 40, 60]}
-												// style={styles.header}
-												className="bg-[#bfbebe]"
-												textStyle={{
-													textAlign: "center",
-													fontWeight: "600",
-													color: "black",
-												}}
-											/>
-										</Table>
-										<Text className="mt-4 mx-3">
-											Tên lớp:{" "}
-											<Text className="font-semibold">
-												{item.name_subject}
-											</Text>
-										</Text>
-										<Text className="mt-1 mx-3">
-											Mã lớp kèm: {item.id_class_attached}
-										</Text>
-										<View className="mt-5">
-											<Table
-												borderStyle={{
-													borderWidth: 1,
-													borderColor: "#c1c1c1",
-												}}
-											>
-												<Row
-													data={header_row_time}
-													style={{
-														backgroundColor: "#d6d5d5",
-														height: 40,
-													}}
-												/>
-												{item.times.map((time) => {
-													const row_time = [];
-													row_time.push(time.day_in_week);
-													row_time.push(time.time);
-													row_time.push(time.week_time);
-													row_time.push(time.classroom);
-													row_time.push(item.id_class);
-													return (
-														<Row
-															data={row_time}
-															style={{
-																height: 40,
-															}}
-														/>
-													);
-												})}
-											</Table>
-										</View>
-									</View>
-								);
-							})}
-						</ScrollView>
-					</ScrollView>
+			<Modal isVisible={modalStartDate} onBackdropPress={closeModalStartDate}>
+				<View className="px-6 bg-gray-200 rounded-lg pb-5">
+					<View className="mt-2">
+						<DateTimePicker
+							mode="single"
+							date={startDate}
+							initialView="day"
+							timePicker={false}
+							onChange={(params) => {
+								setStartDate(params.date);
+							}}
+						/>
+					</View>
+					{startDate && (
+						<View className="flex flex-row gap-x-1 items-center">
+							<Text>Thời gian bắt đầu:</Text>
+							<Text className="text-md font-semibold">{formatDate(startDate)}</Text>
+						</View>
+					)}
+					<View className="flex justify-end flex-row mt-4 mb-2">
+						<TouchableOpacity
+							className="bg-blue-500 py-2 w-[30%] rounded-lg"
+							onPress={closeModalStartDate}
+						>
+							<Text className="text-white font-mediu self-center">Xong</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+			</Modal>
+			<Modal isVisible={modalEndDate} onBackdropPress={closeModalEndDate}>
+				<View className="px-6 bg-gray-200 rounded-lg pb-5">
+					<View className="mt-2">
+						<DateTimePicker
+							mode="single"
+							date={endDate}
+							initialView="day"
+							timePicker={false}
+							onChange={(params) => {
+								setEndDate(params.date);
+							}}
+						/>
+					</View>
+					{endDate && (
+						<View className="flex flex-row gap-x-1 items-center">
+							<Text>Thời gian kết thúc:</Text>
+							<Text className="text-md font-semibold">{formatDate(endDate)}</Text>
+						</View>
+					)}
+					<View className="flex justify-end flex-row mt-4 mb-2">
+						<TouchableOpacity
+							className="bg-blue-500 py-2 w-[30%] rounded-lg"
+							onPress={closeModalEndDate}
+						>
+							<Text className="text-white font-mediu self-center">Xong</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
 			</Modal>
 		</View>
