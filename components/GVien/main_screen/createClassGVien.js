@@ -88,7 +88,7 @@ const CreateClassScreenGVien = () => {
 			],
 		},
 		{
-			id_class: "103268",
+			id_class: "103269",
 			id_class_attached: "103269",
 			id_subject: "PH1110",
 			name_subject: "Vật lý đại cương I",
@@ -156,6 +156,8 @@ const CreateClassScreenGVien = () => {
 	};
 	//Call API create_class
 	const handleCreateClass = async () => {
+		console.log()
+		console.log()
 		console.log("Tạo lớp học đã được nhấn");
         if (!classId || !className || !typeClass || !startDate || !endDate || !maxStudentAmount ) {
 			alert("Vui lòng nhập đầy đủ thông tin lớp học!");
