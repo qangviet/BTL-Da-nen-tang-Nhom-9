@@ -18,9 +18,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { logoutAct } from "../../../redux/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
+import api from "../../api";
 
 const Profile = () => {
 	const dispatch = useDispatch();
+	const param = useSelector((state) => state.navigation.params);
+	token = param.token;
 
 	let drawer = useRef(null);
 	// let drawer = null;
@@ -29,11 +32,23 @@ const Profile = () => {
 
 	const [drawerPosition, setDrawerPosition] = useState("right");
 
-	const logOut = () => {
+	// Hàm xử lý đăng xuất
+	const logOut = async () => {
 		console.log("LOGGING OUT!");
-		dispatch(
-			logoutAct()
-		);
+		try {
+			// Gọi API đăng xuất
+			const response = await api.post("/it4788/logout", { token });
+
+			// Kiểm tra phản hồi từ API
+			if (response.data.code === "1000") {
+				console.log(response.data.message);
+				dispatch(logoutAct()); // Dispatch hành động logout
+			} else {
+				console.log("Logout failed:", response.data.message);
+			}
+		} catch (error) {
+			console.error("Error logging out:", error);
+		}
 	};
 
 	const navigationView = () => (

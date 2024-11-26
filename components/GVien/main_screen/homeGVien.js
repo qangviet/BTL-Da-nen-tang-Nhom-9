@@ -8,9 +8,10 @@ import { LogoHust, LogoBK } from "../../logo";
 import { useToast } from "react-native-toast-notifications";
 const HomeGVien = () => {
 	const toast = useToast();
-
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
+	const param = useSelector((state) => state.navigation.params)
+	//console.log(param)
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	useEffect(() => {
@@ -26,7 +27,7 @@ const HomeGVien = () => {
 		dispatch(
 			navigate({
 				screen: "MyClassesScreenGVien",
-				params: {},
+				params: param,
 			})
 		);
 		console.log("Go to: Danh sách lớp");
@@ -36,7 +37,7 @@ const HomeGVien = () => {
 		dispatch(
 			navigate({
 				screen: "ManageClassesScreenGVien",
-				params: {},
+				params: param,
 			})
 		);
 		console.log("Go to: Quản lý lớp");
@@ -46,7 +47,7 @@ const HomeGVien = () => {
 		dispatch(
 			navigate({
 				screen: "NotiGVien",
-				params: {},
+				params: param,
 			})
 		);
 		console.log("Go to: Thông báo");
@@ -58,7 +59,6 @@ const HomeGVien = () => {
 			duration: 1000,
 		});
 	};
-
 	return (
 		<>
 			<View className="bg-[#dfe1e2]">
@@ -97,10 +97,14 @@ const HomeGVien = () => {
 										color="#b5b5b5"
 									/>
 								</View>
-								<View>
-									<Text className="font-bold text-lg">Trương Quang Việt</Text>
-									<Text className="text-sm">Giảng viên</Text>
+								{param && param.userInfo ? 
+								(<View>
+									<Text className="font-bold text-lg">{param.userInfo.name}</Text>
+									<Text className="text-sm">{param.role === 1 ? "Sinh viên" : "Giảng viên"}</Text>
 								</View>
+								) : (
+								<Text className="text-red-500">Không tìm thấy thông tin người dùng</Text>
+								)}
 							</View>
 							<View className="mr-1">
 								<TouchableOpacity>

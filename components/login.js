@@ -20,16 +20,6 @@ import api from "./api";
 const StyledView = styled(View);
 const StyledTextInput = styled(TextInput);
 
-const TeacherLogin = {
-	username: "teacher",
-	password: "teacher",
-};
-
-const StudentLogin = {
-	username: "student",
-	password: "student",
-};
-
 const LoginScreen = () => {
 	// Gọi action từ redux
 	const dispatch = useDispatch();
@@ -64,7 +54,7 @@ const LoginScreen = () => {
 						token: userData.token,
 						role: userData.role === "STUDENT" ? 1 : 2, // Role: 1 -> student, 2 -> teacher
 					};
-					console.log(PARAMS)
+					//console.log(PARAMS)
 
 					if (PARAMS.role == 1) {
 						dispatch(
@@ -80,6 +70,7 @@ const LoginScreen = () => {
 							})
 						);
 					} else {
+						//console.log(PARAMS)
 						dispatch(
 							navigate({
 								screen: "TabMainGVien",

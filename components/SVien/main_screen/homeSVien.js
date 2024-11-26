@@ -103,7 +103,7 @@ const HomeSVien = () => {
 								{param && param.userInfo ? 
 								(<View>
 									<Text className="font-bold text-lg">{param.userInfo.name}</Text>
-									<Text className="text-sm">{param.role === 1 ? "Sinh viên" : "Giáo viên"}</Text>
+									<Text className="text-sm">{param.role === 1 ? "Sinh viên" : "Giảng viên"}</Text>
 								</View>
 								) : (
 								<Text className="text-red-500">Không tìm thấy thông tin người dùng</Text>

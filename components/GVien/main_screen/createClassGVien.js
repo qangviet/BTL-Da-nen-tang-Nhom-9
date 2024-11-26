@@ -21,15 +21,18 @@ import Modal from "react-native-modal";
 import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
+import api from "../../api";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import Feather from "@expo/vector-icons/Feather";
+
 const CreateClassScreenGVien = () => {
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
-	const params = useSelector((state) => state.navigation.params);
+	const param = useSelector((state) => state.navigation.params);
+	//console.log(param)
 
 	useEffect(() => {
 		if (currentScreen !== "CreateClassScreenGVien") {
@@ -40,10 +43,16 @@ const CreateClassScreenGVien = () => {
 	const listTypeClass = [
 		{ label: "LT", value: "LT" },
 		{ label: "BT", value: "BT" },
-		{ label: "LT+BT", value: "LT+BT" },
-		{ label: "TH", value: "TH" },
+		{ label: "LT_BT", value: "LT_BT" },
 	];
+
 	const [typeClass, setTypeClass] = useState(null);
+	const [classId, setClassId] = useState("");
+    const [className, setClassName] = useState("");
+	const [maxStudentAmount, setMaxStudentAmount] = useState("");
+	const modifyDate = (dateString) => {
+		return new Date(dateString).toISOString().split('T')[0];
+	  };
 
 	const [listClass, setListClass] = useState([
 		{
@@ -111,7 +120,6 @@ const CreateClassScreenGVien = () => {
 			],
 		},
 	]);
-
 	const [isOpenModal, setIsOpenModal] = useState(false);
 
 	const openModalListClass = () => {
@@ -146,6 +154,42 @@ const CreateClassScreenGVien = () => {
 	const formatDate = (date) => {
 		return dayjs(date).format("DD/MM/YYYY");
 	};
+	//Call API create_class
+	const handleCreateClass = async () => {
+		console.log("Tạo lớp học đã được nhấn");
+        // if (!classId || !className || !typeClass || !startDate || !endDate || !maxStudentAmount ) {
+		// 	Alert.alert("Thông báo", "Vui lòng nhập đầy đủ thông tin lớp học.");
+		// 	return;
+		// }	
+		console.log("Token:", param.token);
+		console.log("Tên lớp học:", className);
+		console.log("Số lượng sinh viên tối đa:", maxStudentAmount);
+		console.log("Loại lớp học:", typeClass);
+		console.log("Thời gian bắt đầu:", modifyDate(startDate));
+		console.log("Thời gian kết thúc:", modifyDate(endDate));
+		console.log("So luong svien max:", parseInt(maxStudentAmount))
+        try {
+            const response = await api.post("/it5023e/create_class", {
+				token: param.token,
+                class_id: classId,
+                class_name: className,
+                class_type: typeClass,
+                start_date: modifyDate(startDate),
+                end_date: modifyDate(endDate),
+                max_student_amount: parseInt(maxStudentAmount),
+            });
+
+            if (response.status === 200) {
+                Alert.alert("Thành công", "Lớp học đã được tạo thành công!");
+                dispatch(goBackMavigation());
+            } else {
+                Alert.alert("Thất bại", "Tạo lớp học không thành công. Vui lòng thử lại.");
+            }
+        } catch (error) {
+            Alert.alert("Lỗi", "Không thể kết nối với server. Vui lòng kiểm tra kết nối mạng.");
+            console.error(error);
+        }
+    };
 	const renderItem = (item, value) => {
 		return (
 			<>
@@ -178,6 +222,8 @@ const CreateClassScreenGVien = () => {
 					placeholder="Mã lớp*"
 					placeholderTextColor={"#e86456"}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
+					value={classId} // Liên kết với state
+    				onChangeText={(text) => setClassId(text)} // Cập nhật state
 				/>
 				<TextInput
 					placeholder="Mã lớp kèm*"
@@ -188,6 +234,8 @@ const CreateClassScreenGVien = () => {
 					placeholder="Tên lớp*"
 					placeholderTextColor={"#e86456"}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
+					value={className}
+    				onChangeText={(text) => setClassName(text)}
 				/>
 				<TextInput
 					placeholder="Mã học phần*"
@@ -248,9 +296,11 @@ const CreateClassScreenGVien = () => {
 					placeholder="Số lượng sinh viên tối đa*"
 					placeholderTextColor={"#e86456"}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
+					onChangeText={(text) => setMaxStudentAmount(text)}
+    				keyboardType="numeric" // Chỉ nhập số
 				/>
 				<View className="mx-auto py-2 px-4 bg-red-700 rounded-lg mt-10">
-					<TouchableOpacity>
+					<TouchableOpacity onPress={handleCreateClass}>
 						<Text className="text-white italic text-xl font-bold">Tạo lớp học</Text>
 					</TouchableOpacity>
 				</View>
