@@ -48,78 +48,12 @@ const CreateClassScreenGVien = () => {
 
 	const [typeClass, setTypeClass] = useState(null);
 	const [classId, setClassId] = useState("");
-    const [className, setClassName] = useState("");
+    	const [className, setClassName] = useState("");
 	const [maxStudentAmount, setMaxStudentAmount] = useState("");
 	const modifyDate = (dateString) => {
 		return new Date(dateString).toISOString().split('T')[0];
 	  };
 
-	const [listClass, setListClass] = useState([
-		{
-			id_class: "103268",
-			id_class_attached: "103269",
-			id_subject: "PH1110",
-			name_subject: "Vật lý đại cương I",
-			semester: "Kỳ hè-C",
-			type_class: "BT",
-			status: "Đăng ký chính thức",
-			credit: 80,
-			number_student: 0,
-			name_academic: "VVLKT",
-			times: [
-				{
-					day_in_week: 2,
-					time: "15:05-17:35",
-					week_time: "47-51",
-					classroom: "D9-102",
-				},
-				{
-					day_in_week: 6,
-					time: "15:05-17:35",
-					week_time: "47-51",
-					classroom: "D9-101",
-				},
-				{
-					day_in_week: 5,
-					time: "12:30-15:00",
-					week_time: "47-51",
-					classroom: "D9-101",
-				},
-			],
-		},
-		{
-			id_class: "103269",
-			id_class_attached: "103269",
-			id_subject: "PH1110",
-			name_subject: "Vật lý đại cương I",
-			semester: "Kỳ hè-C",
-			type_class: "BT",
-			status: "Đăng ký chính thức",
-			credit: 80,
-			number_student: 0,
-			name_academic: "VVLKT",
-			times: [
-				{
-					day_in_week: 2,
-					time: "15:05-17:35",
-					week_time: "47-51",
-					classroom: "D9-102",
-				},
-				{
-					day_in_week: 6,
-					time: "15:05-17:35",
-					week_time: "47-51",
-					classroom: "D9-101",
-				},
-				{
-					day_in_week: 5,
-					time: "12:30-15:00",
-					week_time: "47-51",
-					classroom: "D9-101",
-				},
-			],
-		},
-	]);
 	const [isOpenModal, setIsOpenModal] = useState(false);
 
 	const openModalListClass = () => {
@@ -157,19 +91,18 @@ const CreateClassScreenGVien = () => {
 	//Call API create_class
 	const handleCreateClass = async () => {
 		console.log()
-		console.log()
 		console.log("Tạo lớp học đã được nhấn");
         if (!classId || !className || !typeClass || !startDate || !endDate || !maxStudentAmount ) {
 			alert("Vui lòng nhập đầy đủ thông tin lớp học!");
 			return;
 		}	
-		// console.log("Token:", param.token, "Type:", typeof param.token);
-		// console.log("Class ID:", classId, "Type:", typeof classId);
-		// console.log("Class Name:", className, "Type:", typeof className);
-		// console.log("Class Type:", typeClass, "Type:", typeof typeClass);
-		// console.log("Start Date:", modifyDate(startDate), "Type:", typeof modifyDate(startDate));
-		// console.log("End Date:", modifyDate(endDate), "Type:", typeof modifyDate(endDate));
-		// console.log("Parsed Max Student Amount:", parseInt(maxStudentAmount), "Type:", typeof parseInt(maxStudentAmount));
+		console.log("Token:", param.token, "Type:", typeof param.token);
+		console.log("Class ID:", classId, "Type:", typeof classId);
+		console.log("Class Name:", className, "Type:", typeof className);
+		console.log("Class Type:", typeClass, "Type:", typeof typeClass);
+		console.log("Start Date:", modifyDate(startDate), "Type:", typeof modifyDate(startDate));
+		console.log("End Date:", modifyDate(endDate), "Type:", typeof modifyDate(endDate));
+		console.log("Parsed Max Student Amount:", parseInt(maxStudentAmount), "Type:", typeof parseInt(maxStudentAmount));
 
         try {
             const response = await api.post("/it5023e/create_class", {
@@ -185,18 +118,19 @@ const CreateClassScreenGVien = () => {
 
             if (response.status === 200) {
                 alert("Lớp học đã được tạo thành công!");
-				console.log(response.data)
-                dispatch(goBackNavigation());
+				console.log(response.data);
+				goBack();
             } else {
                 alert("Tạo lớp học không thành công. Vui lòng thử lại.");
             }
         } catch (error) {
-			if (error.response.data.meta.code==="1004") {
+			// console.error(error.response.data.meta.code);
+			if (error.response.data.meta.code === "1004") {
 				console.error("Error Data:", error.response.data); 
 				console.error("Error Status:", error.response.status);
-				alert("Lớp đã tồn tại")
+				alert("Lớp đã tồn tại");
 			} else {
-				alert("Thông tin lớp không hợp lệ")
+				alert("Thông tin lớp không hợp lệ");
 				console.error("Error:", error.message);
 			}
 		}
@@ -235,11 +169,6 @@ const CreateClassScreenGVien = () => {
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 					value={classId} // Liên kết với state
     				onChangeText={(text) => setClassId(text)} // Cập nhật state
-				/>
-				<TextInput
-					placeholder="Mã lớp kèm*"
-					placeholderTextColor={"#e86456"}
-					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 				/>
 				<TextInput
 					placeholder="Tên lớp*"
@@ -315,103 +244,7 @@ const CreateClassScreenGVien = () => {
 						<Text className="text-white italic text-xl font-bold">Tạo lớp học</Text>
 					</TouchableOpacity>
 				</View>
-				<View className="mx-auto mt-8 ">
-					<TouchableOpacity onPress={() => openModalListClass()}>
-						<Text className="text-lg text-red-600 underline font-semibold italic">
-							Thông tin danh sách các lớp mở
-						</Text>
-					</TouchableOpacity>
-				</View>
 			</View>
-			<Modal isVisible={isOpenModal} onBackdropPress={(e) => closeModalListClass(e)}>
-				<View className="h-[70%] bg-gray-200 ">
-					<ScrollView horizontal={true}>
-						<ScrollView>
-							{listClass.map((item) => {
-								const header_row = [];
-								header_row.push(item.id_class);
-								header_row.push(item.id_subject);
-								header_row.push(item.name_subject);
-								header_row.push(item.semester);
-								header_row.push(item.type_class);
-								header_row.push(item.status);
-								header_row.push(item.credit);
-								header_row.push(item.number_student);
-								header_row.push(item.name_academic);
-
-								let header_row_time = [
-									"Thứ",
-									"Thời gian",
-									"Tuần học",
-									"Phòng học",
-									"Mã lớp",
-								];
-
-								return (
-									<View className="mb-5 pt-2">
-										<Table
-											borderStyle={{ borderWidth: 1, borderColor: "#a8a8a8" }}
-										>
-											<Row
-												data={header_row}
-												widthArr={[60, 60, 150, 100, 40, 90, 40, 40, 60]}
-												// style={styles.header}
-												className="bg-[#bfbebe]"
-												textStyle={{
-													textAlign: "center",
-													fontWeight: "600",
-													color: "black",
-												}}
-											/>
-										</Table>
-										<Text className="mt-4 mx-3">
-											Tên lớp:{" "}
-											<Text className="font-semibold">
-												{item.name_subject}
-											</Text>
-										</Text>
-										<Text className="mt-1 mx-3">
-											Mã lớp kèm: {item.id_class_attached}
-										</Text>
-										<View className="mt-5">
-											<Table
-												borderStyle={{
-													borderWidth: 1,
-													borderColor: "#c1c1c1",
-												}}
-											>
-												<Row
-													data={header_row_time}
-													style={{
-														backgroundColor: "#d6d5d5",
-														height: 40,
-													}}
-												/>
-												{item.times.map((time) => {
-													const row_time = [];
-													row_time.push(time.day_in_week);
-													row_time.push(time.time);
-													row_time.push(time.week_time);
-													row_time.push(time.classroom);
-													row_time.push(item.id_class);
-													return (
-														<Row
-															data={row_time}
-															style={{
-																height: 40,
-															}}
-														/>
-													);
-												})}
-											</Table>
-										</View>
-									</View>
-								);
-							})}
-						</ScrollView>
-					</ScrollView>
-				</View>
-			</Modal>
 			<Modal isVisible={modalStartDate} onBackdropPress={closeModalStartDate}>
 				<View className="px-6 bg-gray-200 rounded-lg pb-5">
 					<View className="mt-2">
