@@ -46,10 +46,8 @@ const ManageClassesScreenGVien = () => {
 	]);
 	const [widthArr] = useState([70, 130, 80, 130, 130, 70, 70]);
 	const sumTC = 16;
-	// const [tableData, setTableData] = useState([
-	// 	["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2024-01-01", "2024-03-03", "Active",true],
-	// 	["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2024-01-01", "2024-03-03", "Active",false],
-	// ]);
+	const [checkedData, setCheckedData] = useState(null); // Lưu thông tin dòng đã chọn
+	const [isEditEnabled, setIsEditEnabled] = useState(false); // Điều kiện để bật/tắt nút "Chỉnh sửa"
 	const [tableData, setTableData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -92,7 +90,8 @@ const ManageClassesScreenGVien = () => {
         };
 
         fetchClassList();
-    }, []);
+    }, [currentScreen]);
+	
 
 	const [listClass, setListClass] = useState([
 		{
@@ -174,19 +173,46 @@ const ManageClassesScreenGVien = () => {
 		);
 	}
 
-	function goEditClass() {
-		dispatch(
-			navigate({
-				screen: "EditClassScreenGVien",
-				params: param,
-			})
-		);
-	}
-
+	// Cập nhật trạng thái checkbox khi người dùng chọn hoặc bỏ chọn
 	const selectRow = (index, cellIndex) => {
 		let temp = [...tableData];
-		temp[index][cellIndex] = !temp[index][cellIndex];
-		setTableData(temp);
+		if (cellIndex === 6) { // Cột checkbox
+			// Nếu checkbox đã được chọn, bỏ chọn tất cả
+			if (temp[index][cellIndex] === false) {
+				// Nếu checkbox chưa được chọn thì chọn checkbox đó và bỏ các checkbox khác
+				temp.forEach((row, idx) => {
+					if (idx !== index) row[6] = false; // Bỏ chọn các checkbox khác
+				});
+				temp[index][cellIndex] = true; // Chọn checkbox tại dòng hiện tại
+				setCheckedData(temp[index]); // Lưu dữ liệu của dòng đã chọn vào checkedData
+			} else {
+				temp[index][cellIndex] = false; // Nếu đã chọn, bỏ chọn
+				setCheckedData(null); // Xóa dữ liệu khi bỏ chọn
+			}
+			setTableData(temp);
+		}
+	};
+
+	// Kiểm tra xem có một checkbox được chọn hay không
+	useEffect(() => {
+		if (checkedData !== null) {
+			setIsEditEnabled(true); // Nếu có dòng được chọn, bật nút "Chỉnh sửa"
+		} else {
+			setIsEditEnabled(false); // Nếu không có dòng nào được chọn, tắt nút "Chỉnh sửa"
+		}
+	}, [checkedData]);
+
+	// Chuyển đến màn hình chỉnh sửa
+	const goEditClass = () => {
+		if (checkedData) {
+			dispatch(
+				navigate({
+					screen: "EditClassScreenGVien",
+					params: { ...param, classData: checkedData }, // Truyền dữ liệu lớp học vào params
+				})
+			);
+		}
+		setCheckedData(null);
 	};
 
 	const [isOpenModal, setIsOpenModal] = useState(false);
@@ -293,7 +319,13 @@ const ManageClassesScreenGVien = () => {
 					className="flex justify-center items-center
                  bg-red-700 rounded-lg px-5 py-1"
 				>
-					<TouchableOpacity onPress={() => goEditClass()}>
+					<TouchableOpacity 
+					onPress={() => goEditClass()}
+					disabled={!isEditEnabled} // Vô hiệu hóa nút khi không có checkbox nào được chọn
+					style={{
+						opacity: isEditEnabled ? 1 : 0.5, // Làm mờ nút khi nó bị vô hiệu hóa
+					}}
+					>
 						<Text className="text-white italic font-bold text-lg">Chỉnh sửa</Text>
 					</TouchableOpacity>
 				</View>

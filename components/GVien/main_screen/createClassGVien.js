@@ -191,7 +191,7 @@ const CreateClassScreenGVien = () => {
                 alert("Tạo lớp học không thành công. Vui lòng thử lại.");
             }
         } catch (error) {
-			if (error.response.meta.code==="1004") {
+			if (error.response.data.meta.code==="1004") {
 				console.error("Error Data:", error.response.data); 
 				console.error("Error Status:", error.response.status);
 				alert("Lớp đã tồn tại")

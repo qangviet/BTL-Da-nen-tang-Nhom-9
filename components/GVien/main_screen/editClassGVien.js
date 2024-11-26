@@ -23,13 +23,15 @@ import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
+import api from "../../api";
 
 const EditClassScreenGVien = () => {
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
-	const params = useSelector((state) => state.navigation.params);
+	const param = useSelector((state) => state.navigation.params);
+	console.log(param)
 
 	useEffect(() => {
 		if (currentScreen !== "MyClassesScreenGVien") {
