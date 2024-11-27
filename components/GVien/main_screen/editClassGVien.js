@@ -35,11 +35,11 @@ const EditClassScreenGVien = () => {
 	const param = useSelector((state) => state.navigation.params);
 	console.log(param);
 
-	// useEffect(() => {
-	// 	if (currentScreen !== "EditClassScreenGVien") {
-	// 		navigation.navigate(currentScreen);
-	// 	}
-	// }, [currentScreen]);
+	useEffect(() => {
+		if (currentScreen !== "EditClassScreenGVien") {
+			navigation.navigate(currentScreen);
+		}
+	}, [currentScreen]);
 
 	const state = useSelector((state) => state.navigation);
 	// console.log(state);
