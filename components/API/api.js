@@ -1,4 +1,4 @@
-const BASE_URL = "http://160.30.168.228:8080";
+const BASE_URL = "http://157.66.24.126:8080";
 
 const api = {
 	// Hàm helper để xử lý response

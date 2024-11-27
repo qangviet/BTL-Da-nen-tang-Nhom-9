@@ -1,0 +1,131 @@
+{
+      "config": {
+            "adapter": [
+                  "xhr",
+                  "http",
+                  "fetch"
+            ],
+            "baseURL": "http://157.66.24.126:8080",
+            "data": "{\"token\":\"beXRrg\",\"class_id\":\"123123\",\"class_name\":\"q\",\"class_type\":\"LT\",\"start_date\":\"2024-11-25\",\"end_date\":\"2024-11-29\",\"max_student_amount\":13}",
+            "env": {
+                  "Blob": [Function Blob
+                  ],
+                  "FormData": [Function FormData
+                  ]
+            },
+            "headers": [Object
+            ],
+            "maxBodyLength": -1,
+            "maxContentLength": -1,
+            "method": "post",
+            "timeout": 0,
+            "transformRequest": [
+                  [Function transformRequest
+                  ]
+            ],
+            "transformResponse": [
+                  [Function transformResponse
+                  ]
+            ],
+            "transitional": {
+                  "clarifyTimeoutError": false,
+                  "forcedJSONParsing": true,
+                  "silentJSONParsing": true
+            },
+            "url": "/it5023e/create_class",
+            "validateStatus": [Function validateStatus
+            ],
+            "xsrfCookieName": "XSRF-TOKEN",
+            "xsrfHeaderName": "X-XSRF-TOKEN"
+      },
+      "data": {
+            "data": "class id already exists",
+            "meta": {
+                  "code": "1004",
+                  "message": "parameter value is invalid"
+            }
+      },
+      "headers": {
+            "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
+            "connection": "close",
+            "content-type": "application/json",
+            "date": "Tue, 26 Nov 2024 17:07:03 GMT",
+            "expires": "0",
+            "pragma": "no-cache",
+            "transfer-encoding": "chunked",
+            "vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+            "x-content-type-options": "nosniff",
+            "x-frame-options": "DENY",
+            "x-xss-protection": "0"
+      },
+      "request": {
+            "DONE": 4,
+            "HEADERS_RECEIVED": 2,
+            "LOADING": 3,
+            "OPENED": 1,
+            "UNSENT": 0,
+            "_aborted": false,
+            "_cachedResponse": undefined,
+            "_hasError": false,
+            "_headers": {
+                  "accept": "application/json, text/plain, */*",
+                  "content-type": "application/json"
+            },
+            "_incrementalEvents": false,
+            "_lowerCaseResponseHeaders": {
+                  "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
+                  "connection": "close",
+                  "content-type": "application/json",
+                  "date": "Tue, 26 Nov 2024 17:07:03 GMT",
+                  "expires": "0",
+                  "pragma": "no-cache",
+                  "transfer-encoding": "chunked",
+                  "vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+                  "x-content-type-options": "nosniff",
+                  "x-frame-options": "DENY",
+                  "x-xss-protection": "0"
+            },
+            "_method": "POST",
+            "_perfKey": "network_XMLHttpRequest_http://157.66.24.126:8080/it5023e/create_class",
+            "_performanceLogger": {
+                  "_closed": false,
+                  "_extras": [Object
+                  ],
+                  "_pointExtras": [Object
+                  ],
+                  "_points": [Object
+                  ],
+                  "_timespans": [Object
+                  ]
+            },
+            "_requestId": null,
+            "_response": "{\"data\":\"class id already exists\",\"meta\":{\"code\":\"1004\",\"message\":\"parameter value is invalid\"}}",
+            "_responseType": "",
+            "_sent": true,
+            "_subscriptions": [],
+            "_timedOut": false,
+            "_trackingName": "unknown",
+            "_url": "http://157.66.24.126:8080/it5023e/create_class",
+            "readyState": 4,
+            "responseHeaders": {
+                  "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+                  "Connection": "close",
+                  "Content-Type": "application/json",
+                  "Date": "Tue, 26 Nov 2024 17:07:03 GMT",
+                  "Expires": "0",
+                  "Pragma": "no-cache",
+                  "Transfer-Encoding": "chunked",
+                  "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+                  "X-Content-Type-Options": "nosniff",
+                  "X-Frame-Options": "DENY",
+                  "X-XSS-Protection": "0"
+            },
+            "responseURL": "http://157.66.24.126:8080/it5023e/create_class",
+            "status": 400,
+            "timeout": 0,
+            "upload": {},
+            "withCredentials": true
+      },
+      "status": 400,
+      "statusText": undefined
+}

@@ -19,6 +19,7 @@ import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
+import api from "../../api";
 
 const ManageClassesScreenGVien = () => {
 	const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const ManageClassesScreenGVien = () => {
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const param = useSelector((state) => state.navigation.params);
+	//console.log(param)
 
 	useEffect(() => {
 		if (currentScreen !== "MyClassesScreenGVien") {
@@ -34,98 +36,104 @@ const ManageClassesScreenGVien = () => {
 	}, [currentScreen]);
 
 	const [tableHead] = useState([
-		"Mã học phần",
 		"Mã lớp học",
-		"Mã lớp kèm",
-		"Tên lớp học",
-		"Số TC",
+		"Tên lớp học ",
+		"Loại",
+		"Ngày bắt đầu",
+		"Ngày kết thúc",
+		"Trạng thái",
 		"Chọn",
 	]);
-	const [widthArr] = useState([70, 80, 80, 130, 70, 70]);
-	const sumTC = 16;
-	const [tableData, setTableData] = useState([
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", true],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", false],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", true],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", true],
-		["IT3040", "123456", "789012", "Kỹ thuật lập trình", "2", true],
+
+	const [tableHeadOpen] = useState([
+		"Mã lớp học",
+		"Tên lớp học ",
+		"Loại",
+		"Ngày bắt đầu",
+		"Ngày kết thúc",
+		"Trạng thái",
+		"Số sinh viên"
 	]);
 
-	const [listClass, setListClass] = useState([
-		{
-			id_class: "103268",
-			id_class_attached: "103269",
-			id_subject: "PH1110",
-			name_subject: "Vật lý đại cương I",
-			semester: "Kỳ hè-C",
-			type_class: "BT",
-			status: "Đăng ký chính thức",
-			credit: 80,
-			number_student: 0,
-			name_academic: "VVLKT",
-			times: [
-				{
-					day_in_week: 2,
-					time: "15:05-17:35",
-					week_time: "47-51",
-					classroom: "D9-102",
-				},
-				{
-					day_in_week: 6,
-					time: "15:05-17:35",
-					week_time: "47-51",
-					classroom: "D9-101",
-				},
-				{
-					day_in_week: 5,
-					time: "12:30-15:00",
-					week_time: "47-51",
-					classroom: "D9-101",
-				},
-			],
-		},
-		{
-			id_class: "103268",
-			id_class_attached: "103269",
-			id_subject: "PH1110",
-			name_subject: "Vật lý đại cương I",
-			semester: "Kỳ hè-C",
-			type_class: "BT",
-			status: "Đăng ký chính thức",
-			credit: 80,
-			number_student: 0,
-			name_academic: "VVLKT",
-			times: [
-				{
-					day_in_week: 2,
-					time: "15:05-17:35",
-					week_time: "47-51",
-					classroom: "D9-102",
-				},
-				{
-					day_in_week: 6,
-					time: "15:05-17:35",
-					week_time: "47-51",
-					classroom: "D9-101",
-				},
-				{
-					day_in_week: 5,
-					time: "12:30-15:00",
-					week_time: "47-51",
-					classroom: "D9-101",
-				},
-			],
-		},
-	]);
+	const [widthArr] = useState([70, 130, 80, 130, 130, 70, 70]);
+	const [widthArrOpen] = useState([70, 130, 80, 130, 130, 70, 70]);
+	const sumTC = 16;
+	const [checkedData, setCheckedData] = useState(null); // Lưu thông tin dòng đã chọn
+	const [isEditEnabled, setIsEditEnabled] = useState(false); // Điều kiện để bật/tắt nút "Chỉnh sửa"
+	const [tableData, setTableData] = useState([]);
+	const [tableDataOpen, setTableDataOpen] = useState([]);
+
+    useEffect(() => {
+        if (currentScreen !== "MyClassesScreenGVien") {
+            navigation.navigate(currentScreen);
+        }
+    }, [currentScreen]);
+
+    useEffect(() => {
+        // Hàm gọi API để lấy danh sách lớp
+        const fetchClassList = async () => {
+		// console.log(">>>> LOADED!");
+            try {
+                const response = await api.post("/it5023e/get_class_list", {
+                    token: param.token,
+                    role: param.role == 2 ? "LECTURER" : "STUDENT",
+                    account_id: "24",
+                    pageable_request: null,
+                });
+                const pageContent = response.data.data.page_content;
+                // Map dữ liệu để phù hợp với cấu trúc tableData
+                const formattedData = pageContent.map((item) => [
+                    item.class_id,
+                    item.class_name,
+                    item.class_type,
+                    item.start_date,
+                    item.end_date,
+                    item.status,
+                    false, // Cột checkbox mặc định là false
+                ]);
+                setTableData(formattedData);
+            } catch (error) {
+                console.error("Error fetching class list:", error);
+				console.error("Error Data:", error.response.data); 
+				console.error("Error Status:", error.response.status);
+            }
+        };
+
+        fetchClassList();
+    }, [currentScreen]);
+
+    useEffect(() => {
+	// Hàm gọi API để lấy danh sách lớp
+	const fetchOpenClassList = async () => {
+	    // console.log(">>>> LOADED!");
+	    try {
+		  const response = await api.post("/it5023e/get_open_classes", {
+			token: param.token,
+			role: param.role == 2 ? "LECTURER" : "STUDENT",
+			account_id: "24",
+			pageable_request: null,
+		  });
+		  const pageContent = response.data.data.page_content;
+		  // Map dữ liệu để phù hợp với cấu trúc tableData
+		  const formattedData = pageContent.map((item) => [
+			item.class_id,
+			item.class_name,
+			item.class_type,
+			item.start_date,
+			item.end_date,
+			item.status,
+			item.student_count
+		  ]);
+		  setTableDataOpen(formattedData);
+	    } catch (error) {
+		  console.error("Error fetching class list:", error);
+			    console.error("Error Data:", error.response.data); 
+			    console.error("Error Status:", error.response.status);
+	    }
+	};
+
+	fetchOpenClassList();
+  }, [currentScreen]);
 
 	function goBack() {
 		dispatch(goBackMavigation());
@@ -140,19 +148,46 @@ const ManageClassesScreenGVien = () => {
 		);
 	}
 
-	function goEditClass() {
-		dispatch(
-			navigate({
-				screen: "EditClassScreenGVien",
-				params: param,
-			})
-		);
-	}
-
+	// Cập nhật trạng thái checkbox khi người dùng chọn hoặc bỏ chọn
 	const selectRow = (index, cellIndex) => {
 		let temp = [...tableData];
-		temp[index][cellIndex] = !temp[index][cellIndex];
-		setTableData(temp);
+		if (cellIndex === 6) { // Cột checkbox
+			// Nếu checkbox đã được chọn, bỏ chọn tất cả
+			if (temp[index][cellIndex] === false) {
+				// Nếu checkbox chưa được chọn thì chọn checkbox đó và bỏ các checkbox khác
+				temp.forEach((row, idx) => {
+					if (idx !== index) row[6] = false; // Bỏ chọn các checkbox khác
+				});
+				temp[index][cellIndex] = true; // Chọn checkbox tại dòng hiện tại
+				setCheckedData(temp[index]); // Lưu dữ liệu của dòng đã chọn vào checkedData
+			} else {
+				temp[index][cellIndex] = false; // Nếu đã chọn, bỏ chọn
+				setCheckedData(null); // Xóa dữ liệu khi bỏ chọn
+			}
+			setTableData(temp);
+		}
+	};
+
+	// Kiểm tra xem có một checkbox được chọn hay không
+	useEffect(() => {
+		if (checkedData !== null) {
+			setIsEditEnabled(true); // Nếu có dòng được chọn, bật nút "Chỉnh sửa"
+		} else {
+			setIsEditEnabled(false); // Nếu không có dòng nào được chọn, tắt nút "Chỉnh sửa"
+		}
+	}, [checkedData]);
+
+	// Chuyển đến màn hình chỉnh sửa
+	const goEditClass = () => {
+		if (checkedData) {
+			dispatch(
+				navigate({
+					screen: "EditClassScreenGVien",
+					params: { ...param, classData: checkedData }, // Truyền dữ liệu lớp học vào params
+				})
+			);
+		}
+		setCheckedData(null);
 	};
 
 	const [isOpenModal, setIsOpenModal] = useState(false);
@@ -252,14 +287,20 @@ const ManageClassesScreenGVien = () => {
                  bg-red-700 rounded-lg px-5 py-1"
 				>
 					<TouchableOpacity onPress={() => goCreateClass()}>
-						<Text className="text-white italic font-bold text-lg">Tạo lớp học</Text>
+						<Text className="text-white italic font-bold text-lg">Tạo lớp học mới</Text>
 					</TouchableOpacity>
 				</View>
 				<View
 					className="flex justify-center items-center
                  bg-red-700 rounded-lg px-5 py-1"
 				>
-					<TouchableOpacity onPress={() => goEditClass()}>
+					<TouchableOpacity 
+					onPress={() => goEditClass()}
+					disabled={!isEditEnabled} // Vô hiệu hóa nút khi không có checkbox nào được chọn
+					style={{
+						opacity: isEditEnabled ? 1 : 0.5, // Làm mờ nút khi nó bị vô hiệu hóa
+					}}
+					>
 						<Text className="text-white italic font-bold text-lg">Chỉnh sửa</Text>
 					</TouchableOpacity>
 				</View>
@@ -272,92 +313,50 @@ const ManageClassesScreenGVien = () => {
 				</TouchableOpacity>
 			</View>
 			<Modal isVisible={isOpenModal} onBackdropPress={(e) => closeModalListClass(e)}>
-				<View className="h-[70%] bg-gray-200 ">
-					<ScrollView horizontal={true}>
-						<ScrollView>
-							{listClass.map((item) => {
-								const header_row = [];
-								header_row.push(item.id_class);
-								header_row.push(item.id_subject);
-								header_row.push(item.name_subject);
-								header_row.push(item.semester);
-								header_row.push(item.type_class);
-								header_row.push(item.status);
-								header_row.push(item.credit);
-								header_row.push(item.number_student);
-								header_row.push(item.name_academic);
-
-								let header_row_time = [
-									"Thứ",
-									"Thời gian",
-									"Tuần học",
-									"Phòng học",
-									"Mã lớp",
-								];
-
-								return (
-									<View className="mb-5 pt-2">
-										<Table
-											borderStyle={{ borderWidth: 1, borderColor: "#a8a8a8" }}
-										>
-											<Row
-												data={header_row}
-												widthArr={[60, 60, 150, 100, 40, 90, 40, 40, 60]}
-												// style={styles.header}
-												className="bg-[#bfbebe]"
-												textStyle={{
-													textAlign: "center",
-													fontWeight: "600",
-													color: "black",
-												}}
-											/>
-										</Table>
-										<Text className="mt-4 mx-3">
-											Tên lớp:{" "}
-											<Text className="font-semibold">
-												{item.name_subject}
-											</Text>
-										</Text>
-										<Text className="mt-1 mx-3">
-											Mã lớp kèm: {item.id_class_attached}
-										</Text>
-										<View className="mt-5">
-											<Table
-												borderStyle={{
-													borderWidth: 1,
-													borderColor: "#c1c1c1",
+				<View className="w-full bg-white">
+					<View className="mt-4 justify-center items-center">
+						<Text className="text-lg">Danh sách lớp mở</Text>
+					</View>
+					<View className="p-4 pt-4 h-[400px] ">
+						<ScrollView horizontal={true}>
+							<View>
+								<Table borderStyle={{ borderWidth: 1, borderColor: "#C1C0B9" }}>
+									<Row
+										data={tableHeadOpen}
+										widthArr={widthArrOpen}
+										// style={styles.header}
+										className="bg-red-600 h-11"
+										textStyle={styles.textHeader}
+									/>
+								</Table>
+								<ScrollView style={styles.dataWrapper}>
+									<Table borderStyle={{ borderWidth: 1, borderColor: "#C1C0B9" }}>
+										{tableDataOpen.map((rowData, index) => (
+											<TableWrapper
+												style={{
+													paddingBottom: 5,
+													borderColor: "black",
+													display: "flex",
+													flexDirection: "row",
 												}}
 											>
-												<Row
-													data={header_row_time}
-													style={{
-														backgroundColor: "#d6d5d5",
-														height: 40,
-													}}
-												/>
-												{item.times.map((time) => {
-													const row_time = [];
-													row_time.push(time.day_in_week);
-													row_time.push(time.time);
-													row_time.push(time.week_time);
-													row_time.push(time.classroom);
-													row_time.push(item.id_class);
-													return (
-														<Row
-															data={row_time}
-															style={{
-																height: 40,
-															}}
-														/>
-													);
-												})}
-											</Table>
-										</View>
-									</View>
-								);
-							})}
+												{rowData.map((cellData, cellIndex) => (
+													<Cell
+														data={
+															cellData
+														}
+														textStyle={styles.textRecoder}
+														width={widthArrOpen[cellIndex]}
+													/>
+												))}
+											</TableWrapper>
+										))}
+									</Table>
+								</ScrollView>
+								<View className="border-t border-gray-300"></View>
+							</View>
 						</ScrollView>
-					</ScrollView>
+					</View>
 				</View>
 			</Modal>
 		</ScrollView>
