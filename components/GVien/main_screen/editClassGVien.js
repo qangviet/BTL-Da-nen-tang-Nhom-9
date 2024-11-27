@@ -34,7 +34,6 @@ const EditClassScreenGVien = () => {
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const param = useSelector((state) => state.navigation.params);
 	console.log(param);
-	
 
 	useEffect(() => {
 		if (currentScreen !== "EditClassScreenGVien") {
@@ -42,6 +41,10 @@ const EditClassScreenGVien = () => {
 		}
 	}, [currentScreen]);
 
+	const state = useSelector((state) => state.navigation);
+	// console.log(state);
+	// console.log(state.history[1].params);
+	// console.log(state.history[state.history.length - 1].params);
 	function goBack() {
 		dispatch(goBackMavigation());
 	}
@@ -57,7 +60,6 @@ const EditClassScreenGVien = () => {
 	const [modalEndDate, setModalEndDate] = useState(false);
 	//const [endDate, setEndDate] = useState(null);
 
-
 	const chooseStartDate = () => {
 		setModalStartDate(true);
 	};
@@ -71,33 +73,31 @@ const EditClassScreenGVien = () => {
 		setModalEndDate(false);
 	};
 	const formatDate = (date) => {
-		if (date!=null)
-		{
-			return dayjs(date).format("DD/MM/YYYY");
+		if (typeof date === "string") {
+			// Chuyển dạng yyyy-mm-dd -> dd-mm-yyyy
+			const [year, month, day] = date.split("-");
+			// Trả về định dạng dd-mm-yyyy.
+			return `${day}-${month}-${year}`;
 		}
-		else return date;
+		return dayjs(date).format("DD-MM-YYYY");
 	};
 
 	const modifyDate = (dateString) => {
-		return new Date(dateString).toISOString().split('T')[0];
-	  };
-
-	const [startDate, setStartDate] = useState(param.classData[3]);
-	const [endDate, setEndDate] = useState(param.classData[4]);
-	//const [typeClass, setTypeClass] = useState(param.classData[2]);
-	const [classID, setClassID] = useState(param.classData[0]);
-	const [className, setClassName] = useState(param.classData[1]);
-	const [typeStatus, setTypeStatus] = useState(param.classData[5]);
-	const [isOpenModal, setIsOpenModal] = useState(false);
-
-	const openModalListClass = () => {
-
-		setIsOpenModal(true);
+		return new Date(dateString).toISOString().split("T")[0];
 	};
 
-	const closeModalListClass = (e) => {
-		setIsOpenModal(false);
-	};
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
+	const [classID, setClassID] = useState("");
+	const [className, setClassName] = useState("");
+	const [typeStatus, setTypeStatus] = useState("");
+	useEffect(() => {
+		setStartDate(param.classData[3]);
+		setEndDate(param.classData[4]);
+		setClassID(param.classData[0]);
+		setClassName(param.classData[1]);
+		setTypeStatus(param.classData[5]);
+	}, []);
 
 	const renderItem = (item, value) => {
 		return (
@@ -130,76 +130,74 @@ const EditClassScreenGVien = () => {
 		setConfirmDelete(false);
 	};
 
-
 	const saveClassInfo = async () => {
 		console.log("Saving class info:");
 		setConfirmSave(false);
-		if (!classID || !className || !typeStatus || !startDate || !endDate ) {
+		if (!classID || !className || !typeStatus || !startDate || !endDate) {
 			alert("Vui lòng nhập đầy đủ thông tin lớp học!");
 			return;
 		}
 		try {
 			const response = await api.post("/it5023e/edit_class", {
-					token: param.token,
-			    class_id: classID,
-			    class_name: className,
-			    status: typeStatus,
-			    start_date: modifyDate(startDate),
-			    end_date: modifyDate(endDate),
-				});
-				
-	
+				token: param.token,
+				class_id: classID,
+				class_name: className,
+				status: typeStatus,
+				start_date: modifyDate(startDate),
+				end_date: modifyDate(endDate),
+			});
+
 			if (response.status === 200) {
-			    alert("Lớp học đã được lưu thành công!");
-					console.log(response.data);
-					goBack();
+				alert("Lớp học đã được lưu thành công!");
+				console.log(response.data);
+				goBack();
 			} else {
-			    alert("Chỉnh sửa lớp học không thành công. Vui lòng thử lại.");
+				alert("Chỉnh sửa lớp học không thành công. Vui lòng thử lại.");
 			}
-		  } catch (error) {
-				// console.error(error.response.data.meta.code);
-				if (error.response.data.meta.code === "1004") {
-					console.error("Error Data:", error.response.data); 
-					console.error("Error Status:", error.response.status);
-					alert("Lớp đã tồn tại");
-				} else {
-					alert("Thông tin lớp không hợp lệ");
-					console.error("Error:", error.message);
-				}
+		} catch (error) {
+			// console.error(error.response.data.meta.code);
+			if (error.response.data.meta.code === "1004") {
+				console.error("Error Data:", error.response.data);
+				console.error("Error Status:", error.response.status);
+				alert("Lớp đã tồn tại");
+			} else {
+				alert("Thông tin lớp không hợp lệ");
+				console.error("Error:", error.message);
 			}
-		};
-		
+		}
+	};
+
 	const deleteClass = async () => {
 		console.log("Deleting class");
 		setConfirmDelete(false);
 		try {
 			const response = await api.post("/it5023e/delete_class", {
-					token: param.token,
-			    role: param.role == 1 ? "STUDENT" : "LECTURER",
-				account_id : param.userInfo.id,
-				class_id: classID
-				});
-				
-	
+				token: param.token,
+				role: param.role == 1 ? "STUDENT" : "LECTURER",
+				account_id: param.userInfo.id,
+				class_id: classID,
+			});
+
 			if (response.status === 200) {
-			    alert("Lớp học đã được xóa thành công!");
-					console.log(response.data);
-					goBack();
+				alert("Lớp học đã được xóa thành công!");
+				console.log(response.data);
+				goBack();
 			} else {
-			    alert("Xóa lớp học không thành công. Vui lòng thử lại.");
+				alert("Xóa lớp học không thành công. Vui lòng thử lại.");
 			}
-		  } catch (error) {
-				// console.error(error.response.data.meta.code);
-				if (error.response.data.meta.code === "9994") {
-					console.error("Error Data:", error.response.data); 
-					console.error("Error Status:", error.response.status);
-					alert("Lớp không tồn tại");
-				} else {
-					alert("Thông tin lớp không hợp lệ");
-					console.error("Error:", error.message);
-				}
+		} catch (error) {
+			// console.error(error.response.data.meta.code);
+			if (error.response.data.meta.code === "9994") {
+				console.error("Error Data:", error.response.data);
+				console.error("Error Status:", error.response.status);
+				alert("Lớp không tồn tại");
+			} else {
+				alert("Thông tin lớp không hợp lệ");
+				console.error("Error:", error.message);
 			}
-		};
+		}
+	};
+
 	// console.log(currentClass.end_week);
 
 	return (
@@ -220,7 +218,7 @@ const EditClassScreenGVien = () => {
 					placeholder="Mã lớp*"
 					placeholderTextColor={"#e86456"}
 					value={classID}
-    				onChangeText={(text) => setClassID(text)}
+					onChangeText={(text) => setClassID(text)}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 				/>
 				{/* <TextInput
@@ -233,7 +231,7 @@ const EditClassScreenGVien = () => {
 					placeholder="Tên lớp*"
 					placeholderTextColor={"#e86456"}
 					value={className}
-    				onChangeText={(text) => setClassName(text)}
+					onChangeText={(text) => setClassName(text)}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 				/>
 				{/* <View>
@@ -258,16 +256,14 @@ const EditClassScreenGVien = () => {
 						renderItem={(item) => renderItem(item, typeClass)}
 					/>
 				</View> */}
-				
+
 				<View className="flex flex-row justify-between my-2">
 					<View className="basis-[48%] ">
 						<TouchableOpacity
 							className="py-2 px-2 bg-white border border-red-500 relative"
 							onPress={chooseStartDate}
 						>
-							<Text className="text-red-400 text-lg">
-								{startDate ? modifyDate(startDate) : "Bắt đầu*"}
-							</Text>
+							<Text className="text-red-400 text-lg">{formatDate(startDate)}</Text>
 							<View className="absolute right-2 top-3">
 								<Feather name="chevron-down" size={22} color="#f87171" />
 							</View>
@@ -278,9 +274,7 @@ const EditClassScreenGVien = () => {
 							className="py-2 px-2 bg-white border border-red-500 relative"
 							onPress={chooseEndDate}
 						>
-							<Text className="text-red-400 text-lg">
-								{endDate ? modifyDate(endDate) : "Kết thúc*"}
-							</Text>
+							<Text className="text-red-400 text-lg">{formatDate(endDate)}</Text>
 							<View className="absolute right-2 top-3">
 								<Feather name="chevron-down" size={22} color="#f87171" />
 							</View>
@@ -307,7 +301,7 @@ const EditClassScreenGVien = () => {
 						renderLeftIcon={() => (
 							<AntDesign style={styles.icon} color="black" name="Safety" size={20} />
 						)}
-						renderItem={(item) => renderItem(item, typeClass)}
+						renderItem={(item) => renderItem(item, typeStatus)}
 					/>
 				</View>
 
@@ -332,7 +326,6 @@ const EditClassScreenGVien = () => {
 								<AntDesign name="close" size={24} color="gray" />
 							</TouchableOpacity>
 						</View>
-					
 					</View>
 					<Text className="text-xl font-semibold self-center px-5 py-2 my-3">
 						Xác nhận lưu thông tin lớp học?
@@ -386,16 +379,15 @@ const EditClassScreenGVien = () => {
 							initialView="day"
 							timePicker={false}
 							onChange={(params) => {
-								setStartDate(formatDate(params.date));
+								setStartDate(params.date);
 							}}
 						/>
 					</View>
-					{startDate && (
-						<View className="flex flex-row gap-x-1 items-center">
-							<Text>Thời gian bắt đầu:</Text>
-							<Text className="text-md font-semibold">{startDate}</Text>
-						</View>
-					)}
+
+					<View className="flex flex-row gap-x-1 items-center">
+						<Text>Thời gian bắt đầu:</Text>
+						<Text className="text-md font-semibold">{formatDate(startDate)}</Text>
+					</View>
 					<View className="flex justify-end flex-row mt-4 mb-2">
 						<TouchableOpacity
 							className="bg-blue-500 py-2 w-[30%] rounded-lg"
@@ -415,14 +407,14 @@ const EditClassScreenGVien = () => {
 							initialView="day"
 							timePicker={false}
 							onChange={(params) => {
-								setEndDate(formatDate(params.date));
+								setEndDate(params.date);
 							}}
 						/>
 					</View>
 					{endDate && (
 						<View className="flex flex-row gap-x-1 items-center">
 							<Text>Thời gian kết thúc:</Text>
-							<Text className="text-md font-semibold">{endDate}</Text>
+							<Text className="text-md font-semibold">{formatDate(endDate)}</Text>
 						</View>
 					)}
 					<View className="flex justify-end flex-row mt-4 mb-2">
