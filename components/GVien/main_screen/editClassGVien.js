@@ -176,7 +176,7 @@ const EditClassScreenGVien = () => {
 			const response = await api.post("/it5023e/delete_class", {
 					token: param.token,
 			    role: param.role == 1 ? "STUDENT" : "LECTURER",
-				account_id = param.userInfo.id,
+				account_id : param.userInfo.id,
 				class_id: classID
 				});
 				
@@ -200,8 +200,6 @@ const EditClassScreenGVien = () => {
 				}
 			}
 		};
-	}
-
 	// console.log(currentClass.end_week);
 
 	return (
