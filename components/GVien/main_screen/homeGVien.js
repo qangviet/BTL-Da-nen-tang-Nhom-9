@@ -10,7 +10,7 @@ const HomeGVien = () => {
 	const toast = useToast();
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
-	const param = useSelector((state) => state.navigation.params)
+	const param = useSelector((state) => state.navigation.params);
 	//console.log(param)
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
@@ -19,10 +19,10 @@ const HomeGVien = () => {
 			navigation.navigate(currentScreen);
 		}
 	}, [currentScreen]);
-	const state = useSelector((state) => state.navigation);
-	console.log("Current screen: ", state.currentScreen);
-	console.log("Params: ", state.params);
-
+	// const state = useSelector((state) => state.navigation);
+	// console.log("Current screen: ", state.currentScreen);
+	// console.log("Params: ", state.params);
+	// console.log(state.history);
 	const goToMyClasses = () => {
 		dispatch(
 			navigate({
@@ -97,13 +97,19 @@ const HomeGVien = () => {
 										color="#b5b5b5"
 									/>
 								</View>
-								{param && param.userInfo ? 
-								(<View>
-									<Text className="font-bold text-lg">{param.userInfo.name}</Text>
-									<Text className="text-sm">{param.role === 1 ? "Sinh viên" : "Giảng viên"}</Text>
-								</View>
+								{param && param.userInfo ? (
+									<View>
+										<Text className="font-bold text-lg">
+											{param.userInfo.name}
+										</Text>
+										<Text className="text-sm">
+											{param.role === 1 ? "Sinh viên" : "Giảng viên"}
+										</Text>
+									</View>
 								) : (
-								<Text className="text-red-500">Không tìm thấy thông tin người dùng</Text>
+									<Text className="text-red-500">
+										Không tìm thấy thông tin người dùng
+									</Text>
 								)}
 							</View>
 							<View className="mr-1">
