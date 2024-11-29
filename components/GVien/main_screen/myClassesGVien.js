@@ -17,7 +17,18 @@ import { useNavigation as useReactNavigation } from "@react-navigation/native";
 import api from "../../api";
 
 const MyClassesScreenGVien = () => {
-
+	const dispatch = useDispatch();
+	const navigation = useReactNavigation();
+	const state = useSelector((state) => state.navigation);
+	const param = useSelector((state) => state.navigation.params)
+	//console.log(state)
+	//console.log("Current screen: ", state);
+	useEffect(() => {
+		if (state.currentScreen !== "MyClassesScreenGVien") {
+			navigation.navigate(state.currentScreen);
+		}
+	}, [state.currentScreen]);
+	
 	useEffect(() => {
 		// Gọi API để lấy danh sách lớp học
 		const fetchClasses = async () => {
@@ -48,19 +59,8 @@ const MyClassesScreenGVien = () => {
 		};
 
 		fetchClasses();
-	}, []); // Chỉ gọi một lần khi component được mount
+	}, [state.currentScreen]); // Chỉ gọi một lần khi component được mount
 
-	const dispatch = useDispatch();
-	const navigation = useReactNavigation();
-	const state = useSelector((state) => state.navigation);
-	const param = useSelector((state) => state.navigation.params)
-	//console.log(state)
-	//console.log("Current screen: ", state);
-	useEffect(() => {
-		if (state.currentScreen !== "MyClassesScreenGVien") {
-			navigation.navigate(state.currentScreen);
-		}
-	}, [state.currentScreen]);
 
 	// State để lưu danh sách lớp học từ API
 	const [classes, setClasses] = useState([]);
@@ -83,7 +83,7 @@ const MyClassesScreenGVien = () => {
 				screen: "ClassScreenGVien",
 				params: {
 					class: item,
-					token:param.token,
+					token: param.token,
 				},
 			})
 		);

@@ -14,7 +14,7 @@ import CheckBox from "react-native-check-box";
 import { Table, TableWrapper, Row, Cell, Col } from "react-native-table-component";
 import Modal from "react-native-modal";
 import { LogoHust } from "./../../logo";
-
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
@@ -313,11 +313,20 @@ const ManageClassesScreenGVien = () => {
 				</TouchableOpacity>
 			</View>
 			<Modal isVisible={isOpenModal} onBackdropPress={(e) => closeModalListClass(e)}>
-				<View className="w-full bg-white">
-					<View className="mt-4 justify-center items-center">
-						<Text className="text-lg">Danh sách lớp mở</Text>
+				<View className="w-full bg-white rounded-xl">
+					<View className="mt-4 justify-between flex-row items-center">
+						<Text className="text-lg ml-24">Danh sách lớp mở</Text>
+
+						<TouchableOpacity className="mr-5" onPress={() => closeModalListClass()}>
+							<Ionicons
+									name="close-outline"
+									size={28}
+									color="gray"
+									className=""
+								/>
+						</TouchableOpacity>
 					</View>
-					<View className="p-4 pt-4 h-[400px] ">
+					<View className="p-4 pt-4 h-[400px]">
 						<ScrollView horizontal={true}>
 							<View>
 								<Table borderStyle={{ borderWidth: 1, borderColor: "#C1C0B9" }}>

@@ -23,7 +23,8 @@ const ClassScreenGVien = ({ route }) => {
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const params = useSelector((state) => state.navigation.params);
 
-	console.log("Den trang tabClassSvien", params);
+	const CURRENT_CLASS = params.class;
+	console.log(CURRENT_CLASS);
 
 	// 0 - docs, 1 - surveys, 2 - diemdanh
 	const [tabMode, setTabMode] = useState(0);
@@ -142,13 +143,13 @@ const ClassScreenGVien = ({ route }) => {
 						</TouchableOpacity>
 					</View>
 
-					{params.classInfo ? (
+					{CURRENT_CLASS ? (
 						<View>
 							<Text className="mt-4 ml-2 mr-2 text-xl self-center text-white font-bold">
-								{params.classInfo.name}
+								{CURRENT_CLASS.name}
 							</Text>
 							<Text className="mt-1 ml-2 mr-2 self-center text-white">
-								{params.classInfo.teacher}
+								{CURRENT_CLASS.teacher}
 							</Text>
 						</View>
 					) : null}

@@ -4,8 +4,10 @@ import { TouchableOpacity } from "react-native";
 import ViewSurveysGVien from "./viewSurveysGVien";
 
 const ClassSurveysGVien = ({ route }) => {
+
 	const { params } = route;
-	console.log("Den man hinh BaiTap", params);
+	console.log("ClassSurvey");
+	console.log(params);
 
 	function viewAssignment(name) {
 		console.log("Viewing " + name)
