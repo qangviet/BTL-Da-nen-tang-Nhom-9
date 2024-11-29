@@ -10,7 +10,6 @@ import {
 	SafeAreaView,
 	TouchableOpacity,
 } from "react-native";
-import { Table, Row } from "react-native-table-component";
 
 import { Dropdown } from "react-native-element-dropdown";
 import { FontAwesome } from "@expo/vector-icons";
@@ -23,7 +22,7 @@ import dayjs from "dayjs";
 import Feather from "@expo/vector-icons/Feather";
 import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
-import { navigate } from "../../../redux/navigationSlice";
+
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
 import api from "../../api";
 
@@ -33,16 +32,10 @@ const EditClassScreenGVien = () => {
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const param = useSelector((state) => state.navigation.params);
-	console.log(param);
-	
-
-	useEffect(() => {
-		if (currentScreen !== "EditClassScreenGVien") {
-			navigation.navigate(currentScreen);
-		}
-	}, [currentScreen]);
+	// console.log(param);
 
 	function goBack() {
+		console.log(">>>> PARAM: ", param);
 		dispatch(goBackMavigation());
 	}
 
@@ -71,7 +64,7 @@ const EditClassScreenGVien = () => {
 		setModalEndDate(false);
 	};
 	const formatDate = (date) => {
-		if (date!=null)
+		if (date != null)
 		{
 			return dayjs(date).format("DD/MM/YYYY");
 		}
@@ -79,7 +72,9 @@ const EditClassScreenGVien = () => {
 	};
 
 	const modifyDate = (dateString) => {
-		return new Date(dateString).toISOString().split('T')[0];
+		if (dateString != null) {
+			return new Date(dateString).toISOString().split('T')[0];
+		}
 	  };
 
 	const [startDate, setStartDate] = useState(param.classData[3]);
@@ -89,15 +84,6 @@ const EditClassScreenGVien = () => {
 	const [className, setClassName] = useState(param.classData[1]);
 	const [typeStatus, setTypeStatus] = useState(param.classData[5]);
 	const [isOpenModal, setIsOpenModal] = useState(false);
-
-	const openModalListClass = () => {
-
-		setIsOpenModal(true);
-	};
-
-	const closeModalListClass = (e) => {
-		setIsOpenModal(false);
-	};
 
 	const renderItem = (item, value) => {
 		return (
@@ -157,8 +143,8 @@ const EditClassScreenGVien = () => {
 			    alert("Chỉnh sửa lớp học không thành công. Vui lòng thử lại.");
 			}
 		  } catch (error) {
-				// console.error(error.response.data.meta.code);
-				if (error.response.data.meta.code === "1004") {
+				console.error(error.response);
+				if (error.response.data.meta.code === "9994") {
 					console.error("Error Data:", error.response.data); 
 					console.error("Error Status:", error.response.status);
 					alert("Lớp đã tồn tại");
@@ -176,7 +162,7 @@ const EditClassScreenGVien = () => {
 			const response = await api.post("/it5023e/delete_class", {
 					token: param.token,
 			    role: param.role == 1 ? "STUDENT" : "LECTURER",
-				account_id = param.userInfo.id,
+				account_id: param.userInfo.id,
 				class_id: classID
 				});
 				
@@ -189,7 +175,7 @@ const EditClassScreenGVien = () => {
 			    alert("Xóa lớp học không thành công. Vui lòng thử lại.");
 			}
 		  } catch (error) {
-				// console.error(error.response.data.meta.code);
+				// console.error(error.response);
 				if (error.response.data.meta.code === "9994") {
 					console.error("Error Data:", error.response.data); 
 					console.error("Error Status:", error.response.status);
@@ -200,7 +186,7 @@ const EditClassScreenGVien = () => {
 				}
 			}
 		};
-	}
+	
 
 	// console.log(currentClass.end_week);
 
@@ -219,11 +205,11 @@ const EditClassScreenGVien = () => {
 			</View>
 			<View className="mt-10 w-[85%] mx-auto">
 				<TextInput
-					placeholder="Mã lớp*"
 					placeholderTextColor={"#e86456"}
-					value={classID}
+					value={classID ?? "Mã lớp*"}
     				onChangeText={(text) => setClassID(text)}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
+					editable={false}
 				/>
 				{/* <TextInput
 					placeholder="Tên lớp*"
@@ -234,7 +220,7 @@ const EditClassScreenGVien = () => {
 				<TextInput
 					placeholder="Tên lớp*"
 					placeholderTextColor={"#e86456"}
-					value={className}
+					value={className ?? "Tên lớp"}
     				onChangeText={(text) => setClassName(text)}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 				/>
@@ -268,7 +254,7 @@ const EditClassScreenGVien = () => {
 							onPress={chooseStartDate}
 						>
 							<Text className="text-red-400 text-lg">
-								{startDate ? modifyDate(startDate) : "Bắt đầu*"}
+								{modifyDate(startDate) ?? "Bắt đầu*"}
 							</Text>
 							<View className="absolute right-2 top-3">
 								<Feather name="chevron-down" size={22} color="#f87171" />
@@ -281,7 +267,7 @@ const EditClassScreenGVien = () => {
 							onPress={chooseEndDate}
 						>
 							<Text className="text-red-400 text-lg">
-								{endDate ? modifyDate(endDate) : "Kết thúc*"}
+								{modifyDate(endDate) ?? "Kết thúc*"}
 							</Text>
 							<View className="absolute right-2 top-3">
 								<Feather name="chevron-down" size={22} color="#f87171" />
@@ -309,7 +295,7 @@ const EditClassScreenGVien = () => {
 						renderLeftIcon={() => (
 							<AntDesign style={styles.icon} color="black" name="Safety" size={20} />
 						)}
-						renderItem={(item) => renderItem(item, typeClass)}
+						renderItem={(item) => renderItem(item, listStatus)}
 					/>
 				</View>
 
@@ -379,7 +365,7 @@ const EditClassScreenGVien = () => {
 					</View>
 				</View>
 			</Modal>
-			<Modal isVisible={modalStartDate} onBackdropPress={closeModalStartDate}>
+			{startDate && (<Modal isVisible={modalStartDate} onBackdropPress={closeModalStartDate}>
 				<View className="px-6 bg-gray-200 rounded-lg pb-5">
 					<View className="mt-2">
 						<DateTimePicker
@@ -392,12 +378,10 @@ const EditClassScreenGVien = () => {
 							}}
 						/>
 					</View>
-					{startDate && (
-						<View className="flex flex-row gap-x-1 items-center">
-							<Text>Thời gian bắt đầu:</Text>
-							<Text className="text-md font-semibold">{startDate}</Text>
-						</View>
-					)}
+					<View className="flex flex-row gap-x-1 items-center">
+						<Text>Thời gian bắt đầu:</Text>
+						<Text className="text-md font-semibold">{startDate}</Text>
+					</View>
 					<View className="flex justify-end flex-row mt-4 mb-2">
 						<TouchableOpacity
 							className="bg-blue-500 py-2 w-[30%] rounded-lg"
@@ -407,8 +391,8 @@ const EditClassScreenGVien = () => {
 						</TouchableOpacity>
 					</View>
 				</View>
-			</Modal>
-			<Modal isVisible={modalEndDate} onBackdropPress={closeModalEndDate}>
+			</Modal>)}
+			{endDate && (<Modal isVisible={modalEndDate} onBackdropPress={closeModalEndDate}>
 				<View className="px-6 bg-gray-200 rounded-lg pb-5">
 					<View className="mt-2">
 						<DateTimePicker
@@ -421,12 +405,10 @@ const EditClassScreenGVien = () => {
 							}}
 						/>
 					</View>
-					{endDate && (
-						<View className="flex flex-row gap-x-1 items-center">
-							<Text>Thời gian kết thúc:</Text>
-							<Text className="text-md font-semibold">{endDate}</Text>
-						</View>
-					)}
+					<View className="flex flex-row gap-x-1 items-center">
+						<Text>Thời gian kết thúc:</Text>
+						<Text className="text-md font-semibold">{endDate}</Text>
+					</View>
 					<View className="flex justify-end flex-row mt-4 mb-2">
 						<TouchableOpacity
 							className="bg-blue-500 py-2 w-[30%] rounded-lg"
@@ -436,7 +418,7 @@ const EditClassScreenGVien = () => {
 						</TouchableOpacity>
 					</View>
 				</View>
-			</Modal>
+			</Modal>)}
 		</View>
 	);
 };
