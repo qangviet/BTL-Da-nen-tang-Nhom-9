@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
 	View,
 	Text,
@@ -18,12 +19,94 @@ import Modal from "react-native-modal";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { goBack as goBackNavigation } from "../../../redux/navigationSlice.js";
+import * as DocumentPicker from "expo-document-picker";
+import api from "../../api";
+import * as FileSystem from 'expo-file-system';
 
 const CreateSurveyGVien = () => {
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
+	const param  = useSelector((state) => state.navigation.params);
+	//console.log("da den trang createSurvey", param)
+	const [surveyTitle, setSurveyTitle] = useState("");
+	const [description, setDescription] = useState("");
+	const [startDate, setStartDate] = useState(dayjs());
+	const [endDate, setEndDate] = useState(dayjs());
+	const [file, setFile] = useState(null); // State để lưu file
+	const [questions, setQuestions] = useState([""]);
+
+	const handleFilePick = async () => {
+        try {
+            const response = await DocumentPicker.getDocumentAsync({
+                type: "*/*",
+                copyToCacheDirectory: true,
+            });
+
+            if (response.assets && response.assets.length > 0) {
+				const { name, size, uri, mimeType } = response.assets[0];
+				const fileToUpload = { name, size, uri, type: mimeType };
+				setFile(fileToUpload);
+				console.log("File đã chọn:", fileToUpload);
+			}
+            else {
+                console.log("File selection canceled.");
+				console.log(response)
+            }
+        } catch (error) {
+            console.error("Error picking file:", error);
+        }
+	}
+	
+	const handleSubmit = async () => {
+		console.log("FilePosttt", file);
+		const fileUri = file.uri;
+		// Kiểm tra xem file có tồn tại không
+		const fileInfo = await FileSystem.getInfoAsync(fileUri);
+		if (!fileInfo.exists) {
+			console.error('File not found!');
+			return;
+		}
+
+		const formData = new FormData();
+		formData.append('file', {
+			uri: fileUri,
+			name: file.name,
+			type: file.type,
+		});
+
+		formData.append('token', param.token);
+		formData.append('classId', param.classID);
+		formData.append("title", surveyTitle);
+		formData.append("deadline", formatDate(endDate));
+		formData.append("description", description);
+
+		console.log("token",param.token)
+		console.log("classID",param.classID)
+		console.log("Title", surveyTitle)
+		console.log("deadline", formatDate(endDate))
+		console.log("description", description);
+		console.log("Posttt......",formData)
+
+		try {
+			const response = await axios.post('http://157.66.24.126:8080/it5023e/create_survey', formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+			});
+			console.log('Upload success:', response.data);
+			alert("Tạo survey thành công!");
+			goBack();
+		} catch (error) {
+			console.error('Upload failed:', error.response ? error.response.data : error.message);
+			console.error("API call failed: ", error);
+			console.error("Error fetching class list:", error);
+			console.error("Error Data:", error.response.data);
+			console.error("Error Status:", error.response.status);
+		}
+		};
+
 
 	useEffect(() => {
 		// Theo dõi thay đổi currentScreen để sync với navigation system
@@ -37,9 +120,6 @@ const CreateSurveyGVien = () => {
 		// console.log("Go back!");
 	}
 
-	const [surveyTitle, setSurveyTitle] = useState("");
-	const [questions, setQuestions] = useState([""]);
-
 	const addQuestion = () => {
 		setQuestions([...questions, ""]);
 	};
@@ -48,12 +128,6 @@ const CreateSurveyGVien = () => {
 		const newQuestions = questions.slice();
 		newQuestions[index] = text;
 		setQuestions(newQuestions);
-	};
-
-	const handleSubmit = () => {
-		// Handle survey submission logic here
-		console.log("Survey Title:", surveyTitle);
-		console.log("Questions:", questions);
 	};
 
 	const [modalStartDate, setModalStartDate] = useState(false);
@@ -73,10 +147,10 @@ const CreateSurveyGVien = () => {
 	};
 
 	const formatDate = (date) => {
-		return dayjs(date).format("DD/MM/YYYY - HH:mm");
+		return dayjs(date).format("YYYY-MM-DDTHH:mm:ss");
 	};
-	const [startDate, setStartDate] = useState(dayjs());
-	const [endDate, setEndDate] = useState(dayjs());
+	
+	
 
 	return (
 		<View>
@@ -97,6 +171,8 @@ const CreateSurveyGVien = () => {
 						placeholder="Tên bài kiểm tra*"
 						placeholderTextColor={"#e86456"}
 						className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
+						value={surveyTitle}
+    					onChangeText={(text) => setSurveyTitle(text)}
 					/>
 					<TextInput
 						style={{
@@ -107,19 +183,28 @@ const CreateSurveyGVien = () => {
 						numberOfLines={5}
 						placeholderTextColor={"#e86456"}
 						className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
+						value={description}
+    					onChangeText={(text) => setDescription(text)}
 					/>
 					<Text className="self-center text-lg font-semibold text-red-600 italic">
 						Hoặc
 					</Text>
 					<View>
-						<TouchableOpacity className="px-3 py-2 rounded-2xl bg-red-600 w-[60%] mx-auto mt-3">
+						<TouchableOpacity className="px-3 py-2 rounded-2xl bg-red-600 w-[60%] mx-auto mt-3"
+						onPress={handleFilePick}>
 							<View className="self-center flex flex-row items-center gap-x-2">
-								<Text className="text-white font-semibold text-lg italic">
+								<Text 
+								className="text-white font-semibold text-lg italic"
+								>
 									Tải tài liệu lên
 								</Text>
 								<Entypo name="triangle-up" size={24} color="white" />
 							</View>
 						</TouchableOpacity>
+						{/* Hiển thị tên file dưới nút tải */}
+						{file && (
+							<Text className="mt-3 text-center text-gray-700">Tệp đã chọn: {file.name}</Text>
+						)}
 					</View>
 					<View className="pt-4">
 						<View className="flex flex-row items-center gap-x-2">
@@ -165,7 +250,9 @@ const CreateSurveyGVien = () => {
 					</View>
 					<View>
 						<TouchableOpacity className="px-8 py-2 rounded-xl bg-red-600 mx-auto mt-10">
-							<Text className="text-lg text-white font-bold italic self-center">
+							<Text 
+							className="text-lg text-white font-bold italic self-center"
+							onPress={handleSubmit}>
 								Submit
 							</Text>
 						</TouchableOpacity>
