@@ -10,7 +10,6 @@ import {
 	SafeAreaView,
 	TouchableOpacity,
 } from "react-native";
-import { Table, Row } from "react-native-table-component";
 
 import { Dropdown } from "react-native-element-dropdown";
 import { FontAwesome } from "@expo/vector-icons";
@@ -23,7 +22,7 @@ import dayjs from "dayjs";
 import Feather from "@expo/vector-icons/Feather";
 import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
-import { navigate } from "../../../redux/navigationSlice";
+
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
 import api from "../../api";
 
@@ -46,6 +45,7 @@ const EditClassScreenGVien = () => {
 	// console.log(state.history[1].params);
 	// console.log(state.history[state.history.length - 1].params);
 	function goBack() {
+		console.log(">>>> PARAM: ", param);
 		dispatch(goBackMavigation());
 	}
 
@@ -154,22 +154,19 @@ const EditClassScreenGVien = () => {
 			} else {
 				alert("Chỉnh sửa lớp học không thành công. Vui lòng thử lại.");
 			}
-		} catch (error) {
-			console.error("Error fetching class list:", error);
-			console.error("Error Data:", error.response.data);
-			console.error("Error Status:", error.response.status);
-			// console.error(error.response.data.meta.code);
-			if (error.response.data.meta.code === "1004") {
-				console.error("Error Data:", error.response.data);
-				console.error("Error Status:", error.response.status);
-				alert("Lớp đã tồn tại");
-			} else {
-				alert("Thông tin lớp không hợp lệ");
-				console.error("Error:", error.message);
+		  } catch (error) {
+				console.error(error.response);
+				if (error.response.data.meta.code === "9994") {
+					console.error("Error Data:", error.response.data); 
+					console.error("Error Status:", error.response.status);
+					alert("Lớp đã tồn tại");
+				} else {
+					alert("Thông tin lớp không hợp lệ");
+					console.error("Error:", error.message);
+				}
 			}
-		}
-	};
-
+		};
+		
 	const deleteClass = async () => {
 		console.log("Deleting class");
 		setConfirmDelete(false);
@@ -218,11 +215,11 @@ const EditClassScreenGVien = () => {
 			</View>
 			<View className="mt-10 w-[85%] mx-auto">
 				<TextInput
-					placeholder="Mã lớp*"
 					placeholderTextColor={"#e86456"}
-					value={classID}
-					onChangeText={(text) => setClassID(text)}
+					value={classID ?? "Mã lớp*"}
+    				onChangeText={(text) => setClassID(text)}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
+					editable={false}
 				/>
 				{/* <TextInput
 					placeholder="Tên lớp*"
@@ -233,8 +230,8 @@ const EditClassScreenGVien = () => {
 				<TextInput
 					placeholder="Tên lớp*"
 					placeholderTextColor={"#e86456"}
-					value={className}
-					onChangeText={(text) => setClassName(text)}
+					value={className ?? "Tên lớp"}
+    				onChangeText={(text) => setClassName(text)}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 				/>
 				{/* <View>
@@ -373,7 +370,7 @@ const EditClassScreenGVien = () => {
 					</View>
 				</View>
 			</Modal>
-			<Modal isVisible={modalStartDate} onBackdropPress={closeModalStartDate}>
+			{startDate && (<Modal isVisible={modalStartDate} onBackdropPress={closeModalStartDate}>
 				<View className="px-6 bg-gray-200 rounded-lg pb-5">
 					<View className="mt-2">
 						<DateTimePicker
@@ -400,8 +397,8 @@ const EditClassScreenGVien = () => {
 						</TouchableOpacity>
 					</View>
 				</View>
-			</Modal>
-			<Modal isVisible={modalEndDate} onBackdropPress={closeModalEndDate}>
+			</Modal>)}
+			{endDate && (<Modal isVisible={modalEndDate} onBackdropPress={closeModalEndDate}>
 				<View className="px-6 bg-gray-200 rounded-lg pb-5">
 					<View className="mt-2">
 						<DateTimePicker
@@ -429,7 +426,7 @@ const EditClassScreenGVien = () => {
 						</TouchableOpacity>
 					</View>
 				</View>
-			</Modal>
+			</Modal>)}
 		</View>
 	);
 };
