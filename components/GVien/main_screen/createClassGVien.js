@@ -128,7 +128,7 @@ const CreateClassScreenGVien = () => {
 			if (error.response.data.meta.code === "1004") {
 				console.error("Error Data:", error.response.data); 
 				console.error("Error Status:", error.response.status);
-				alert("Lớp đã tồn tại");
+				alert(error.response.data.meta.message);
 			} else {
 				alert("Thông tin lớp không hợp lệ");
 				console.error("Error:", error.message);
