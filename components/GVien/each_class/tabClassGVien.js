@@ -81,6 +81,7 @@ const ClassScreenGVien = ({ route }) => {
 				<Tab.Screen
 					name="Tài liệu"
 					component={ClassDocs}
+					initialParams={params}
 					// listeners={() => ({
 					// 	swipeEnd: (e) => {
 					// 		setTabMode(0);
@@ -90,6 +91,7 @@ const ClassScreenGVien = ({ route }) => {
 				<Tab.Screen
 					name="Bài tập"
 					component={ClassSurveys}
+					initialParams={params}
 					// listeners={() => ({
 					// 	swipeEnd: (e) => {
 					// 		setTabMode(1);
@@ -99,6 +101,7 @@ const ClassScreenGVien = ({ route }) => {
 				<Tab.Screen
 					name="Điểm danh"
 					component={ClassDiemDanhGVien}
+					initialParams={params}
 					// listeners={() => ({
 					// 	swipeEnd: (e) => {
 					// 		setTabMode(2);

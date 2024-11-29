@@ -82,7 +82,7 @@ const MyClassesScreenGVien = () => {
 			navigate({
 				screen: "ClassScreenGVien",
 				params: {
-					classID: item.id,
+					class: item,
 					token:param.token,
 				},
 			})

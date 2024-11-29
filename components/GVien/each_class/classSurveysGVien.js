@@ -3,7 +3,10 @@ import React, { Component, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import ViewSurveysGVien from "./viewSurveysGVien";
 
-const ClassSurveysGVien = ({ navigation }) => {
+const ClassSurveysGVien = ({ route }) => {
+	const { params } = route;
+	console.log("Den man hinh BaiTap", params);
+
 	function viewAssignment(name) {
 		console.log("Viewing " + name)
 	}
