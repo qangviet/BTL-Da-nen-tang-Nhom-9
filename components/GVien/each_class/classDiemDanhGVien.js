@@ -8,7 +8,11 @@ import CheckBox from "react-native-check-box";
 import Modal from "react-native-modal";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-const ClassDiemDanhGVien = () => {
+const ClassDiemDanhGVien = ({route}) => {
+
+	const {params} = route;
+	console.log("ClassDiemdanh");
+	console.log(params);
 
 	const listDate = [
 		{ value: "01/10/2024", label: "01/10/2024 (Chỉ xem)" },
