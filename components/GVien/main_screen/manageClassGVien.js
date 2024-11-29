@@ -28,7 +28,6 @@ const ManageClassesScreenGVien = () => {
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const param = useSelector((state) => state.navigation.params);
 	//console.log(param)
-
 	useEffect(() => {
 		if (currentScreen !== "MyClassesScreenGVien") {
 			navigation.navigate(currentScreen);
@@ -52,7 +51,7 @@ const ManageClassesScreenGVien = () => {
 		"Ngày bắt đầu",
 		"Ngày kết thúc",
 		"Trạng thái",
-		"Số sinh viên"
+		"Số sinh viên",
 	]);
 
 	const [widthArr] = useState([70, 130, 80, 130, 130, 70, 70]);
@@ -63,77 +62,77 @@ const ManageClassesScreenGVien = () => {
 	const [tableData, setTableData] = useState([]);
 	const [tableDataOpen, setTableDataOpen] = useState([]);
 
-    useEffect(() => {
-        if (currentScreen !== "MyClassesScreenGVien") {
-            navigation.navigate(currentScreen);
-        }
-    }, [currentScreen]);
+	useEffect(() => {
+		if (currentScreen !== "MyClassesScreenGVien") {
+			navigation.navigate(currentScreen);
+		}
+	}, [currentScreen]);
 
-    useEffect(() => {
-        // Hàm gọi API để lấy danh sách lớp
-        const fetchClassList = async () => {
-		// console.log(">>>> LOADED!");
-            try {
-                const response = await api.post("/it5023e/get_class_list", {
-                    token: param.token,
-                    role: param.role == 2 ? "LECTURER" : "STUDENT",
-                    account_id: "24",
-                    pageable_request: null,
-                });
-                const pageContent = response.data.data.page_content;
-                // Map dữ liệu để phù hợp với cấu trúc tableData
-                const formattedData = pageContent.map((item) => [
-                    item.class_id,
-                    item.class_name,
-                    item.class_type,
-                    item.start_date,
-                    item.end_date,
-                    item.status,
-                    false, // Cột checkbox mặc định là false
-                ]);
-                setTableData(formattedData);
-            } catch (error) {
-                console.error("Error fetching class list:", error);
-				console.error("Error Data:", error.response.data); 
+	useEffect(() => {
+		// Hàm gọi API để lấy danh sách lớp
+		const fetchClassList = async () => {
+			// console.log(">>>> LOADED!");
+			try {
+				const response = await api.post("/it5023e/get_class_list", {
+					token: param.token,
+					role: param.role == 2 ? "LECTURER" : "STUDENT",
+					account_id: "24",
+					pageable_request: null,
+				});
+				const pageContent = response.data.data.page_content;
+				// Map dữ liệu để phù hợp với cấu trúc tableData
+				const formattedData = pageContent.map((item) => [
+					item.class_id,
+					item.class_name,
+					item.class_type,
+					item.start_date,
+					item.end_date,
+					item.status,
+					false, // Cột checkbox mặc định là false
+				]);
+				setTableData(formattedData);
+			} catch (error) {
+				console.error("Error fetching class list:", error);
+				console.error("Error Data:", error.response.data);
 				console.error("Error Status:", error.response.status);
-            }
-        };
+			}
+		};
 
-        fetchClassList();
-    }, [currentScreen]);
+		fetchClassList();
+	}, [currentScreen]);
 
-    useEffect(() => {
-	// Hàm gọi API để lấy danh sách lớp
-	const fetchOpenClassList = async () => {
-	    // console.log(">>>> LOADED!");
-	    try {
-		  const response = await api.post("/it5023e/get_open_classes", {
-			token: param.token,
-			role: param.role == 2 ? "LECTURER" : "STUDENT",
-			account_id: "24",
-			pageable_request: null,
-		  });
-		  const pageContent = response.data.data.page_content;
-		  // Map dữ liệu để phù hợp với cấu trúc tableData
-		  const formattedData = pageContent.map((item) => [
-			item.class_id,
-			item.class_name,
-			item.class_type,
-			item.start_date,
-			item.end_date,
-			item.status,
-			item.student_count
-		  ]);
-		  setTableDataOpen(formattedData);
-	    } catch (error) {
-		  console.error("Error fetching class list:", error);
-			    console.error("Error Data:", error.response.data); 
-			    console.error("Error Status:", error.response.status);
-	    }
-	};
+	useEffect(() => {
+		// Hàm gọi API để lấy danh sách lớp
+		const fetchOpenClassList = async () => {
+			// console.log(">>>> LOADED!");
+			try {
+				const response = await api.post("/it5023e/get_open_classes", {
+					token: param.token,
+					role: param.role == 2 ? "LECTURER" : "STUDENT",
+					account_id: "24",
+					pageable_request: null,
+				});
+				const pageContent = response.data.data.page_content;
+				// Map dữ liệu để phù hợp với cấu trúc tableData
+				const formattedData = pageContent.map((item) => [
+					item.class_id,
+					item.class_name,
+					item.class_type,
+					item.start_date,
+					item.end_date,
+					item.status,
+					item.student_count,
+				]);
+				setTableDataOpen(formattedData);
+			} catch (error) {
+				console.error("Error fetching class list:", error);
+				console.error("Error Data:", error.response.data);
+				console.error("Error Status:", error.response.status);
+			}
+		};
 
-	fetchOpenClassList();
-  }, [currentScreen]);
+		fetchOpenClassList();
+	}, [currentScreen]);
 
 	function goBack() {
 		dispatch(goBackMavigation());
@@ -151,7 +150,8 @@ const ManageClassesScreenGVien = () => {
 	// Cập nhật trạng thái checkbox khi người dùng chọn hoặc bỏ chọn
 	const selectRow = (index, cellIndex) => {
 		let temp = [...tableData];
-		if (cellIndex === 6) { // Cột checkbox
+		if (cellIndex === 6) {
+			// Cột checkbox
 			// Nếu checkbox đã được chọn, bỏ chọn tất cả
 			if (temp[index][cellIndex] === false) {
 				// Nếu checkbox chưa được chọn thì chọn checkbox đó và bỏ các checkbox khác
@@ -294,12 +294,12 @@ const ManageClassesScreenGVien = () => {
 					className="flex justify-center items-center
                  bg-red-700 rounded-lg px-5 py-1"
 				>
-					<TouchableOpacity 
-					onPress={() => goEditClass()}
-					disabled={!isEditEnabled} // Vô hiệu hóa nút khi không có checkbox nào được chọn
-					style={{
-						opacity: isEditEnabled ? 1 : 0.5, // Làm mờ nút khi nó bị vô hiệu hóa
-					}}
+					<TouchableOpacity
+						onPress={() => goEditClass()}
+						disabled={!isEditEnabled} // Vô hiệu hóa nút khi không có checkbox nào được chọn
+						style={{
+							opacity: isEditEnabled ? 1 : 0.5, // Làm mờ nút khi nó bị vô hiệu hóa
+						}}
 					>
 						<Text className="text-white italic font-bold text-lg">Chỉnh sửa</Text>
 					</TouchableOpacity>
@@ -342,9 +342,7 @@ const ManageClassesScreenGVien = () => {
 											>
 												{rowData.map((cellData, cellIndex) => (
 													<Cell
-														data={
-															cellData
-														}
+														data={cellData}
 														textStyle={styles.textRecoder}
 														width={widthArrOpen[cellIndex]}
 													/>
