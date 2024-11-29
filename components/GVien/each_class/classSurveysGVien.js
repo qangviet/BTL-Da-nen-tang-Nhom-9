@@ -2,6 +2,8 @@ import { Text, View, FlatList } from "react-native";
 import React, { Component, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import ViewSurveysGVien from "./viewSurveysGVien";
+import api from "../../api";
+import { useEffect } from "react";
 
 const ClassSurveysGVien = ({ route }) => {
 
@@ -18,58 +20,93 @@ const ClassSurveysGVien = ({ route }) => {
 
 	const today = new Date()
 	// console.log("Today: ", today)
-
-	grouped_upcoming = {};
-	grouped_pastdue = {};
-	grouped_completed = {}
-
-	const ASSIGNMENTs = [
-		{ id: "0", name: "Bài tập Idk", description: 'des', start: '10 thg 4', end: '12 thg 4', status: 'Completed', grade: '10/10' },
-		{ id: "1", name: "Bài tập Đa tảng nền", description: 'des', start: '11 thg 4', end: '12 thg 4', status: 'Completed', grade: '10/10' },
-		{ id: "2", name: "Bài tập Tảng đa nền", description: 'des', start: '12 thg 4', end: '14 thg 4', status: 'Completed', grade: '10/10' },
-		{ id: "3", name: "Bài tập Nền tảng đa", description: 'des', start: '13 thg 4', end: '14 thg 4', status: 'Completed', grade: '10/10' },
-		{ id: "4", name: "Bài tập Nền đa tảng", description: 'des', start: '14 thg 4', end: '16 thg 4', status: 'Completed', grade: '10/10' },
-		{ id: "5", name: "Bài tập Tảng nền đa", description: 'des', start: '15 thg 4', end: '17 thg 4', status: 'Completed', grade: '10/10' },
-		{ id: "6", name: "Bài tập Đa nền tảng", description: 'des', start: '16 thg 4', end: '18 thg 4', status: 'Completed', grade: 'None' },
-		{ id: "7", name: "Bài tập Đa nền tảng", description: 'des', start: '16 thg 10', end: '18 thg 10', status: 'Completed', grade: 'None' },
-		{ id: "8", name: "Bài tập Đa nền tảng", description: 'des', start: '16 thg 10', end: '18 thg 10', status: 'Completed', grade: 'None' },
-		{ id: "9", name: "Bài tập Đa nền tảng", description: 'des', start: '20 thg 10', end: '24 thg 10', status: 'Not completed', grade: 'None' },
-		{ id: "10", name: "Bài tập Đa nền tảng", description: 'des', start: '21 thg 10', end: '24 thg 10', status: 'Not completed', grade: 'None' },
-		{ id: "11", name: "Bài tập Đa nền tảng", description: 'des', start: '22 thg 10', end: '25 thg 10', status: 'Not completed', grade: 'None' },
-		{ id: "12", name: "Bài tập Đa nền tảng", description: 'des', start: '22 thg 10', end: '26 thg 11', status: 'Not completed', grade: 'None' },
-		{ id: "13", name: "Bài tập Đa nền tảng", description: 'des', start: '23 thg 10', end: '27 thg 11', status: 'Not completed', grade: 'None' },
-		{ id: "14", name: "Bài tập Đa nền tảng", description: 'des', start: '24 thg 10', end: '28 thg 11', status: 'Not completed', grade: 'None' },
-		{ id: "15", name: "Bài tập Đa nền tảng", description: 'des', start: '24 thg 10', end: '29 thg 11', status: 'Not completed', grade: 'None' },
-	]
-
-	const parseDate = (dateString) => {
-		const [day, month] = dateString.split(' thg ').map(Number);
-		const year = new Date().getFullYear();
-		// console.log(new Date(year, month - 1, day + 1))
-		return new Date(year, month - 1, day + 1);
-	};
+	const [assignment, setAssignments] = useState([]);
+	const token = params.token;
+	const class_id = params.class.id;
 
 
-	ASSIGNMENTs.forEach((assignment) => {
-		const date = assignment.end;
-		if (assignment.status == 'Completed') {
-			if (!grouped_completed[date]) {
-				grouped_completed[date] = [];
+	let grouped_upcoming = {};
+	let grouped_pastdue = {};
+	let grouped_completed = {};
+
+	useEffect(() => {
+		async function fetchAssignments() {
+		try {
+			const response = await api.post('/it5023e/get_all_surveys', {
+			token: token,
+			class_id: class_id,
+			});
+
+			if (response.data.meta.code === "1000") {
+			const data = response.data.data;
+			setAssignments(data);
+			groupAssignments(data);
+			} else {
+			console.error('API error:', response.data.meta.message);
 			}
-			grouped_completed[date].push(assignment);
-		} else if (new parseDate(date) > today) {
-			if (!grouped_upcoming[date]) {
-				grouped_upcoming[date] = [];
-			}
-			grouped_upcoming[date].push(assignment);
-		} else if (new parseDate(date) < today) {
-			if (!grouped_pastdue[date]) {
-				grouped_pastdue[date] = [];
-			}
-			grouped_pastdue[date].push(assignment);
+		} catch (error) {
+			console.error('Network error:', error);
+			console.error("API call failed: ", error);
+			console.error("Error fetching class list:", error);
+			console.error("Error Data:", error.response.data);
+			console.error("Error Status:", error.response.status);
+		}
 		}
 
-	});
+		fetchAssignments();
+	}, []);
+
+	const parseDate = (dateString) => new Date(dateString);
+
+	console.log(assignment)
+
+  function groupAssignments(assignment) {
+    assignment.forEach((assignment) => {
+      const deadline = parseDate(assignment.deadline);
+      if (deadline > today) {
+        if (!grouped_upcoming[assignment.deadline]) {
+          grouped_upcoming[assignment.deadline] = [];
+        }
+        grouped_upcoming[assignment.deadline].push(assignment);
+      } else if (deadline < today) {
+        if (!grouped_pastdue[assignment.deadline]) {
+          grouped_pastdue[assignment.deadline] = [];
+        }
+        grouped_pastdue[assignment.deadline].push(assignment);
+      } else {
+        if (!grouped_completed[assignment.deadline]) {
+          grouped_completed[assignment.deadline] = [];
+        }
+        grouped_completed[assignment.deadline].push(assignment);
+      }
+    });
+
+    console.log("Upcoming:", grouped_upcoming);
+    console.log("Past Due:", grouped_pastdue);
+    console.log("Completed:", grouped_completed);
+  }
+
+
+	// ASSIGNMENTs.forEach((assignment) => {
+	// 	const date = assignment.end;
+	// 	if (assignment.status == 'Completed') {
+	// 		if (!grouped_completed[date]) {
+	// 			grouped_completed[date] = [];
+	// 		}
+	// 		grouped_completed[date].push(assignment);
+	// 	} else if (new parseDate(date) > today) {
+	// 		if (!grouped_upcoming[date]) {
+	// 			grouped_upcoming[date] = [];
+	// 		}
+	// 		grouped_upcoming[date].push(assignment);
+	// 	} else if (new parseDate(date) < today) {
+	// 		if (!grouped_pastdue[date]) {
+	// 			grouped_pastdue[date] = [];
+	// 		}
+	// 		grouped_pastdue[date].push(assignment);
+	// 	}
+
+	// });
 
 	const sortedDates_upcoming = Object.keys(grouped_upcoming).sort((a, b) => new parseDate(b) - new parseDate(a));
 	const sortedDates_pastdue = Object.keys(grouped_pastdue).sort((a, b) => new parseDate(b) - new parseDate(a));

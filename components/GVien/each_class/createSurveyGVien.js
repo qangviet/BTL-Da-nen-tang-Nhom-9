@@ -77,13 +77,13 @@ const CreateSurveyGVien = () => {
 		});
 
 		formData.append('token', param.token);
-		formData.append('classId', param.classID);
+		formData.append('classId', param.class.id);
 		formData.append("title", surveyTitle);
 		formData.append("deadline", formatDate(endDate));
 		formData.append("description", description);
 
 		console.log("token",param.token)
-		console.log("classID",param.classID)
+		console.log("classID",param.class.id)
 		console.log("Title", surveyTitle)
 		console.log("deadline", formatDate(endDate))
 		console.log("description", description);
