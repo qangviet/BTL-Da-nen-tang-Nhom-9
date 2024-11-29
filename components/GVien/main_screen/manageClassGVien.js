@@ -27,7 +27,7 @@ const ManageClassesScreenGVien = () => {
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const param = useSelector((state) => state.navigation.params);
-	//console.log(param)
+	console.log(param)
 	useEffect(() => {
 		if (currentScreen !== "MyClassesScreenGVien") {
 			navigation.navigate(currentScreen);
@@ -54,8 +54,8 @@ const ManageClassesScreenGVien = () => {
 		"Số sinh viên",
 	]);
 
-	const [widthArr] = useState([70, 130, 80, 130, 130, 70, 70]);
-	const [widthArrOpen] = useState([70, 130, 80, 130, 130, 70, 70]);
+	const [widthArr] = useState([70, 130, 80, 130, 130, 100, 70]);
+	const [widthArrOpen] = useState([70, 130, 80, 130, 130, 100, 70]);
 	const sumTC = 16;
 	const [checkedData, setCheckedData] = useState(null); // Lưu thông tin dòng đã chọn
 	const [isEditEnabled, setIsEditEnabled] = useState(false); // Điều kiện để bật/tắt nút "Chỉnh sửa"

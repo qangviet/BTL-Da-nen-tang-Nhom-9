@@ -23,7 +23,7 @@ const ClassScreenGVien = ({ route }) => {
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const params = useSelector((state) => state.navigation.params);
 
-	console.log(params);
+	console.log("Den trang tabClassSvien", params);
 
 	// 0 - docs, 1 - surveys, 2 - diemdanh
 	const [tabMode, setTabMode] = useState(0);
@@ -115,6 +115,7 @@ const ClassScreenGVien = ({ route }) => {
 		dispatch(
 			navigate({
 				screen: "CreateSurveyGVien",
+				params: params,
 			})
 		);
 		console.log("Go to: Create survey");

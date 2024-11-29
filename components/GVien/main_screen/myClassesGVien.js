@@ -14,39 +14,76 @@ import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
+import api from "../../api";
 
 const MyClassesScreenGVien = () => {
+
+	useEffect(() => {
+		// Gọi API để lấy danh sách lớp học
+		const fetchClasses = async () => {
+			try {
+				const response = await api.post("/it5023e/get_class_list", {
+					token: param.token,
+					role: param.role == 2 ? "LECTURER" : "STUDENT",
+					account_id: "null",
+				});
+
+				// Xử lý dữ liệu và cập nhật state
+				if (response.data.meta.code === "1000") {
+					const fetchedClasses = response.data.data.page_content.map((item) => ({
+						id: item.class_id,
+						name: item.class_name,
+						teacher: item.lecturer_name,
+					}));
+					setClasses(fetchedClasses);
+				} else {
+					console.error("Error fetching classes: ", response.data.meta.message);
+				}
+			} catch (error) {
+				console.error("API call failed: ", error);
+				console.error("Error fetching class list:", error);
+				console.error("Error Data:", error.response.data);
+				console.error("Error Status:", error.response.status);
+			}
+		};
+
+		fetchClasses();
+	}, []); // Chỉ gọi một lần khi component được mount
+
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
 	const state = useSelector((state) => state.navigation);
-	console.log("Current screen: ", state);
+	const param = useSelector((state) => state.navigation.params)
+	//console.log(state)
+	//console.log("Current screen: ", state);
 	useEffect(() => {
 		if (state.currentScreen !== "MyClassesScreenGVien") {
 			navigation.navigate(state.currentScreen);
 		}
 	}, [state.currentScreen]);
 
-	const CLASSES = [
-		{ id: "0", name: "Phát triển ứng dụng đa nền tảng", teacher: "Nguyễn Tiến Thành" },
-		{ id: "1", name: "Tính toán tiến hóa", teacher: "Huỳnh Thị Thanh Bình" },
-		{ id: "2", name: "Nhập môn Khoa học dữ liệu", teacher: "Phạm Văn Hải" },
-		{ id: "3", name: "Lưu trữ và xử lý dữ liệu lớn", teacher: "Trần Việt Trung" },
-		{ id: "4", name: "Quản trị dự án CNTT", teacher: "Lê Đức Trung" },
-		{ id: "5", name: "Project III", teacher: "Đỗ Tuấn Anh" },
-		{ id: "6", name: "Subject 6", teacher: "Nguyễn Tiến Thành" },
-		{ id: "7", name: "Subject 7", teacher: "Nguyễn Tiến Thành" },
-		{ id: "8", name: "Subject 8", teacher: "Nguyễn Tiến Thành" },
-		{ id: "9", name: "Subject 9", teacher: "Nguyễn Tiến Thành" },
-		{ id: "10", name: "Subject 10", teacher: "Nguyễn Tiến Thành" },
+	// State để lưu danh sách lớp học từ API
+	const [classes, setClasses] = useState([]);
+	const [classID, setClassID] = useState(null);
 
-		{ id: "extra", name: "extra", teacher: "extra" },
-	];
+	useEffect(() => {
+		// Kiểm tra màn hình hiện tại và điều hướng nếu cần
+		if (state.currentScreen !== "MyClassesScreenGVien") {
+			navigation.navigate(state.currentScreen);
+		}
+	}, [state.currentScreen]);
+
+	
+
 	function goToClass(item) {
+		//setClassID(item.id)
+		//console.log(classID)
 		dispatch(
 			navigate({
 				screen: "ClassScreenGVien",
 				params: {
-					classInfo: item,
+					classID: item.id,
+					token:param.token,
 				},
 			})
 		);
@@ -90,7 +127,7 @@ const MyClassesScreenGVien = () => {
 
 			<FlatList
 				className="mb-8"
-				data={CLASSES}
+				data={classes}
 				renderItem={({ item }) => <Item item={item} />}
 				keyExtractor={(item) => item.id}
 			/>

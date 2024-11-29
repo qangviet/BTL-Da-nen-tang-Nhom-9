@@ -155,6 +155,9 @@ const EditClassScreenGVien = () => {
 				alert("Chỉnh sửa lớp học không thành công. Vui lòng thử lại.");
 			}
 		} catch (error) {
+			console.error("Error fetching class list:", error);
+			console.error("Error Data:", error.response.data);
+			console.error("Error Status:", error.response.status);
 			// console.error(error.response.data.meta.code);
 			if (error.response.data.meta.code === "1004") {
 				console.error("Error Data:", error.response.data);
