@@ -20,13 +20,19 @@ import { navigate } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { goBack as goBackMavigation } from "../../../redux/navigationSlice.js";
+import api from "../../api";
 
 const EditSurveyGVien = () => {
 
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
+	
 	const params = useSelector((state) => state.navigation.params);
+	const survey = params.survey;
+	const token = params.token;
+
+	console.log("Edit survey: ", params.survey);
 
 	useEffect(() => {
 		// Theo dõi thay đổi currentScreen để sync với navigation system
@@ -35,54 +41,29 @@ const EditSurveyGVien = () => {
 		}
 	}, [currentScreen]);
 
+	
 	function goBack() {
 		dispatch(goBackMavigation());
 	}
-
+	
 	const [surveyTitle, setSurveyTitle] = useState("");
 	const [questions, setQuestions] = useState([""]);
-
-	const addQuestion = () => {
-		setQuestions([...questions, ""]);
-	};
-
-	const handleQuestionChange = (text, index) => {
-		const newQuestions = questions.slice();
-		newQuestions[index] = text;
-		setQuestions(newQuestions);
-	};
-
-	const handleSubmit = () => {
-		// Handle survey submission logic here
-		console.log("Survey Title:", surveyTitle);
-		console.log("Questions:", questions);
-	};
-
-	const [modalStartDate, setModalStartDate] = useState(false);
+	
+	const [endDate, setEndDate] = useState(dayjs());
+	useEffect(() => {
+		survey ? setEndDate(survey.deadline) : setEndDate(dayjs());
+	}, [survey]);
+	
 	const [modalEndDate, setModalEndDate] = useState(false);
-	const [checkDate, setCheckDate] = useState([false, false]);
-	const openModalStartDate = () => {
-		setModalStartDate(true);
-	};
+	const [modalConfirmSave, setModalConfirmSave] = useState(false);
+	const [modalConfirmDelete, setModalConfirmDelete] = useState(false);
+	
 	const openModalEndDate = () => {
 		setModalEndDate(true);
-	};
-	const closeModalStartDate = () => {
-		setModalStartDate(false);
 	};
 	const closeModalEndDate = () => {
 		setModalEndDate(false);
 	};
-
-	const formatDate = (date) => {
-		return dayjs(date).format("DD/MM/YYYY - HH:mm");
-	};
-	const [startDate, setStartDate] = useState(dayjs());
-	const [endDate, setEndDate] = useState(dayjs());
-
-	const [modalConfirmSave, setModalConfirmSave] = useState(false);
-	const [modalConfirmDelete, setModalConfirmDelete] = useState(false);
-
 	const openModalConfirmSave = () => {
 		setModalConfirmSave(true);
 	};
@@ -98,7 +79,65 @@ const EditSurveyGVien = () => {
 		setModalConfirmDelete(false);
 	};
 
-	const survey = params.survey;
+	const formatDate = (date) => {
+		return dayjs(date).format("YYYY-MM-DDTHH:mm:ss");
+	};
+
+	const formatDate_display = (date) => {
+		return dayjs(date).format("YYYY-MM-DD HH:mm");
+	};
+
+	function handleLinkPressed(url) {
+		console.log("Open link");
+	}
+
+	async function handleSave() {
+		try {
+			const response = await api.post('/it5023e/edit_survey', {
+				file: null,
+				token: token,
+				assignmentId: survey.id,
+				deadline: formatDate(endDate),
+				description: survey.description
+			});
+
+			if (response.data.meta.code === "1000") {
+				alert("Chỉnh sửa thành công!");
+				goBack();
+			} else {
+				console.error('API error:', response.data.meta.message);
+			}
+		} catch (error) {
+			console.error('Network error:', error);
+			console.error("API call failed: ", error);
+			console.error("Error fetching class list:", error);
+			console.error("Error Data:", error.response.data);
+			console.error("Error Status:", error.response.status);
+		}
+	};
+
+	async function handleDelete() {
+		try {
+			const response = await api.post('/it5023e/delete_survey', {
+				token: token,
+				survey_id: survey.id
+			});
+
+			if (response.data.meta.code === "1000") {
+				alert("Xóa thành công!");
+				goBack();
+			} else {
+				console.error('API error:', response.data.meta.message);
+			}
+		} catch (error) {
+			console.error('Network error:', error);
+			console.error("API call failed: ", error);
+			console.error("Error fetching class list:", error);
+			console.error("Error Data:", error.response.data);
+			console.error("Error Status:", error.response.status);
+		}
+	}
+
 
 	return (
 		<>
@@ -118,7 +157,7 @@ const EditSurveyGVien = () => {
 					<TextInput
 						placeholder="Tên bài kiểm tra*"
 						placeholderTextColor={"#e86456"}
-						defaultValue={survey.name}
+						defaultValue={survey.title}
 						className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 					/>
 					<TextInput
@@ -136,10 +175,16 @@ const EditSurveyGVien = () => {
 						Hoặc
 					</Text>
 					<View>
-						<TouchableOpacity className="px-3 py-2 rounded-2xl bg-red-600 w-[60%] mx-auto mt-3">
+						{survey.file_url && <View className="flex-row justify-center">
+							<Text className="self-center mt-3 mr-2">Link tài liệu: </Text>
+							<TouchableOpacity onPress={() => handleLinkPressed(survey.file_url)}>
+								<Text className="self-center text-blue-500 mt-3 underline">Google Drive</Text>
+							</TouchableOpacity>
+						</View>}
+						<TouchableOpacity className="px-3 py-2 rounded-2xl bg-red-600 w-[60%] mx-auto mt-2">
 							<View className="self-center flex flex-row items-center gap-x-2">
 								<Text className="text-white font-semibold text-lg italic">
-									{survey.file !== "" ? survey.file : "Tải tài liệu lên"}
+									Tải tài liệu lên
 								</Text>
 								<Entypo name="triangle-up" size={24} color="white" />
 							</View>
@@ -148,30 +193,7 @@ const EditSurveyGVien = () => {
 					<View className="pt-4">
 						<View className="flex flex-row items-center gap-x-2">
 							<Text className="text-base text-red-500 font-semibold w-[70px]">
-								Bắt đầu:
-							</Text>
-							<TouchableOpacity
-								className="px-4 py-2 border border-red-300 rounded-lg w-44"
-								onPress={openModalStartDate}
-							>
-								{
-									<Text className="text-red-500">
-										{survey.start ? survey.start : "Chọn ngày"}
-									</Text>
-								}
-							</TouchableOpacity>
-							<TouchableOpacity
-								className="bg-red-500 px-4 py-2 rounded-lg"
-								onPress={openModalStartDate}
-							>
-								<Text className="text-white">Chọn</Text>
-							</TouchableOpacity>
-						</View>
-					</View>
-					<View className="pt-4">
-						<View className="flex flex-row items-center gap-x-2">
-							<Text className="text-base text-red-500 font-semibold w-[70px]">
-								Kết thúc:
+								Hạn nộp:
 							</Text>
 							<TouchableOpacity
 								className="px-4 py-2 border border-red-300 rounded-lg w-44"
@@ -179,15 +201,15 @@ const EditSurveyGVien = () => {
 							>
 								{
 									<Text className="text-red-500">
-										{survey.end ? survey.end : "Chọn ngày"}
+										{survey ? formatDate_display(endDate) : "Chọn ngày"}
 									</Text>
 								}
 							</TouchableOpacity>
 							<TouchableOpacity
-								className="bg-red-500 px-4 py-2 rounded-lg"
+								className="bg-red-600 px-4 py-2 rounded-lg"
 								onPress={openModalEndDate}
 							>
-								<Text className="text-white">Chọn</Text>
+								<Text className="text-white font-bold">Chọn</Text>
 							</TouchableOpacity>
 						</View>
 					</View>
@@ -215,6 +237,35 @@ const EditSurveyGVien = () => {
 					</View>
 				</View>
 			</View>}
+			{survey && <Modal isVisible={modalEndDate} onBackdropPress={closeModalEndDate}>
+				<View className="px-6 bg-gray-200 rounded-lg pb-5">
+					<View className="mt-2">
+						<DateTimePicker
+							mode="single"
+							date={endDate}
+							initialView="day"
+							timePicker={true}
+							onChange={(params) => {
+								setEndDate(params.date);
+							}}
+						/>
+					</View>
+
+					<View className="flex flex-row gap-x-1 items-center">
+						<Text>Thời gian kết thúc:</Text>
+						<Text className="text-md font-semibold">{formatDate_display(endDate)}</Text>
+					</View>
+					<View className="flex justify-end flex-row mt-4 mb-2">
+						<TouchableOpacity
+							className="bg-blue-500 py-2 w-[30%] rounded-lg"
+							onPress={closeModalEndDate}
+						>
+							<Text className="text-white font-mediu self-center">Xong</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+			</Modal>}
+
 			<Modal isVisible={modalConfirmSave} onBackdropPress={closeModalConfirmSave}>
 				<View className="bg-gray-200 rounded-md pb-5">
 					<View className="flex flex-row justify-end items-center mt-3 px-3">
@@ -227,17 +278,17 @@ const EditSurveyGVien = () => {
 							/>
 						</TouchableOpacity>
 					</View>
-					<View className="border-t border-gray-400"></View>
+					<View className="border-t border-gray-400 justify-center"></View>
 					<View>
-						<Text className="text-xl font-bold px-5 py-3">
+						<Text className="text-xl font-bold px-5 py-3 self-center">
 							Xác nhận sửa đổi bài tập ?
 						</Text>
 					</View>
 					<View className="flex flex-row justify-end px-3 gap-x-5 pt-3">
-						<TouchableOpacity className="px-3 py-2 bg-blue-500 rounded-lg">
+						<TouchableOpacity className="px-3 py-2 bg-blue-500 rounded-lg" onPress={() => handleSave()}>
 							<Text className="text-lg text-gray-300">Lưu</Text>
 						</TouchableOpacity>
-						<TouchableOpacity className="px-3 py-2 bg-red-600 rounded-lg">
+						<TouchableOpacity className="px-3 py-2 bg-red-600 rounded-lg" onPress={() => closeModalConfirmSave()}>
 							<Text className="text-white text-lg">Không</Text>
 						</TouchableOpacity>
 					</View>
@@ -257,82 +308,20 @@ const EditSurveyGVien = () => {
 						</TouchableOpacity>
 					</View>
 					<View className="border-t border-gray-400"></View>
-					<View>
-						<Text className="text-xl font-bold px-5 py-3">Xác nhận xóa bài tập ?</Text>
+					<View className="justify-center">
+						<Text className="self-center text-xl font-bold px-5 py-3">Xác nhận xóa bài tập ?</Text>
 					</View>
 					<View className="flex flex-row justify-end px-3 gap-x-5 pt-3">
-						<TouchableOpacity className="px-3 py-2 bg-blue-500 rounded-lg">
+						<TouchableOpacity className="px-3 py-2 bg-blue-500 rounded-lg" onPress={() => handleDelete()}>
 							<Text className="text-lg text-gray-300">Xóa</Text>
 						</TouchableOpacity>
-						<TouchableOpacity className="px-3 py-2 bg-red-600 rounded-lg">
+						<TouchableOpacity className="px-3 py-2 bg-red-600 rounded-lg" onPress={() => closeModalConfirmDelete()}>
 							<Text className="text-white text-lg">Không</Text>
 						</TouchableOpacity>
 					</View>
 				</View>
 			</Modal>
 
-			<Modal isVisible={modalStartDate} onBackdropPress={closeModalStartDate}>
-				<View className="px-6 bg-gray-200 rounded-lg pb-5">
-					<View className="mt-2">
-						<DateTimePicker
-							mode="single"
-							date={startDate}
-							initialView="day"
-							timePicker={true}
-							onChange={(params) => {
-								setStartDate(params.date);
-								setCheckDate((prev) => [true, prev[1]]);
-							}}
-						/>
-					</View>
-
-					{checkDate[0] && (
-						<View className="flex flex-row gap-x-1 items-center">
-							<Text>Thời gian bắt đầu:</Text>
-							<Text className="text-md font-semibold">{formatDate(startDate)}</Text>
-						</View>
-					)}
-					<View className="flex justify-end flex-row mt-4 mb-2">
-						<TouchableOpacity
-							className="bg-blue-500 py-2 w-[30%] rounded-lg"
-							onPress={closeModalStartDate}
-						>
-							<Text className="text-white font-mediu self-center">Xong</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
-			</Modal>
-			<Modal isVisible={modalEndDate} onBackdropPress={closeModalEndDate}>
-				<View className="px-6 bg-gray-200 rounded-lg pb-5">
-					<View className="mt-2">
-						<DateTimePicker
-							mode="single"
-							date={endDate}
-							initialView="day"
-							timePicker={true}
-							onChange={(params) => {
-								setEndDate(params.date);
-								setCheckDate((prev) => [prev[0], true]);
-							}}
-						/>
-					</View>
-
-					{checkDate[1] && (
-						<View className="flex flex-row gap-x-1 items-center">
-							<Text>Thời gian kết thúc:</Text>
-							<Text className="text-md font-semibold">{formatDate(endDate)}</Text>
-						</View>
-					)}
-					<View className="flex justify-end flex-row mt-4 mb-2">
-						<TouchableOpacity
-							className="bg-blue-500 py-2 w-[30%] rounded-lg"
-							onPress={closeModalEndDate}
-						>
-							<Text className="text-white font-mediu self-center">Xong</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
-			</Modal>
 		</>
 	);
 };

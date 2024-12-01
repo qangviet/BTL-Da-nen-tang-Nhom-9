@@ -59,8 +59,7 @@ const CreateSurveyGVien = () => {
         }
 	}
 	
-	const handleSubmit = async () => {
-		console.log("FilePosttt", file);
+	const handleSubmit = async () => {		
 		const fileUri = file.uri;
 		// Kiểm tra xem file có tồn tại không
 		const fileInfo = await FileSystem.getInfoAsync(fileUri);
@@ -75,7 +74,7 @@ const CreateSurveyGVien = () => {
 			name: file.name,
 			type: file.type,
 		});
-
+		
 		formData.append('token', param.token);
 		formData.append('classId', param.class.id);
 		formData.append("title", surveyTitle);
@@ -150,7 +149,9 @@ const CreateSurveyGVien = () => {
 		return dayjs(date).format("YYYY-MM-DDTHH:mm:ss");
 	};
 	
-	
+	const formatDate_display = (date) => {
+		return dayjs(date).format("YYYY-MM-DD HH:mm");
+	};
 
 	return (
 		<View>
@@ -206,37 +207,17 @@ const CreateSurveyGVien = () => {
 							<Text className="mt-3 text-center text-gray-700">Tệp đã chọn: {file.name}</Text>
 						)}
 					</View>
+					
 					<View className="pt-4">
 						<View className="flex flex-row items-center gap-x-2">
-							<Text className="text-base text-red-500 font-semibold">Bắt đầu:</Text>
-							<TouchableOpacity
-								className="px-4 py-2 border border-red-300 rounded-lg w-44"
-								onPress={openModalStartDate}
-							>
-								{
-									<Text className="text-red-500">
-										{checkDate[0] ? formatDate(startDate) : "Chọn ngày"}
-									</Text>
-								}
-							</TouchableOpacity>
-							<TouchableOpacity
-								className="bg-red-500 px-4 py-2 rounded-lg"
-								onPress={openModalStartDate}
-							>
-								<Text className="text-white">Chọn</Text>
-							</TouchableOpacity>
-						</View>
-					</View>
-					<View className="pt-4">
-						<View className="flex flex-row items-center gap-x-2">
-							<Text className="text-base text-red-500 font-semibold">Kết thúc:</Text>
+							<Text className="text-base text-red-500 font-semibold">Hạn nộp:</Text>
 							<TouchableOpacity
 								className="px-4 py-2 border border-red-300 rounded-lg w-44"
 								onPress={openModalEndDate}
 							>
 								{
 									<Text className="text-red-500">
-										{checkDate[1] ? formatDate(endDate) : "Chọn ngày"}
+										{checkDate[1] ? formatDate_display(endDate) : "Chọn ngày"}
 									</Text>
 								}
 							</TouchableOpacity>
@@ -259,37 +240,7 @@ const CreateSurveyGVien = () => {
 					</View>
 				</View>
 			</View>
-			<Modal isVisible={modalStartDate} onBackdropPress={closeModalStartDate}>
-				<View className="h-[60%] px-6 bg-gray-200 rounded-lg">
-					<View className="mt-2">
-						<DateTimePicker
-							mode="single"
-							date={startDate}
-							initialView="day"
-							timePicker={true}
-							onChange={(params) => {
-								setStartDate(params.date);
-								setCheckDate((prev) => [true, prev[1]]);
-							}}
-						/>
-					</View>
 
-					{checkDate[0] && (
-						<View className="flex flex-row gap-x-1 items-center">
-							<Text>Thời gian bắt đầu:</Text>
-							<Text className="text-md font-semibold">{formatDate(startDate)}</Text>
-						</View>
-					)}
-					<View className="flex justify-end flex-row mt-4 mb-2">
-						<TouchableOpacity
-							className="bg-blue-500 py-2 w-[30%] rounded-lg"
-							onPress={closeModalStartDate}
-						>
-							<Text className="text-white font-mediu self-center">Xong</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
-			</Modal>
 			<Modal isVisible={modalEndDate} onBackdropPress={closeModalEndDate}>
 				<View className="h-[60%] px-6 bg-gray-200 rounded-lg">
 					<View className="mt-2">
@@ -308,7 +259,7 @@ const CreateSurveyGVien = () => {
 					{checkDate[1] && (
 						<View className="flex flex-row gap-x-1 items-center">
 							<Text>Thời gian kết thúc:</Text>
-							<Text className="text-md font-semibold">{formatDate(endDate)}</Text>
+							<Text className="text-md font-semibold">{formatDate_display(endDate)}</Text>
 						</View>
 					)}
 					<View className="flex justify-end flex-row mt-4 mb-2">
