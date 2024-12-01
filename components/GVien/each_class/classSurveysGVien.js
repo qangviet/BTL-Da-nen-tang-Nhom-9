@@ -1,9 +1,12 @@
-import { Text, View, FlatList } from "react-native";
+import { Modal, Text, View, FlatList } from "react-native";
 import React, { Component, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import ViewSurveysGVien from "./viewSurveysGVien";
 import api from "../../api";
 import { useEffect } from "react";
+import { Linking } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
+import * as FileSystem from 'expo-file-system';
 
 const ClassSurveysGVien = ({ route }) => {
 
@@ -59,60 +62,74 @@ const ClassSurveysGVien = ({ route }) => {
 	const parseDate = (dateString) => new Date(dateString);
 
 	console.log(assignment)
+	const [groupedUpcoming, setGroupedUpcoming] = useState({});
+	const [groupedPastdue, setGroupedPastdue] = useState({});
 
-  function groupAssignments(assignment) {
-    assignment.forEach((assignment) => {
-      const deadline = parseDate(assignment.deadline);
-      if (deadline > today) {
-        if (!grouped_upcoming[assignment.deadline]) {
-          grouped_upcoming[assignment.deadline] = [];
-        }
-        grouped_upcoming[assignment.deadline].push(assignment);
-      } else if (deadline < today) {
-        if (!grouped_pastdue[assignment.deadline]) {
-          grouped_pastdue[assignment.deadline] = [];
-        }
-        grouped_pastdue[assignment.deadline].push(assignment);
-      } else {
-        if (!grouped_completed[assignment.deadline]) {
-          grouped_completed[assignment.deadline] = [];
-        }
-        grouped_completed[assignment.deadline].push(assignment);
-      }
-    });
+	const copyToClipboard = async () => {
+		// Sao chép URL vào bộ nhớ tạm
+		await Clipboard.setStringAsync(fileUrl);
+		alert('URL đã được sao chép vào bộ nhớ tạm');
+	  };
 
-    console.log("Upcoming:", grouped_upcoming);
-    console.log("Past Due:", grouped_pastdue);
-    console.log("Completed:", grouped_completed);
-  }
+	const downloadFile = async () => {
+	const fileUrl = 'https://drive.google.com/uc?id=1Jbd7cfFoiFIFunilKn7NqW7eLcmmnXle&export=download';
+	const fileUri = `${FileSystem.documentDirectory}1.png`; // Đường dẫn lưu file
+	
+	try {
+		const { uri } = await FileSystem.downloadAsync(fileUrl, fileUri);
+		console.log('File downloaded to:', uri);
+		alert('File đã tải xuống thành công!');
+	} catch (error) {
+		console.error('Error downloading file:', error);
+		alert('Lỗi khi tải file!');
+	}
+	};
+	  
 
 
-	// ASSIGNMENTs.forEach((assignment) => {
-	// 	const date = assignment.end;
-	// 	if (assignment.status == 'Completed') {
-	// 		if (!grouped_completed[date]) {
-	// 			grouped_completed[date] = [];
-	// 		}
-	// 		grouped_completed[date].push(assignment);
-	// 	} else if (new parseDate(date) > today) {
-	// 		if (!grouped_upcoming[date]) {
-	// 			grouped_upcoming[date] = [];
-	// 		}
-	// 		grouped_upcoming[date].push(assignment);
-	// 	} else if (new parseDate(date) < today) {
-	// 		if (!grouped_pastdue[date]) {
-	// 			grouped_pastdue[date] = [];
-	// 		}
-	// 		grouped_pastdue[date].push(assignment);
-	// 	}
+	function groupAssignments(data) {
+		let upcoming = {};
+		let pastdue = {};
+	  
+		data.forEach((assignment) => {
+		  const deadline = parseDate(assignment.deadline);
+	  
+		  if (deadline > today) {
+			if (!upcoming[assignment.deadline]) {
+			  upcoming[assignment.deadline] = [];
+			}
+			upcoming[assignment.deadline].push(assignment);
+		  } else {
+			if (!pastdue[assignment.deadline]) {
+			  pastdue[assignment.deadline] = [];
+			}
+			pastdue[assignment.deadline].push(assignment);
+		  }
+		});
 
-	// });
-
-	const sortedDates_upcoming = Object.keys(grouped_upcoming).sort((a, b) => new parseDate(b) - new parseDate(a));
-	const sortedDates_pastdue = Object.keys(grouped_pastdue).sort((a, b) => new parseDate(b) - new parseDate(a));
-	const sortedDates_completed = Object.keys(grouped_completed).sort((a, b) => new parseDate(b) - new parseDate(a));
+		setGroupedUpcoming(upcoming);
+		setGroupedPastdue(pastdue);
+	  }
+	
+	
 
 	const [viewSurvey, setViewSurvey] = useState(-1);
+
+	const [modalVisible, setModalVisible] = useState(false);
+	const [fileUrl, setFileUrl] = useState('');
+	const [viewMode, setViewMode] = useState("web"); // "web" hoặc "download"
+
+	
+
+	const openModal = (url) => {
+		setFileUrl(url);
+		setModalVisible(true);
+	  };
+
+
+
+	console.log("Upcoming:", groupedUpcoming);
+	console.log("Past Due:", groupedPastdue);
 
 	return viewSurvey !== -1 ? (
 		<View className="justify-between">
@@ -127,79 +144,122 @@ const ClassSurveysGVien = ({ route }) => {
 		// return (
 		<View>
 			<View className="flex flex-row justify-between p-3">
-				{['Sắp tới', 'Quá hạn', 'Đã hoàn thành'].map((label, index) => (
-					<TouchableOpacity
-						key={index}
-						className={`flex-1 mx-2 rounded-lg h-6 justify-center ${mode === index ? 'bg-red-600' : 'bg-gray-300'}`}
-						onPress={() => setModeBtn(index)}>
-						<Text className={`text-center ${mode === index ? 'text-white' : 'text-black'}`}>{label}</Text>
-					</TouchableOpacity>
-				))}
+			{['Sắp tới', 'Quá hạn'].map((label, index) => (
+			<TouchableOpacity
+				key={index}
+				className={`flex-1 mx-2 rounded-lg h-6 justify-center ${mode === index ? 'bg-red-600' : 'bg-gray-300'}`}
+				onPress={() => setModeBtn(index)}
+			>
+				<Text className={`text-center ${mode === index ? 'text-white' : 'text-black'}`}>{label}</Text>
+			</TouchableOpacity>
+			))}
+
 			</View>
 
 			<View>
 
-				{mode === 0 && <FlatList
-					data={sortedDates_upcoming}
+			{mode === 0 && (
+			<FlatList
+				data={Object.keys(groupedUpcoming)}
+				keyExtractor={(item) => item}
+				renderItem={({ item }) => (
+				<View className="mb-2">
+					<Text className="text-lg ml-3 mb-2 font-bold">{item}</Text>
+					{groupedUpcoming[item].map((assignment, index) => (
+					<TouchableOpacity
+					key={index}
+					className="bg-white p-4 mb-2 ml-2 mr-2 rounded-lg shadow justify-between border border-gray-200 flex-row"
+					onPress={() => setViewSurvey(index)}
+				  >
+					<View>
+					  <Text className="text-base font-bold">{assignment.title}</Text>
+					  <Text className="text-s mt-1 italic">Hạn: {assignment.deadline}</Text>
+					</View>
+				  
+					{/* Thêm phần này để gọi openModal */}
+					<TouchableOpacity
+					  onPress={() => openModal(assignment.file_url)}
+					  className="self-center"
+					>
+					  <Text className="text-blue-500 underline text-base">File đính kèm</Text>
+					</TouchableOpacity>
+				  </TouchableOpacity>
+				  
+					))}
+				</View>
+				)}
+			/>
+			)}
 
-					keyExtractor={(item) => item}
-					renderItem={({ item }) => (
-						<View className="mb-2">
-							<Text className="text-lg ml-3 mb-2 font-bold">{item}</Text>
-							{grouped_upcoming[item].map((assignment, index) => (
-								<TouchableOpacity key={index} className="bg-white p-4 mb-2 ml-2 mr-2 rounded-lg shadow justify-between border border-gray-200 flex-row" onPress={() => setViewSurvey(index)}>
-									<View>
-										<Text className="text-base">{assignment.name}</Text>
-										<Text className="text-s mt-1 italic">Đóng lúc 11h59</Text>
-									</View>
-									<Text className="self-center text-base">{assignment.grade}</Text>
-								</TouchableOpacity>
-							))}
-						</View>
-					)}
-				/>}
-
-				{mode === 1 && <FlatList
-					data={sortedDates_pastdue}
-
-					keyExtractor={(item) => item}
-					renderItem={({ item }) => (
-						<View className="mb-2">
-							<Text className="text-lg ml-3 mb-2 font-bold">{item}</Text>
-							{grouped_pastdue[item].map((assignment, index) => (
-								<TouchableOpacity key={index} className="bg-white p-4 mb-2 ml-2 mr-2 rounded-lg shadow justify-between border border-gray-200 flex-row">
-									<View>
-										<Text className="text-base">{assignment.name}</Text>
-										<Text className="text-s mt-1 italic">Đóng lúc 11h59</Text>
-									</View>
-									<Text className="self-center text-base">{assignment.grade}</Text>
-								</TouchableOpacity>
-							))}
-						</View>
-					)}
-				/>}
-
-				{mode === 2 && <FlatList
-					data={sortedDates_completed}
-
-					keyExtractor={(item) => item}
-					renderItem={({ item }) => (
-						<View className="mb-2">
-							<Text className="text-lg ml-3 mb-2 font-bold">{item}</Text>
-							{grouped_completed[item].map((assignment, index) => (
-								<TouchableOpacity key={index} className="bg-white p-4 mb-2 ml-2 mr-2 rounded-lg shadow justify-between border border-gray-200 flex-row">
-									<View>
-										<Text className="text-base">{assignment.name}</Text>
-										<Text className="text-s mt-1 italic">Đóng lúc 11h59</Text>
-									</View>
-									<Text className="self-center text-base">{assignment.grade}</Text>
-								</TouchableOpacity>
-							))}
-						</View>
-					)}
-				/>}
-
+			{mode === 1 && (
+			<FlatList
+				data={Object.keys(groupedPastdue)}
+				keyExtractor={(item) => item}
+				renderItem={({ item }) => (
+				<View className="mb-2">
+					<Text className="text-lg ml-3 mb-2 font-bold">{item}</Text>
+					{groupedPastdue[item].map((assignment, index) => (
+					<TouchableOpacity
+					key={index}
+					className="bg-white p-4 mb-2 ml-2 mr-2 rounded-lg shadow justify-between border border-gray-200 flex-row"
+					onPress={() => setViewSurvey(index)}
+				>
+					<View>
+					<Text className="text-base">{assignment.title}</Text>
+					<Text className="text-s mt-1 italic">Hạn: {assignment.deadline}</Text>
+					</View>
+					{/* Thêm phần này để gọi openModal */}
+					<TouchableOpacity
+					  onPress={() => openModal(assignment.file_url)}
+					  className="self-center"
+					>
+					  <Text className="text-blue-500 underline text-base">File đính kèm</Text>
+					</TouchableOpacity>
+				  </TouchableOpacity>
+					))}
+				</View>
+				)}
+			/>
+			)}
 			</View>
+			<Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width: '80%' }}>
+            <Text style={{ fontSize: 18, marginBottom: 10 }}>Tệp đính kèm</Text>
+            <Text style={{ color: 'blue', textDecorationLine: 'underline' }}>{fileUrl}</Text>
+
+            {/* Nút sao chép URL */}
+            <TouchableOpacity
+              onPress={copyToClipboard}
+              style={{ backgroundColor: 'blue', padding: 10, borderRadius: 5, marginTop: 10 }}
+            >
+              <Text style={{ color: 'white', textAlign: 'center' }}>Sao chép URL</Text>
+            </TouchableOpacity>
+
+            {/* Nút đóng Modal */}
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={{ backgroundColor: 'gray', padding: 10, borderRadius: 5, marginTop: 10 }}
+            >
+              <Text style={{ color: 'white', textAlign: 'center' }}>Đóng</Text>
+            </TouchableOpacity>
+
+			{/* Nút tải */}
+            <TouchableOpacity
+              onPress={downloadFile}
+              style={{ backgroundColor: 'blue', padding: 10, borderRadius: 5, marginTop: 10 }}
+            >
+              <Text style={{ color: 'white', textAlign: 'center' }}>Tải xuống</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
 
 		</View>
 	)
