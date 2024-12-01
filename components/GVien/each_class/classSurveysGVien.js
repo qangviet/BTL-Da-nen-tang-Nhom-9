@@ -1,9 +1,14 @@
-import { Text, View, FlatList } from "react-native";
+import { Modal, Text, View, FlatList } from "react-native";
 import React, { Component, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import ViewSurveysGVien from "./viewSurveysGVien";
 import api from "../../api";
 import { useEffect } from "react";
+import * as Clipboard from 'expo-clipboard';
+import * as FileSystem from 'expo-file-system';
+import { shareAsync } from 'expo-sharing';
+import { Platform } from "react-native";
+
 
 const ClassSurveysGVien = ({ route }) => {
 
@@ -21,6 +26,7 @@ const ClassSurveysGVien = ({ route }) => {
 	const [chosenSurvey, setChosenSurvey] = useState(null);
 	const token = params.token;
 	const class_id = params.class.id;
+	console.log(params)
 
 	// let SURVEYS = [];
 
@@ -65,7 +71,7 @@ const ClassSurveysGVien = ({ route }) => {
 
 	const parseDate = (dateString) => new Date(dateString);
 
-	// console.log(SURVEYS);
+	console.log(SURVEYS);
 
 	function groupSurveys(SURVEYS) {
 		SURVEYS.forEach((survey) => {
@@ -118,6 +124,90 @@ const ClassSurveysGVien = ({ route }) => {
 
 
 	const [viewSurvey, setViewSurvey] = useState(-1);
+
+	const [modalVisible, setModalVisible] = useState(false);
+	const [fileUrl, setFileUrl] = useState('');
+	const [eachUrl, setEachUrl] = useState('');
+	const [eachFileName, setEachFileName] = useState('');
+
+	const openModal = (url) => {
+		setEachUrl(url);
+		setFileUrl(url);
+		setModalVisible(true);
+	  };
+
+	//Copy to clipboard
+	const copyToClipboard = async () => {
+		// Sao chép URL vào bộ nhớ tạm
+		await Clipboard.setStringAsync(fileUrl);
+		alert('URL đã được sao chép vào bộ nhớ tạm');
+	  };
+	  //Download
+	const downloadFile = async () => {
+	const fileUrl = 'https://drive.google.com/uc?id=1Jbd7cfFoiFIFunilKn7NqW7eLcmmnXle&export=download';
+	const fileUri = `${FileSystem.documentDirectory}1.png`; // Đường dẫn lưu file
+	
+	try {
+		const { uri } = await FileSystem.downloadAsync(fileUrl, fileUri);
+		console.log('File downloaded to:', uri);
+		alert('File đã tải xuống thành công!');
+	} catch (error) {
+		console.error('Error downloading file:', error);
+		alert('Lỗi khi tải file!');
+	}
+	};
+
+	// Hàm chuyển URI Google Drive sang URI tải xuống
+	function convertURL(driveUri) {
+		// Sử dụng biểu thức chính quy để lấy fileId từ URI
+		const regex = /\/d\/([a-zA-Z0-9_-]+)\//;
+		const matches = driveUri.match(regex);
+		
+		if (matches && matches[1]) {
+		const fileId = matches[1];
+		// Tạo URI tải xuống
+		const downloadUri = `https://drive.google.com/uc?export=download&id=${fileId}`;
+		return downloadUri;
+		} else {
+		throw new Error('Không thể lấy fileId từ URI Google Drive');
+		}
+	}
+
+	const downloadFromUrl = async () => {
+		console.log("file name:...",eachFileName);
+		const filename = `${eachFileName}.pdf`;
+		const result = await FileSystem.downloadAsync(
+		  convertURL(eachUrl),
+		  FileSystem.documentDirectory + filename
+		);
+		console.log("Saving...", result.uri);
+		console.log(eachUrl);
+	
+		save(result.uri);
+	  };
+	
+	  
+	//   const save = async (uri, filename, mimetype) => {
+	// 	if (Platform.OS === "android") {
+	// 	  const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+	// 	  if (permissions.granted) {
+	// 		const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+	// 		await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, filename, mimetype)
+	// 		  .then(async (uri) => {
+	// 			await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
+	// 		  })
+	// 		  .catch(e => console.log(e));
+	// 	  } else {
+	// 		shareAsync(uri);
+	// 	  }
+	// 	} else {
+	// 	  shareAsync(uri);
+	// 	}
+	//   };
+	const save = (uri) =>{
+		shareAsync(uri);
+	};
+
 	// console.log(mode);
 	return viewSurvey !== -1 ? (
 		<View className="justify-between">
@@ -157,7 +247,15 @@ const ClassSurveysGVien = ({ route }) => {
 										<Text className="text-base">{survey.title}</Text>
 										<Text className="text-s mt-1 italic">Đóng lúc {extractTime(survey.deadline)}</Text>
 									</View>
-									{/* <Text className="self-center text-base">{survey.grade}</Text> */}
+									<TouchableOpacity
+									onPress={() => {
+										openModal(survey.file_url);
+										setEachFileName(survey.id); 
+									  }}
+									className="self-center"
+									>
+									<Text className="text-blue-500 underline text-base">File đính kèm</Text>
+									</TouchableOpacity>
 								</TouchableOpacity>
 							))}
 						</View>
@@ -178,12 +276,58 @@ const ClassSurveysGVien = ({ route }) => {
 										<Text className="text-s mt-1 italic">Đóng lúc {extractTime(survey.deadline)}</Text>
 									</View>
 									<Text className="self-center text-base">{survey.grade}</Text>
+									<TouchableOpacity
+									onPress={() => {
+										openModal(survey.file_url);
+										setEachFileName(survey.id); 
+									  }}
+									className="self-center"
+									>
+									<Text className="text-blue-500 underline text-base">File đính kèm</Text>
+									</TouchableOpacity>
 								</TouchableOpacity>
 							))}
 						</View>
 					)}
 				/>}
 			</View>
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => setModalVisible(false)}
+			>
+				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+				<View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width: '80%' }}>
+					<Text style={{ fontSize: 18, marginBottom: 10 }}>Tệp đính kèm</Text>
+					<Text style={{ color: 'blue', textDecorationLine: 'underline' }}>{fileUrl}</Text>
+
+					{/* Nút sao chép URL */}
+					<TouchableOpacity
+					onPress={copyToClipboard}
+					style={{ backgroundColor: 'blue', padding: 10, borderRadius: 5, marginTop: 10 }}
+					>
+					<Text style={{ color: 'white', textAlign: 'center' }}>Sao chép URL</Text>
+					</TouchableOpacity>
+
+					{/* Nút đóng Modal */}
+					<TouchableOpacity
+					onPress={() => setModalVisible(false)}
+					style={{ backgroundColor: 'gray', padding: 10, borderRadius: 5, marginTop: 10 }}
+					>
+					<Text style={{ color: 'white', textAlign: 'center' }}>Đóng</Text>
+					</TouchableOpacity>
+
+					{/* Nút tải */}
+					<TouchableOpacity
+					onPress={downloadFromUrl}
+					style={{ backgroundColor: 'blue', padding: 10, borderRadius: 5, marginTop: 10 }}
+					>
+					<Text style={{ color: 'white', textAlign: 'center' }}>Tải xuống</Text>
+					</TouchableOpacity>
+				</View>
+				</View>
+			</Modal>
 
 		</View>
 	)
