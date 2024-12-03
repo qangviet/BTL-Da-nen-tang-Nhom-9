@@ -11,29 +11,28 @@ import {
 	DrawerLayoutAndroid,
 	Button,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { LogoHust, LogoBK } from "../../logo";
 import { Ionicons } from "@expo/vector-icons";
 import { logoutAct } from "../../../redux/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
-
+import { useIsFocused } from "@react-navigation/native";
 const ProfileGVien = () => {
 	const dispatch = useDispatch();
-
 	let drawer = useRef(null);
-	// let drawer = null;
-
-	console.log(drawer);
-
-	const [drawerPosition, setDrawerPosition] = useState("right");
+	const isFocused = useIsFocused(); // Hook để kiểm tra screen có đang focus hay không
+	useEffect(() => {
+		if (isFocused && drawer.current) {
+			drawer.current.closeDrawer();
+		}
+	}, [isFocused]);
+	const drawerPosition = "right";
 
 	const logOut = () => {
 		console.log("LOGGING OUT!");
-		dispatch(
-			logoutAct()
-		);
+		dispatch(logoutAct());
 	};
 
 	const navigationView = () => (
@@ -65,7 +64,9 @@ const ProfileGVien = () => {
 		he: "Kỹ sư chính quy - k66",
 		class: "Khoa học máy tính 06 - K66",
 	};
-
+	if (!isFocused) {
+		return null;
+	}
 	return (
 		<DrawerLayoutAndroid
 			ref={drawer}
