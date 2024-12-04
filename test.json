@@ -6,7 +6,7 @@
                   "fetch"
             ],
             "baseURL": "http://157.66.24.126:8080",
-            "data": "{\"token\":\"beXRrg\",\"class_id\":\"123123\",\"class_name\":\"q\",\"class_type\":\"LT\",\"start_date\":\"2024-11-25\",\"end_date\":\"2024-11-29\",\"max_student_amount\":13}",
+            "data": "{\"token\":\"6KUFt0\",\"user_id\":\"266\"}",
             "env": {
                   "Blob": [Function Blob
                   ],
@@ -32,25 +32,33 @@
                   "forcedJSONParsing": true,
                   "silentJSONParsing": true
             },
-            "url": "/it5023e/create_class",
+            "url": "/it4788/get_user_info",
             "validateStatus": [Function validateStatus
             ],
             "xsrfCookieName": "XSRF-TOKEN",
             "xsrfHeaderName": "X-XSRF-TOKEN"
       },
       "data": {
-            "data": "class id already exists",
-            "meta": {
-                  "code": "1004",
-                  "message": "parameter value is invalid"
-            }
+            "code": "1000",
+            "data": {
+                  "avatar": null,
+                  "email": "tututu@hust.edu.vn",
+                  "ho": "Luong",
+                  "id": "266",
+                  "name": "Luong Tu",
+                  "role": "LECTURER",
+                  "status": "Kích hoạt",
+                  "ten": "Tu"
+            },
+            "message": "OK"
       },
       "headers": {
             "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
-            "connection": "close",
+            "connection": "keep-alive",
             "content-type": "application/json",
-            "date": "Tue, 26 Nov 2024 17:07:03 GMT",
+            "date": "Tue, 03 Dec 2024 16:11:03 GMT",
             "expires": "0",
+            "keep-alive": "timeout=60",
             "pragma": "no-cache",
             "transfer-encoding": "chunked",
             "vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
@@ -74,10 +82,11 @@
             "_incrementalEvents": false,
             "_lowerCaseResponseHeaders": {
                   "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
-                  "connection": "close",
+                  "connection": "keep-alive",
                   "content-type": "application/json",
-                  "date": "Tue, 26 Nov 2024 17:07:03 GMT",
+                  "date": "Tue, 03 Dec 2024 16:11:03 GMT",
                   "expires": "0",
+                  "keep-alive": "timeout=60",
                   "pragma": "no-cache",
                   "transfer-encoding": "chunked",
                   "vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
@@ -86,7 +95,7 @@
                   "x-xss-protection": "0"
             },
             "_method": "POST",
-            "_perfKey": "network_XMLHttpRequest_http://157.66.24.126:8080/it5023e/create_class",
+            "_perfKey": "network_XMLHttpRequest_http://157.66.24.126:8080/it4788/get_user_info",
             "_performanceLogger": {
                   "_closed": false,
                   "_extras": [Object
@@ -99,20 +108,21 @@
                   ]
             },
             "_requestId": null,
-            "_response": "{\"data\":\"class id already exists\",\"meta\":{\"code\":\"1004\",\"message\":\"parameter value is invalid\"}}",
+            "_response": "{\"code\":\"1000\",\"message\":\"OK\",\"data\":{\"id\":\"266\",\"ho\":\"Luong\",\"ten\":\"Tu\",\"name\":\"Luong Tu\",\"email\":\"tututu@hust.edu.vn\",\"role\":\"LECTURER\",\"status\":\"Kích hoạt\",\"avatar\":null}}",
             "_responseType": "",
             "_sent": true,
             "_subscriptions": [],
             "_timedOut": false,
             "_trackingName": "unknown",
-            "_url": "http://157.66.24.126:8080/it5023e/create_class",
+            "_url": "http://157.66.24.126:8080/it4788/get_user_info",
             "readyState": 4,
             "responseHeaders": {
                   "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
-                  "Connection": "close",
+                  "Connection": "keep-alive",
                   "Content-Type": "application/json",
-                  "Date": "Tue, 26 Nov 2024 17:07:03 GMT",
+                  "Date": "Tue, 03 Dec 2024 16:11:03 GMT",
                   "Expires": "0",
+                  "Keep-Alive": "timeout=60",
                   "Pragma": "no-cache",
                   "Transfer-Encoding": "chunked",
                   "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
@@ -120,12 +130,12 @@
                   "X-Frame-Options": "DENY",
                   "X-XSS-Protection": "0"
             },
-            "responseURL": "http://157.66.24.126:8080/it5023e/create_class",
-            "status": 400,
+            "responseURL": "http://157.66.24.126:8080/it4788/get_user_info",
+            "status": 200,
             "timeout": 0,
             "upload": {},
             "withCredentials": true
       },
-      "status": 400,
+      "status": 200,
       "statusText": undefined
 }
