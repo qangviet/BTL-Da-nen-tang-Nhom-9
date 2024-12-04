@@ -99,7 +99,7 @@ const ViewSurveysGVien = ({ token, survey }) => {
 
 	async function gradingResponse(cur_response) {
 		// console.log(tempGrade);
-		console.log(cur_response.id);
+		// console.log(cur_response.id);
 		try {
 			const response = await api.post('/it5023e/get_survey_response', {
 				token: token,

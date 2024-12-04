@@ -8,13 +8,15 @@ import * as Clipboard from 'expo-clipboard';
 import * as FileSystem from 'expo-file-system';
 import { shareAsync } from 'expo-sharing';
 import { Platform } from "react-native";
+import { Linking } from 'react-native';
+
 
 
 const ClassSurveysGVien = ({ route }) => {
 
 	const { params } = route;
-	console.log();
-	console.log("ClassSurvey");
+	// console.log();
+	// console.log("ClassSurvey");
 	// console.log(params);
 
 	// 0 - upcoming, 1 - past due
@@ -24,9 +26,9 @@ const ClassSurveysGVien = ({ route }) => {
 	// console.log("Today: ", today)
 	const [SURVEYS, setSURVEYS] = useState([]);
 	const [chosenSurvey, setChosenSurvey] = useState(null);
-	const token = params.token;
-	const class_id = params.class.id;
-	console.log(params)
+	// const token = params.token;
+	// const class_id = params.class.id;
+	// console.log(params)
 
 	// let SURVEYS = [];
 
@@ -39,8 +41,8 @@ const ClassSurveysGVien = ({ route }) => {
 		async function fetchSurveys() {
 			try {
 				const response = await api.post('/it5023e/get_all_surveys', {
-					token: token,
-					class_id: class_id,
+					token: params.token,
+					class_id: params.class.id,
 				});
 
 				if (response.data.meta.code === "1000") {
@@ -58,11 +60,12 @@ const ClassSurveysGVien = ({ route }) => {
 					console.error('API error:', response.data.meta.message);
 				}
 			} catch (error) {
-				console.error('Network error:', error);
-				console.error("API call failed: ", error);
-				console.error("Error fetching class list:", error);
-				console.error("Error Data:", error.response.data);
-				console.error("Error Status:", error.response.status);
+				// console.error('Network error:', error);
+				// console.error("API call failed: ", error);
+				// console.error("Error fetching class list:", error);
+				// console.error("Error Data:", error.response.data);
+				// console.error("Error Status:", error.response.status);
+				console.log("ERROR!");
 			}
 		}
 
@@ -71,7 +74,7 @@ const ClassSurveysGVien = ({ route }) => {
 
 	const parseDate = (dateString) => new Date(dateString);
 
-	console.log(SURVEYS);
+	// console.log(SURVEYS);
 
 	function groupSurveys(SURVEYS) {
 		SURVEYS.forEach((survey) => {
@@ -124,94 +127,31 @@ const ClassSurveysGVien = ({ route }) => {
 
 
 	const [viewSurvey, setViewSurvey] = useState(-1);
+	//const [is_open, setIsOpen] = useState(false);
 
-	const [modalVisible, setModalVisible] = useState(false);
-	const [fileUrl, setFileUrl] = useState('');
-	const [eachUrl, setEachUrl] = useState('');
-	const [eachFileName, setEachFileName] = useState('');
-
-	const openModal = (url) => {
-		setEachUrl(url);
-		setFileUrl(url);
-		setModalVisible(true);
-	  };
-
-	//Copy to clipboard
-	const copyToClipboard = async () => {
-		// Sao chép URL vào bộ nhớ tạm
-		await Clipboard.setStringAsync(fileUrl);
-		alert('URL đã được sao chép vào bộ nhớ tạm');
-	  };
-	  //Download
-	const downloadFile = async () => {
-	const fileUrl = 'https://drive.google.com/uc?id=1Jbd7cfFoiFIFunilKn7NqW7eLcmmnXle&export=download';
-	const fileUri = `${FileSystem.documentDirectory}1.png`; // Đường dẫn lưu file
-	
-	try {
-		const { uri } = await FileSystem.downloadAsync(fileUrl, fileUri);
-		console.log('File downloaded to:', uri);
-		alert('File đã tải xuống thành công!');
-	} catch (error) {
-		console.error('Error downloading file:', error);
-		alert('Lỗi khi tải file!');
-	}
-	};
-
-	// Hàm chuyển URI Google Drive sang URI tải xuống
-	function convertURL(driveUri) {
-		// Sử dụng biểu thức chính quy để lấy fileId từ URI
-		const regex = /\/d\/([a-zA-Z0-9_-]+)\//;
-		const matches = driveUri.match(regex);
-		
-		if (matches && matches[1]) {
-		const fileId = matches[1];
-		// Tạo URI tải xuống
-		const downloadUri = `https://drive.google.com/uc?export=download&id=${fileId}`;
-		return downloadUri;
-		} else {
-		throw new Error('Không thể lấy fileId từ URI Google Drive');
-		}
-	}
-
-	const downloadFromUrl = async () => {
-		console.log("file name:...",eachFileName);
-		const filename = `${eachFileName}.pdf`;
-		const result = await FileSystem.downloadAsync(
-		  convertURL(eachUrl),
-		  FileSystem.documentDirectory + filename
-		);
-		console.log("Saving...", result.uri);
-		console.log(eachUrl);
-	
-		save(result.uri);
-	  };
-	
-	  
-	//   const save = async (uri, filename, mimetype) => {
-	// 	if (Platform.OS === "android") {
-	// 	  const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
-	// 	  if (permissions.granted) {
-	// 		const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
-	// 		await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, filename, mimetype)
-	// 		  .then(async (uri) => {
-	// 			await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
-	// 		  })
-	// 		  .catch(e => console.log(e));
-	// 	  } else {
-	// 		shareAsync(uri);
-	// 	  }
-	// 	} else {
-	// 	  shareAsync(uri);
-	// 	}
+	// const openModal = (url) => {
+	// 	setEachUrl(url);
+	// 	setFileUrl(url);
+	// 	setModalVisible(true);
+	// 	setIsOpen(true);
 	//   };
-	const save = (uri) =>{
-		shareAsync(uri);
+	  const openDriveDocument = (url) => {
+		console.log("Mo tai lieu...");
+		//setIsOpen(true);
+		try {
+			Linking.openURL(url).catch((err) => {
+				console.error("Failed to open URL: ", err);
+				alert("Error Không thể mở tài liệu.");
+			});
+		} catch (error) {
+			console.error("Error parsing drive URI: ", error);
+			alert("Error", "Không thể lấy URL từ tài liệu Google Drive.");
+		}
 	};
-
-	// console.log(mode);
+	
 	return viewSurvey !== -1 ? (
 		<View className="justify-between">
-			<ViewSurveysGVien token={token} survey={chosenSurvey}/>
+			<ViewSurveysGVien token={params.token} survey={chosenSurvey}/>
 			<View className="justify-center items-center bg-white h-[9%] border-t border-gray-400">
 				<TouchableOpacity className="bg-red-600 rounded-lg p-2 w-24" onPress={() => setViewSurvey(-1)}>
 					<Text className="self-center text-white font-bold">Đóng</Text>
@@ -249,8 +189,8 @@ const ClassSurveysGVien = ({ route }) => {
 									</View>
 									<TouchableOpacity
 									onPress={() => {
-										openModal(survey.file_url);
-										setEachFileName(survey.id); 
+										openDriveDocument(survey.file_url);
+										//setEachFileName(survey.id); 
 									  }}
 									className="self-center"
 									>
@@ -278,8 +218,8 @@ const ClassSurveysGVien = ({ route }) => {
 									<Text className="self-center text-base">{survey.grade}</Text>
 									<TouchableOpacity
 									onPress={() => {
-										openModal(survey.file_url);
-										setEachFileName(survey.id); 
+										openDriveDocument(survey.file_url);
+										//setEachFileName(survey.id); 
 									  }}
 									className="self-center"
 									>
@@ -291,43 +231,7 @@ const ClassSurveysGVien = ({ route }) => {
 					)}
 				/>}
 			</View>
-			<Modal
-				animationType="slide"
-				transparent={true}
-				visible={modalVisible}
-				onRequestClose={() => setModalVisible(false)}
-			>
-				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-				<View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width: '80%' }}>
-					<Text style={{ fontSize: 18, marginBottom: 10 }}>Tệp đính kèm</Text>
-					<Text style={{ color: 'blue', textDecorationLine: 'underline' }}>{fileUrl}</Text>
-
-					{/* Nút sao chép URL */}
-					<TouchableOpacity
-					onPress={copyToClipboard}
-					style={{ backgroundColor: 'blue', padding: 10, borderRadius: 5, marginTop: 10 }}
-					>
-					<Text style={{ color: 'white', textAlign: 'center' }}>Sao chép URL</Text>
-					</TouchableOpacity>
-
-					{/* Nút đóng Modal */}
-					<TouchableOpacity
-					onPress={() => setModalVisible(false)}
-					style={{ backgroundColor: 'gray', padding: 10, borderRadius: 5, marginTop: 10 }}
-					>
-					<Text style={{ color: 'white', textAlign: 'center' }}>Đóng</Text>
-					</TouchableOpacity>
-
-					{/* Nút tải */}
-					<TouchableOpacity
-					onPress={downloadFromUrl}
-					style={{ backgroundColor: 'blue', padding: 10, borderRadius: 5, marginTop: 10 }}
-					>
-					<Text style={{ color: 'white', textAlign: 'center' }}>Tải xuống</Text>
-					</TouchableOpacity>
-				</View>
-				</View>
-			</Modal>
+			
 
 		</View>
 	)

@@ -6,6 +6,8 @@ import MyClassesScreenGVien from "../GVien/main_screen/myClassesGVien";
 import ClassScreenGVien from "../GVien/each_class/tabClassGVien";
 import CreateSurveyGVien from "../GVien/each_class/createSurveyGVien";
 import EditSurveyGVien from "../GVien/each_class/editSurveyGVien";
+import UploadMaterialGVien from "../GVien/each_class/uploadMaterials.js";
+import EditMaterialGVien from "../GVien/each_class/editMaterials.js";
 import TabMainGVien from "../GVien/main_screen/tabMainGVien";
 import ManageClassesScreenGVien from "../GVien/main_screen/manageClassGVien";
 import CreateClassScreenGVien from "../GVien/main_screen/createClassGVien";
@@ -47,6 +49,22 @@ const GVienNavigation = () => {
 					options={{
 						headerShown: false,
 						title: "Sửa bài tập",
+					}}
+				/>
+				<Stack.Screen
+					name="UploadMaterialGVien"
+					component={UploadMaterialGVien}
+					options={{
+						headerShown: false,
+						title: "Tạo tài liệu",
+					}}
+				/>
+				<Stack.Screen
+					name="EditMaterialGVien"
+					component={EditMaterialGVien}
+					options={{
+						headerShown: false,
+						title: "Sửa tài liệu",
 					}}
 				/>
 

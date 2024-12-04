@@ -1,24 +1,107 @@
 import { Text, View, FlatList, Modal, Button, TouchableWithoutFeedback } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
 import React, { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native';
+import api from "../../api";
+import { useEffect } from "react";
+import { Linking } from 'react-native';
+import { goBack, navigate } from "../../../redux/navigationSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 const ClassDocsScreenGVien = ({ route }) => {
 
+      const { doc } = route.params || {};  // Đảm bảo doc không undefined
+      const navigation = useNavigation();
+      const dispatch = useDispatch();
+      const currentScreen = useSelector((state) => state.navigation.currentScreen);
       const { params } = route;
-      console.log("ClassDoc");
-      console.log(params);
+      const [token, setToken] = useState("");
+      const [class_id, setClassId] = useState("");
+      const [DOCs, setDOCs] = useState([]);
+      const state = useSelector((state) => state.navigation);
+      
 
-      const DOCs = [
-            { id: "0", name: "Tài liệu 1", uploader: 'Ai đó' },
-            { id: "1", name: "Tài liệu 2", uploader: 'Ai đó' },
-            { id: "2", name: "Tài liệu 3", uploader: 'Ai đó' },
-            { id: "3", name: "Tài liệu 4", uploader: 'Ai đó' },
-            { id: "4", name: "Tài liệu 5", uploader: 'Ai đó' },
-            { id: "5", name: "Tài liệu 6", uploader: 'Ai đó' },
-            { id: "6", name: "Tài liệu 7", uploader: 'Ai đó' },
-      ]
+      useEffect(() => {
+		if (state.currentScreen !== "ClassDocsScreenGVien") {
+			navigation.navigate(currentScreen);
+		}
+	}, [currentScreen]);
+      
+      // useEffect(() => {
+      //       if (params.class != null) {
+      //             setToken(params.token);
+      //             setClassId(params.class.id);s
+      //       }
+      // }, [])
+
+      const fetchDocs = async () => {
+            try {
+                console.log(">>>> Token: ", params.token);
+                const response = await api.post('/it5023e/get_material_list', {
+                    token: params.token,
+                    class_id: params.class.id,
+                });
+        
+                if (response.data.code === "1000") {
+                    const fetchedDOCs = response.data.data.map((item) => ({
+                        id: item.id,
+                        material_name: item.material_name,
+                        description: item.description,
+                        material_link: item.material_link,
+                        class_id: item.class_id,
+                        material_type: item.material_type,
+                    }));
+                    setDOCs(fetchedDOCs);
+                } else {
+                    console.error('API error:', response.data.message);
+                }
+            } catch (error) {
+                console.error("Error fetching documents:", error);
+            }
+        };
+        
+      useEffect(() => {
+            fetchDocs();
+            }, [currentScreen]);
+              
+      // useEffect(() => {
+      //       async function fetchDocs() {
+      //             try {
+      //                   console.log(">>>> Token: ", params.token);
+      //                   const response = await api.post('/it5023e/get_material_list', {
+      //                         token: params.token,
+	// 				class_id: params.class.id
+	// 			});
+                        
+	// 			if (response.data.code === "1000") {
+      //                         const fetchedDOCs = response.data.data.map((item) => ({
+      //                               id: item.id,
+	// 					material_name: item.material_name,
+	// 					description: item.description,
+	// 					material_link: item.material_link,
+	// 					material_link: item.material_link,
+	// 					class_id: item.class_id,
+      //                               material_type: item.material_type
+	// 				}));
+	// 				setDOCs(fetchedDOCs);
+	// 			} else {
+      //                         console.error('API error:', response.data.message);
+	// 			}
+	// 		} catch (error) {
+      //                   console.error('Network error:', error);
+	// 			console.error("API call failed: ", error);
+	// 			console.error("Error fetching class list:", error);
+	// 			console.error("Error Data:", error.response.data);
+	// 			console.error("Error Status:", error.response.status);
+	// 		}
+	// 	}
+            
+	// 	fetchDocs();
+	// }, [currentScreen]);
+      
+      console.log("DOCS: ", DOCs);
 
       const [modalVisible, setModalVisible] = useState(false);
       const [selectedDoc, setSelectedDoc] = useState(null);
@@ -32,6 +115,67 @@ const ClassDocsScreenGVien = ({ route }) => {
             setModalVisible(false);
             setSelectedDoc(null);
       };
+
+      //const [is_open, setIsOpen] = useState(false);
+      const openMaterial = (url) => {
+		console.log("Mo tai lieu...");
+		//setIsOpen(true);
+		
+            try {
+                  Linking.openURL(url).catch((err) => {
+                        console.error("Failed to open URL: ", err);
+                        alert("Error Không thể mở tài liệu.");
+                  });
+            } catch (error) {
+                  console.error("Error parsing drive URI: ", error);
+                  alert("Error", "Không thể lấy URL từ tài liệu Google Drive.");
+            }
+      };
+
+      const goEditDoc = (doc) => {
+            console.log("Chuyển hướng đến EditMaterialGVien...");
+            console.log("Doc gui di:", doc)
+            console.log("Param gui di", params.token)
+            // dispatch(
+            //     navigate({
+            //         screen: "EditMaterialGVien",
+            //         params: {} // Không cần truyền gì cả
+            //     })
+            // );
+            dispatch(
+                  navigate({
+                      screen: "EditMaterialGVien",
+                      params: {
+                        token: params.token,
+                        doc: doc
+                      }  // Tránh việc truyền undefined
+                  })
+              );
+        }
+      
+      const deleteDoc = async (doc) => {
+            console.log("Deleting docs....");
+            console.log("DOCS...",doc);
+            //setConfirmSave(false);
+            try {
+                  const response = await api.post("/it5023e/delete_material", {
+                        token: params.token,
+                        material_id: doc.id
+                  });
+
+                  if (response.status === 200) {
+                        alert("Tài liệu đã được xóa thành công");
+                        fetchDocs();
+                        console.log(response.data);
+                        goBack();
+                  } else {
+                        alert("Vui lòng thử lại");
+                  }
+                  } catch (error) {
+                        console.log("ERROR!")
+                  }
+            };
+            
 
       const CustomButton = ({ title, onPress, iconName, style }) => (
             <TouchableOpacity
@@ -55,8 +199,8 @@ const ClassDocsScreenGVien = ({ route }) => {
       const Item = ({ item }) => (
             <View className="bg-white p-4 m-2 rounded-lg shadow flex-row justify-between items-center border border-gray-200">
                   <View>
-                        <Text className='text-lg'>{item.name}</Text>
-                        <Text className='text-gray-500'>Chỉnh sửa bởi: {item.uploader}</Text>
+                        <Text className='text-lg'>{item.material_name}</Text>
+                        <Text className='text-gray-500'>Chỉnh sửa bởi: {params.class.teacher}</Text>
                   </View>
                   <TouchableOpacity onPress={() => handleOpenModal(item)}>
                         <FontAwesome name="ellipsis-h" size={20} color="gray" />
@@ -66,12 +210,12 @@ const ClassDocsScreenGVien = ({ route }) => {
 
       return (
             <View style={{ flex: 1 }}>
-                  <FlatList
+                  {DOCs && <FlatList
                         className="mb-5"
                         data={DOCs}
                         renderItem={({ item }) => <Item item={item} />}
                         keyExtractor={item => item.id}
-                  />
+                  />}
 
                   <Modal
                         animationType="fade"
@@ -94,11 +238,28 @@ const ClassDocsScreenGVien = ({ route }) => {
                                     <Text className="text-lg mb-2 self-center">
                                           {selectedDoc ? selectedDoc.name : ''}
                                     </Text>
-                                    <CustomButton title="Mở" onPress={() => console.log(`Mở ${selectedDoc?.name}`)} iconName="open-outline" />
-                                    <CustomButton title="Đổi tên" onPress={() => console.log(`Đổi tên ${selectedDoc?.name}`)} iconName="create-outline" />
-                                    <CustomButton title="Chia sẻ" onPress={() => console.log(`Chia sẻ ${selectedDoc?.name}`)} iconName="share-outline" />
-                                    <CustomButton title="Sao chép liên kết" onPress={() => console.log(`Sao chép liên kết ${selectedDoc?.name}`)} iconName="copy-outline" />
-                                    <CustomButton title="Xóa" onPress={() => console.log(`Xóa ${selectedDoc?.name}`)} iconName="trash-outline" />
+                                    <CustomButton 
+                                          title="Mở" 
+                                          onPress={() => {
+                                                openMaterial(selectedDoc.material_link);
+                                                console.log(`Mở ${selectedDoc?.material_name}`);
+                                          }} 
+                                          iconName="open-outline" 
+                                          />
+                                    <CustomButton 
+                                          title="Chỉnh sửa" 
+                                          onPress={() => {
+                                                console.log(`Đổi tên ${selectedDoc?.material_name}`);
+                                                goEditDoc(selectedDoc);
+                                          }}
+                                          iconName="create-outline" />
+                                    <CustomButton 
+                                          title="Xóa" 
+                                          onPress={() => {
+                                                console.log(`Xóa ${selectedDoc?.material_name}`);
+                                                deleteDoc(selectedDoc);
+                                          }}
+                                          iconName="trash-outline" />
                               </View>
                               {/* </View> */}
                         </View>

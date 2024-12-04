@@ -9,12 +9,13 @@ import ClassDocs from "./classDocsGVien.js";
 import ClassSurveys from "./classSurveysGVien.js";
 import ClassDiemDanhGVien from "./classDiemDanhGVien.js";
 import CreateSurveyGVien from "./createSurveyGVien.js";
-
+import UploadMaterialGVien from "./uploadMaterials.js"
 import { navigate } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { goBack as goBackMavigation } from "../../../redux/navigationSlice.js";
 import api from "../../API/api.js";
+import { Menu, Provider } from "react-native-paper";
 
 const ClassScreenGVien = ({ route }) => {
 	const navigation = useNavigation();
@@ -115,7 +116,34 @@ const ClassScreenGVien = ({ route }) => {
 
 	const [changeScreen, setChangeScreen] = React.useState(false);
 
+	// const openCreateSurveys = () => {
+	// 	dispatch(
+	// 		navigate({
+	// 			screen: "CreateSurveyGVien",
+	// 			params: params,
+	// 		})
+	// 	);
+	// 	console.log("Go to: Create survey");
+	// };
+
+	// const openUploadMaterials = () => {
+	// 	dispatch(
+	// 		navigate({
+	// 			screen: "CreateSurveyGVien",
+	// 			params: params,
+	// 		})
+	// 	);
+	// 	console.log("Go to: Upload Material");
+	// };
+	const [menuVisible, setMenuVisible] = useState(false);
+
+	// Hàm mở và đóng menu
+	const openMenu = () => setMenuVisible(true);
+	const closeMenu = () => setMenuVisible(false);
+
+	// Hàm chuyển hướng khi chọn menu
 	const openCreateSurveys = () => {
+		closeMenu(); // Đóng menu
 		dispatch(
 			navigate({
 				screen: "CreateSurveyGVien",
@@ -125,8 +153,20 @@ const ClassScreenGVien = ({ route }) => {
 		console.log("Go to: Create survey");
 	};
 
+	const openUploadMaterials = () => {
+		closeMenu(); // Đóng menu
+		dispatch(
+			navigate({
+				screen: "UploadMaterialGVien",
+				params: params,
+			})
+		);
+		console.log("Go to: Upload Material");
+	};
+
+
 	return (
-		<>
+		<Provider>
 			<NavigationContainer independent={true}>
 				<View className="bg-red-700 pt-8 pb-3 relative">
 					<View className="absolute left-3 top-8">
@@ -138,9 +178,18 @@ const ClassScreenGVien = ({ route }) => {
 						<LogoHust width={140} height={25}></LogoHust>
 					</View>
 					<View className="absolute right-3 top-8">
-						<TouchableOpacity onPress={openCreateSurveys}>
-							<FontAwesome name="plus" size={24} color="white" />
-						</TouchableOpacity>
+						<Menu
+							visible={menuVisible}
+							onDismiss={closeMenu}
+							anchor={
+								<TouchableOpacity onPress={openMenu}>
+									<FontAwesome name="plus" size={24} color="white" />
+								</TouchableOpacity>
+							}
+						>
+							<Menu.Item onPress={openUploadMaterials} title="Thêm tài liệu" />
+							<Menu.Item onPress={openCreateSurveys} title="Thêm bài tập" />
+						</Menu>
 					</View>
 
 					{CURRENT_CLASS ? (
@@ -157,7 +206,7 @@ const ClassScreenGVien = ({ route }) => {
 
 				<TabNavigator />
 			</NavigationContainer>
-		</>
+		</Provider>
 	);
 };
 
