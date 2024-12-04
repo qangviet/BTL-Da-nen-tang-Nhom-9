@@ -18,16 +18,23 @@ import { Ionicons } from "@expo/vector-icons";
 import { logoutAct } from "../../../redux/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
+import * as DocumentPicker from "expo-document-picker";
+import * as FileSystem from 'expo-file-system';
 import api from "../../api";
+import axios from "axios";
 import { useIsFocused } from "@react-navigation/native";
+import { MaterialIcons } from '@expo/vector-icons';
+
 const Profile = () => {
 	const dispatch = useDispatch();
 	const param = useSelector((state) => state.navigation.params);
 	token = param.token;
+	console.log("Param: ", param);
 
 	const drawer = useRef(null);
 	const isFocused = useIsFocused(); // Hook để kiểm tra screen có đang focus hay không
 	const drawerPosition = "right";
+	
 	useEffect(() => {
 		if (isFocused && drawer.current) {
 			drawer.current.closeDrawer();
@@ -53,6 +60,122 @@ const Profile = () => {
 		}
 	};
 
+	const [USER, setUSER] = useState({})
+	const [modalVisible, setModalVisible] = useState(false);
+	const [imageFile, setImageFile] = useState(null);
+
+	useEffect(() => {
+		// Gọi API để lấy danh sách lớp học
+		const fetchUSER = async () => {
+			try {
+				const response = await api.post("/it4788/get_user_info", {
+					token: param.token,
+					user_id: param.userInfo.id
+				});
+
+				// Xử lý dữ liệu và cập nhật state
+				if (response.data.code === "1000") {
+					const fetchedUSER = {
+						id: response.data.data.id,
+						name: response.data.data.name,
+						email: response.data.data.email,
+						avatar: response.data.data.avatar,
+						phoneNumber: "0355064807",
+						dob: "03/01/2003",
+						khoaVien: "Trường Công nghệ Thông tin và Truyền thông",
+						he: "Kỹ sư chính quy - k66",
+						class: "Khoa học máy tính 06 - K66"
+					};
+					setUSER(fetchedUSER);
+				} else {
+					console.error("Error fetching classes: ", response.data.meta.message);
+				}
+			} catch (error) {
+				console.error("API call failed: ", error);
+				console.error("Error fetching class list:", error);
+				console.error("Error Data:", error.response.data);
+				console.error("Error Status:", error.response.status);
+			}
+		};
+
+		fetchUSER();
+	}, [imageFile]);
+
+	console.log("USER: ", USER);
+
+	let avt_link = "";
+	if (USER.avatar != null) {
+		avt_link = "https://drive.google.com/thumbnail?id=" + USER.avatar.split('/d/')[1].split('/')[0] + "&sz=w1000"
+	}
+
+	const handleFilePick = async () => {
+		try {
+			const response = await DocumentPicker.getDocumentAsync({
+				type: "image/*",
+				copyToCacheDirectory: true,
+			});
+			
+			if (response.assets && response.assets.length > 0) {
+				const { name, size, uri, mimeType } = response.assets[0];
+				const fileToUpload = { name, size, uri, type: mimeType };
+				setImageFile(fileToUpload);
+				console.log("File đã chọn:", fileToUpload);
+			}
+			else {
+				console.log("File selection canceled.");
+				console.log(response)
+			}
+		} catch (error) {
+			console.error("Error picking file:", error);
+		}
+	}
+	
+	function editAvt() {
+		console.log("Edit Avt");
+		setModalVisible(true);
+	}
+
+	async function saveImage() {
+		console.log("Saving image");
+		if (imageFile == null) {
+			alert("Hãy chọn ảnh mới!");
+			return;
+		}
+		const fileUri = imageFile.uri;
+		// Kiểm tra xem file có tồn tại không
+		const fileInfo = await FileSystem.getInfoAsync(fileUri);
+		console.log(fileInfo);
+		if (!fileInfo.exists) {
+			console.error('File not found!');
+			return;
+		}
+
+		const formData = new FormData();
+		formData.append('token', param.token);
+		formData.append('file', {
+			uri: fileUri,
+			name: imageFile.name,
+			type: imageFile.type,
+		});
+
+		try {
+			const response = await axios.post('http://157.66.24.126:8080/it4788/change_info_after_signup', formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+			});
+			alert("Cập nhật ảnh thành công!");
+			setImageFile(null);
+			setModalVisible(false);
+		} catch (error) {
+			console.error('Upload failed:', error.response ? error.response.data : error.message);
+			console.error("API call failed: ", error);
+			console.error("Error fetching class list:", error);
+			console.error("Error Data:", error.response.data);
+			console.error("Error Status:", error.response.status);
+		}
+	}
+
 	const navigationView = () => (
 		<ImageBackground source={require("../../../assets/drawer.jpg")} style={styles.imageDrawer}>
 			<View className="m-20">
@@ -71,20 +194,10 @@ const Profile = () => {
 		// drawer = useRef(null);
 	};
 
-	const USER = {
-		name: "Lường Mạnh Tú",
-		phoneNumber: "0355064807",
-		email: "tu.lm215500@sis.hust.edu.vn",
-		mssv: "20215500",
-		dob: "03/01/2003",
-		personalEmail: "tu.manhluong3103@gmail.com",
-		khoaVien: "Trường Công nghệ Thông tin và Truyền thông",
-		he: "Kỹ sư chính quy - k66",
-		class: "Khoa học máy tính 06 - K66",
-	};
 	if (!isFocused) {
 		return null;
 	}
+
 	return (
 		<DrawerLayoutAndroid
 			ref={drawer}
@@ -121,10 +234,18 @@ const Profile = () => {
 							style={styles.image}
 						>
 							<View className="bg-white p-2 m-4 flex-1 flex-row justify-between rounded-xl">
-								<Image
-									className="w-[25%] h-full rounded-lg"
-									source={require("../../../assets/avt.jpg")}
-								/>
+								<View className="relative w-[25%] h-full">
+									{avt_link === "" ? <Image
+										className="w-full h-full rounded-lg"
+										source={require("../../../assets/avt.jpg")}
+									/> : <Image
+									className="w-full h-full rounded-lg"
+									source={{ uri: avt_link}}
+									/>}
+									<TouchableOpacity className="absolute -bottom-1 -right-3" onPress={() => editAvt()}>
+										<MaterialIcons name="edit" size={24} color="black" />
+									</TouchableOpacity>
+								</View>
 								<View className="flex-1 pl-3">
 									<Text className="flex-1 text-lg font-bold mb-2">
 										{USER.name}
@@ -136,23 +257,18 @@ const Profile = () => {
 						</ImageBackground>
 					</View>
 					<View className="bg-white m-5 border border-gray-200 rounded-xl h-full flex-1">
-						<View className="flex-row justify-between h-16 pl-4 pt-4 pr-4">
-							<View className="h-full w-[45%] justify-start">
-								<Text className="text-xs mb-1">Mã sinh viên:</Text>
-								<Text className="text-sm font-bold mb-3">{USER.mssv}</Text>
-								<View className="w-full h-px bg-gray-300" />
-							</View>
-							<View className="h-full w-[45%] justify-start">
-								<Text className="text-xs mb-1">Ngày sinh:</Text>
-								<Text className="text-sm font-bold mb-3">{USER.dob}</Text>
+					<View className="justify-between h-16 pl-4 pt-4 pr-4">
+							<View className="h-full w-full justify-start">
+								<Text className="text-xs mb-1">Email cá nhân:</Text>
+								<Text className="text-sm font-bold mb-3">{USER.email}</Text>
 								<View className="w-full h-px bg-gray-300" />
 							</View>
 						</View>
 
 						<View className="flex-row justify-between h-20 pl-4 pt-4 pr-4">
 							<View className="h-full w-[45%] justify-start">
-								<Text className="text-xs mb-1">Email cá nhân:</Text>
-								<Text className="text-sm font-bold mb-3">{USER.email}</Text>
+								<Text className="text-xs mb-1">Ngày sinh:</Text>
+								<Text className="text-sm font-bold mb-3">{USER.dob}</Text>
 								<View className="w-full h-px bg-gray-300" />
 							</View>
 							<View className="h-full w-[45%] justify-start">
@@ -207,6 +323,54 @@ const Profile = () => {
 					</View>
 				</ScrollView>
 			</View>
+			<Modal
+				animationType="fade"
+				transparent={true}
+				visible={modalVisible}
+			>
+				<View
+					style={{
+						flex: 1,
+						backgroundColor: "rgba(0, 0, 0, 0.5)",
+						justifyContent: "center",
+					}}
+				>
+					<View className="h-3/5 pl-8 pr-8 m-8 rounded-lg bg-white ">
+						<View className="mt-4">
+							<TouchableOpacity
+								onPress={() => {setModalVisible(false); setImageFile(null);}}
+								className="self-end"
+							>
+								<Ionicons
+									name="close-outline"
+									size={28}
+									color="gray"
+									className=""
+								/>
+							</TouchableOpacity>
+							<View className="mt-3 mb-5">
+								<View className="border border-gray-300 h-64 justify-center rounded-lg">
+									<Image
+										className="w-[95%] h-[95%] rounded-lg self-center"
+										source={{ uri: imageFile != null ? imageFile.uri : avt_link}}
+									/>
+								</View>
+								<TouchableOpacity className="bg-red-600 w-1/2 h-8 self-center mt-3 justify-center rounded-lg" onPress={() => handleFilePick()}>
+									<Text className="text-white self-center font-bold">Tải ảnh lên</Text>
+								</TouchableOpacity>
+							</View>
+							<View className="self-center flex-row">
+								<TouchableOpacity className="mr-8 bg-sky-600 p-2 w-20 rounded-lg" onPress={() => {setModalVisible(false); setImageFile(null);}}>
+									<Text className="self-center text-white font-bold">Hủy</Text>
+								</TouchableOpacity>
+								<TouchableOpacity className="bg-red-600 p-2 w-20 rounded-lg" onPress={() => saveImage()}>
+									<Text className="self-center text-white font-bold">Lưu</Text>
+								</TouchableOpacity>
+							</View>
+						</View>
+					</View>
+				</View>
+			</Modal>
 		</DrawerLayoutAndroid>
 	);
 };
