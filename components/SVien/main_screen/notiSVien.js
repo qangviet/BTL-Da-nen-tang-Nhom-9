@@ -58,7 +58,7 @@ const NotiSVien = () => {
 			const response = await api.post("/it5023e/get_notifications", {
 				token: param.token,
 				index: 0,
-				count: 4,
+				count: 10,
 			});
 	
 			const data = response.data.data;

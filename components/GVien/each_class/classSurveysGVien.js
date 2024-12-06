@@ -151,7 +151,7 @@ const ClassSurveysGVien = ({ route }) => {
 	
 	return viewSurvey !== -1 ? (
 		<View className="justify-between">
-			<ViewSurveysGVien token={params.token} survey={chosenSurvey}/>
+			<ViewSurveysGVien params={params} survey={chosenSurvey}/>
 			<View className="justify-center items-center bg-white h-[9%] border-t border-gray-400">
 				<TouchableOpacity className="bg-red-600 rounded-lg p-2 w-24" onPress={() => setViewSurvey(-1)}>
 					<Text className="self-center text-white font-bold">Đóng</Text>

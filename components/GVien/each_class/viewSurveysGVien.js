@@ -16,11 +16,13 @@ import { navigate } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import api from "../../api";
+import axios from "axios";
+import { Linking } from 'react-native';
 
-const ViewSurveysGVien = ({ token, survey }) => {
+const ViewSurveysGVien = ({ params, survey }) => {
 
 	console.log(">>> Viewing responses of: ", survey);
-	console.log("Token: ", token);
+	console.log("Param: ", params);
 
 	const dispatch = useDispatch();
 
@@ -28,10 +30,12 @@ const ViewSurveysGVien = ({ token, survey }) => {
 
 	const [tempGrade, setTempGrade] = useState(null);
 
+	const [studentId, setStudentId] = useState("");
+
 	async function fetchResponses() {
 		try {
 			const response = await api.post('/it5023e/get_survey_response', {
-				token: token,
+				token: params.token,
 				survey_id: survey.id,
 			});
 
@@ -44,9 +48,11 @@ const ViewSurveysGVien = ({ token, survey }) => {
 					file_url: item.file_url,
 					text_response: item.text_response,
 					student_id: item.student_account.student_id,
+					account_id: item.student_account.account_id,
 					student_name: item.student_account.first_name + " " + item.student_account.last_name
 				}));
 				setRESPONSES(fetchedResponses);
+				
 			} else {
 				console.error('API error:', response.data.meta.message);
 			}
@@ -68,12 +74,29 @@ const ViewSurveysGVien = ({ token, survey }) => {
 	const openModalViewSubmitted = (index) => {
 		setViewSubmitted(index);
 		setTempGrade(RESPONSES[index].grade);
+		setStudentId(RESPONSES[index].account_id);
 		// console.log(RESPONSES[index].grade);
 	};
 	const closeModalSubmitted = () => {
 		setViewSubmitted(-1);
 		setTempGrade(null);
 	};
+
+	//Xem bai lam	
+	const openMaterial = (url) => {
+		console.log("Mo tai lieu...");
+		//setIsOpen(true);
+		
+			try {
+					Linking.openURL(url).catch((err) => {
+						console.error("Failed to open URL: ", err);
+						alert("Error Không thể mở tài liệu.");
+					});
+			} catch (error) {
+					console.error("Error parsing drive URI: ", error);
+					alert("Error", "Không thể lấy URL từ tài liệu Google Drive.");
+			}
+		};
 
 	function goEditSurvey() {
 		dispatch(
@@ -98,11 +121,46 @@ const ViewSurveysGVien = ({ token, survey }) => {
 	}
 
 	async function gradingResponse(cur_response) {
-		// console.log(tempGrade);
+		console.log(tempGrade);
 		// console.log(cur_response.id);
+		if (tempGrade)
+			{
+				const message = `Bài tập ${survey.title} - Lớp ${params.class.name} - Điểm : ${tempGrade}/10`
+				console.log("Diem tam thoi:...", tempGrade);
+				console.log("Student Id:...", studentId);
+				console.log("Message:...", message);
+				console.log("Token:", params.token)
+				try {
+					const response = await axios.post('http://157.66.24.126:8080/it5023e/send_notification', {
+						token: params.token,
+						message: message,
+						toUser: studentId,
+						type: "ASSIGNMENT_GRADE"
+					  }, {
+						headers: {
+						  'Content-Type': 'multipart/form-data',
+						}
+					  });
+		
+					if (response.data.meta.code === "1000") {
+						console.log("Đã chấm điểm thành công!...")
+					} else {
+						console.error('API error:', response.data.meta.message);
+					}
+				} catch (error) {
+					console.error('Network error:', error);
+					console.error("API call failed: ", error);
+					console.error("Error fetching class list:", error);
+					console.error("Error Data:", error.response.data);
+					console.error("Error Status:", error.response.status);
+				}
+	
+				
+			} else console.log("Null");
+
 		try {
 			const response = await api.post('/it5023e/get_survey_response', {
-				token: token,
+				token: params.token,
 				survey_id: survey.id,
 				grade: {
 					score: tempGrade,
@@ -123,6 +181,8 @@ const ViewSurveysGVien = ({ token, survey }) => {
 			console.error("Error Data:", error.response.data);
 			console.error("Error Status:", error.response.status);
 		}
+		
+	
 	}
 
 	return (
@@ -156,7 +216,7 @@ const ViewSurveysGVien = ({ token, survey }) => {
 						{RESPONSES.map((item, index) => (
 							<TouchableOpacity
 								key={index}
-								onPress={() => openModalViewSubmitted(index)}
+								//onPress={() => openModalViewSubmitted(index)}
 								className="flex flex-row items-center border-b border-gray-400"
 							>
 								<View>
@@ -170,6 +230,7 @@ const ViewSurveysGVien = ({ token, survey }) => {
 								</Text>
 								<TouchableOpacity
 									className="px-3 flex justify-end w-20"
+
 									onPress={() => openModalViewSubmitted(index)}
 								>
 									<Text className="text-blue-600 underline text-base font-medium">
@@ -206,7 +267,7 @@ const ViewSurveysGVien = ({ token, survey }) => {
 								</Text>
 							</View>
 							<View className="flex flex-row px-4 mt-3">
-								<TouchableOpacity className="px-2 py-2">
+								<TouchableOpacity className="px-2 py-2" onPress={() => openMaterial(RESPONSES[viewSubmitted].file_url)}>
 									<Text className="underline text-blue-600 text-base textlg">
 										{RESPONSES[viewSubmitted].file_url}
 									</Text>
