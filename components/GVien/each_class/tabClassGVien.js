@@ -15,7 +15,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { goBack as goBackMavigation } from "../../../redux/navigationSlice.js";
 import api from "../../API/api.js";
-import { Menu, Provider } from "react-native-paper";
+// import { Menu, Provider } from "react-native-paper";
+import {
+	MenuProvider,
+	Menu,
+	MenuOptions,
+	MenuOption,
+	MenuTrigger,
+} from 'react-native-popup-menu';
 
 const ClassScreenGVien = ({ route }) => {
 	const navigation = useNavigation();
@@ -84,57 +91,22 @@ const ClassScreenGVien = ({ route }) => {
 					name="Tài liệu"
 					component={ClassDocs}
 					initialParams={params}
-					// listeners={() => ({
-					// 	swipeEnd: (e) => {
-					// 		setTabMode(0);
-					// 	},
-					// })}
 				/>
 				<Tab.Screen
 					name="Bài tập"
 					component={ClassSurveys}
 					initialParams={params}
-					// listeners={() => ({
-					// 	swipeEnd: (e) => {
-					// 		setTabMode(1);
-					// 	},
-					// })}
 				/>
 				<Tab.Screen
 					name="Điểm danh"
 					component={ClassDiemDanhGVien}
 					initialParams={params}
-					// listeners={() => ({
-					// 	swipeEnd: (e) => {
-					// 		setTabMode(2);
-					// 	},
-					// })}
 				/>
 			</Tab.Navigator>
 		);
 	};
 
 	const [changeScreen, setChangeScreen] = React.useState(false);
-
-	// const openCreateSurveys = () => {
-	// 	dispatch(
-	// 		navigate({
-	// 			screen: "CreateSurveyGVien",
-	// 			params: params,
-	// 		})
-	// 	);
-	// 	console.log("Go to: Create survey");
-	// };
-
-	// const openUploadMaterials = () => {
-	// 	dispatch(
-	// 		navigate({
-	// 			screen: "CreateSurveyGVien",
-	// 			params: params,
-	// 		})
-	// 	);
-	// 	console.log("Go to: Upload Material");
-	// };
 	const [menuVisible, setMenuVisible] = useState(false);
 
 	// Hàm mở và đóng menu
@@ -164,9 +136,8 @@ const ClassScreenGVien = ({ route }) => {
 		console.log("Go to: Upload Material");
 	};
 
-
 	return (
-		<Provider>
+		<MenuProvider>
 			<NavigationContainer independent={true}>
 				<View className="bg-red-700 pt-8 pb-3 relative">
 					<View className="absolute left-3 top-8">
@@ -178,17 +149,22 @@ const ClassScreenGVien = ({ route }) => {
 						<LogoHust width={140} height={25}></LogoHust>
 					</View>
 					<View className="absolute right-3 top-8">
-						<Menu
-							visible={menuVisible}
-							onDismiss={closeMenu}
-							anchor={
-								<TouchableOpacity onPress={openMenu}>
-									<FontAwesome name="plus" size={24} color="white" />
-								</TouchableOpacity>
-							}
-						>
-							<Menu.Item onPress={openUploadMaterials} title="Thêm tài liệu" />
-							<Menu.Item onPress={openCreateSurveys} title="Thêm bài tập" />
+						<Menu>
+							<MenuTrigger>
+								<FontAwesome name="plus" size={24} color="white" />
+							</MenuTrigger>
+							<MenuOptions
+								customStyles={{
+									optionsContainer: {
+										width: 120,
+										height: 80,
+										alignItems: "center",
+       									justifyContent: "center"
+									}
+								}}>
+								<MenuOption onSelect={openUploadMaterials} text='Tài liệu' />
+								<MenuOption onSelect={openCreateSurveys} text='Bài tập' />
+							</MenuOptions>
 						</Menu>
 					</View>
 
@@ -206,10 +182,8 @@ const ClassScreenGVien = ({ route }) => {
 
 				<TabNavigator />
 			</NavigationContainer>
-		</Provider>
+		</MenuProvider>
 	);
 };
-
-const styles = StyleSheet.create({});
 
 export default ClassScreenGVien;

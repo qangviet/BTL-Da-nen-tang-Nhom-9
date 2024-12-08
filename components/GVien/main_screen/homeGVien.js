@@ -19,6 +19,12 @@ const HomeGVien = ({ route }) => {
 	const [USER, setUSER] = useState({});
 	const [avtLink, setAvtLink] = useState("");
 
+	useEffect(() => {
+		if (currentScreen !== "HomeGVien") {
+			navigation.navigate(currentScreen);
+		}
+	}, [currentScreen]);
+
 	const fetchUSER = async () => {
 		try {
 			const response = await api.post("/it4788/get_user_info", {
@@ -66,6 +72,8 @@ const HomeGVien = ({ route }) => {
 		}
 	}, [isFocused]);
 
+	// console.log(avtLink);
+
 	const goToMyClasses = () => {
 		dispatch(
 			navigate({
@@ -84,16 +92,6 @@ const HomeGVien = ({ route }) => {
 			})
 		);
 		console.log("Go to: Quản lý lớp");
-	};
-
-	const gotoNotification = () => {
-		dispatch(
-			navigate({
-				screen: "NotiGVien",
-				params: param,
-			})
-		);
-		console.log("Go to: Thông báo");
 	};
 
 	const functionIsDeveloping = () => {
