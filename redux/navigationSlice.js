@@ -18,6 +18,13 @@ const navigationSlice = createSlice({
 				params: action.payload.params,
 			});
 		},
+		updateParams: (state, action) => {
+			state.params = {
+				...state.params,
+				...action.payload,
+			};
+			state.history[state.history.length - 1].params = state.params;
+		},
 		goBack: (state) => {
 			if (state.history.length > 1) {
 				state.history.pop();
@@ -35,5 +42,5 @@ const navigationSlice = createSlice({
 	},
 });
 
-export const { navigate, goBack, logOut } = navigationSlice.actions;
+export const { navigate, goBack, logOut, updateParams } = navigationSlice.actions;
 export default navigationSlice.reducer;

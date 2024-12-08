@@ -7,7 +7,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { LogoHust, LogoBK } from "../../logo";
 import { useToast } from "react-native-toast-notifications";
 import api from "../../api";
-
+import { useIsFocused } from "@react-navigation/native";
 const HomeGVien = ({ route }) => {
 	const toast = useToast();
 	const dispatch = useDispatch();
@@ -16,16 +16,16 @@ const HomeGVien = ({ route }) => {
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 
-	
-	const [USER, setUSER] = useState({})
-	
+	const [USER, setUSER] = useState({});
+	const [avtLink, setAvtLink] = useState("");
+
 	const fetchUSER = async () => {
 		try {
 			const response = await api.post("/it4788/get_user_info", {
 				token: param.token,
-				user_id: param.userInfo.id
+				user_id: param.userInfo.id,
 			});
-			
+
 			// Xử lý dữ liệu và cập nhật state
 			if (response.data.code === "1000") {
 				const fetchedUSER = {
@@ -37,8 +37,16 @@ const HomeGVien = ({ route }) => {
 					dob: "03/01/2003",
 					khoaVien: "Trường Công nghệ Thông tin và Truyền thông",
 					he: "Kỹ sư chính quy - k66",
-					class: "Khoa học máy tính 06 - K66"
+					class: "Khoa học máy tính 06 - K66",
 				};
+				if (fetchedUSER.avatar != null) {
+					const avt_link =
+						"https://drive.google.com/thumbnail?id=" +
+						fetchedUSER.avatar.split("/d/")[1].split("/")[0] +
+						"&sz=w1000";
+					setAvtLink(avt_link);
+				}
+				console.log("fetchedUSER: ", fetchedUSER);
 				setUSER(fetchedUSER);
 			} else {
 				console.error("Error fetching classes: ", response.data.meta.message);
@@ -50,16 +58,14 @@ const HomeGVien = ({ route }) => {
 			console.error("Error Status:", error.response.status);
 		}
 	};
-	
-	useEffect(() => {
-		fetchUSER();
-	}, []);
+	const isFocused = useIsFocused();
 
-	let avt_link = "";
-	if (param.userInfo != null) {
-		avt_link = "https://drive.google.com/thumbnail?id=" + param.userInfo.avatar.split('/d/')[1].split('/')[0] + "&sz=w1000"
-	}
-	
+	useEffect(() => {
+		if (isFocused) {
+			fetchUSER();
+		}
+	}, [isFocused]);
+
 	const goToMyClasses = () => {
 		dispatch(
 			navigate({
@@ -115,27 +121,22 @@ const HomeGVien = ({ route }) => {
 						<View className="flex flex-row justify-between items-center ">
 							<View className="flex flex-row gap-x-2 items-center">
 								<View>
-									{avt_link === "" ? <Image
-										className="w-20 h-20 rounded-full mt-1 mr-2"
-										source={require("../../../assets/avt.jpg")}
-									/> : <Image
-									className="w-20 h-20 rounded-full mt-1 mr-2"
-									source={{ uri: avt_link}}
-									/>}
+									{avtLink === "" ? (
+										<Image
+											className="w-20 h-20 rounded-full mt-1 mr-2"
+											source={require("../../../assets/avt.jpg")}
+										/>
+									) : (
+										<Image className="w-20 h-20 rounded-full mt-1 mr-2" source={{ uri: avtLink }} />
+									)}
 								</View>
 								{param && param.userInfo ? (
 									<View>
-										<Text className="font-bold text-lg">
-											{param.userInfo.name}
-										</Text>
-										<Text className="text-sm">
-											{param.role === 1 ? "Sinh viên" : "Giảng viên"}
-										</Text>
+										<Text className="font-bold text-lg">{param.userInfo.name}</Text>
+										<Text className="text-sm">{param.role === 1 ? "Sinh viên" : "Giảng viên"}</Text>
 									</View>
 								) : (
-									<Text className="text-red-500">
-										Không tìm thấy thông tin người dùng
-									</Text>
+									<Text className="text-red-500">Không tìm thấy thông tin người dùng</Text>
 								)}
 							</View>
 							<View className="mr-1">
@@ -157,9 +158,7 @@ const HomeGVien = ({ route }) => {
 									</TouchableOpacity>
 								</View>
 								<View className="pt-3">
-									<Text className="self-center text-base font-bold">
-										Danh sách lớp
-									</Text>
+									<Text className="self-center text-base font-bold">Danh sách lớp</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
 											Thông tin các lớp của dạy
@@ -177,9 +176,7 @@ const HomeGVien = ({ route }) => {
 									</TouchableOpacity>
 								</View>
 								<View className="pt-3">
-									<Text className="self-center text-base font-bold">
-										Quản lý lớp
-									</Text>
+									<Text className="self-center text-base font-bold">Quản lý lớp</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
 											Tạo các lớp mới và quản lý lớp
@@ -199,9 +196,7 @@ const HomeGVien = ({ route }) => {
 									</TouchableOpacity>
 								</View>
 								<View className="pt-3">
-									<Text className="self-center text-base font-bold">
-										Lịch dạy
-									</Text>
+									<Text className="self-center text-base font-bold">Lịch dạy</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
 											Tra cứu lịch dạy
@@ -239,9 +234,7 @@ const HomeGVien = ({ route }) => {
 									</TouchableOpacity>
 								</View>
 								<View className="pt-3">
-									<Text className="self-center text-base font-bold">
-										Thông báo tin tức
-									</Text>
+									<Text className="self-center text-base font-bold">Thông báo tin tức</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
 											Các thông báo quan trọng
