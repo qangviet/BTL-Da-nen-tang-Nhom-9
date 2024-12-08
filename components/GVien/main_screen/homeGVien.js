@@ -6,23 +6,60 @@ import { useNavigation as useReactNavigation } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LogoHust, LogoBK } from "../../logo";
 import { useToast } from "react-native-toast-notifications";
-const HomeGVien = () => {
+import api from "../../api";
+
+const HomeGVien = ({ route }) => {
 	const toast = useToast();
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
 	const param = useSelector((state) => state.navigation.params);
-	//console.log(param)
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
-	useEffect(() => {
-		if (currentScreen !== "HomeGVien") {
-			navigation.navigate(currentScreen);
+
+	
+	const [USER, setUSER] = useState({})
+	
+	const fetchUSER = async () => {
+		try {
+			const response = await api.post("/it4788/get_user_info", {
+				token: param.token,
+				user_id: param.userInfo.id
+			});
+			
+			// Xử lý dữ liệu và cập nhật state
+			if (response.data.code === "1000") {
+				const fetchedUSER = {
+					id: response.data.data.id,
+					name: response.data.data.name,
+					email: response.data.data.email,
+					avatar: response.data.data.avatar,
+					phoneNumber: "0355064807",
+					dob: "03/01/2003",
+					khoaVien: "Trường Công nghệ Thông tin và Truyền thông",
+					he: "Kỹ sư chính quy - k66",
+					class: "Khoa học máy tính 06 - K66"
+				};
+				setUSER(fetchedUSER);
+			} else {
+				console.error("Error fetching classes: ", response.data.meta.message);
+			}
+		} catch (error) {
+			console.error("API call failed: ", error);
+			console.error("Error fetching class list:", error);
+			console.error("Error Data:", error.response.data);
+			console.error("Error Status:", error.response.status);
 		}
-	}, [currentScreen]);
-	// const state = useSelector((state) => state.navigation);
-	// console.log("Current screen: ", state.currentScreen);
-	// console.log("Params: ", state.params);
-	// console.log(state.history);
+	};
+	
+	useEffect(() => {
+		fetchUSER();
+	}, []);
+
+	let avt_link = "";
+	if (param.userInfo != null) {
+		avt_link = "https://drive.google.com/thumbnail?id=" + param.userInfo.avatar.split('/d/')[1].split('/')[0] + "&sz=w1000"
+	}
+	
 	const goToMyClasses = () => {
 		dispatch(
 			navigate({
@@ -62,24 +99,11 @@ const HomeGVien = () => {
 	return (
 		<>
 			<View className="bg-[#dfe1e2]">
-				{/* <NavigationContainer independent={true}> */}
-				<View className="bg-red-700 pt-10 pb-5 relative z-10">
+				<View className="bg-red-700 pt-11 pb-5 relative z-10">
 					<View className="flex justify-center items-center">
-						<LogoHust width={130} height={25}></LogoHust>
+						<LogoHust width={130} height={24}></LogoHust>
 					</View>
-					{/* <View className="absolute right-4 top-12">
-						<TouchableOpacity onPress={gotoNotification}>
-							<View className="relative">
-								<View
-									className="bg-red-500 rounded-full h-6 w-6 
-								flex justify-center items-center absolute z-10 -right-3 -top-3"
-								>
-									<Text className="text-white text-[11px]">10+</Text>
-								</View>
-								<Ionicons name="notifications" size={24} color="white" />
-							</View>
-						</TouchableOpacity>
-					</View> */}
+
 					<View className="absolute left-5 top-14">
 						<LogoBK width={32} height={48} className="mx-auto"></LogoBK>
 					</View>
@@ -91,11 +115,13 @@ const HomeGVien = () => {
 						<View className="flex flex-row justify-between items-center ">
 							<View className="flex flex-row gap-x-2 items-center">
 								<View>
-									<Ionicons
-										name="person-circle-sharp"
-										size={60}
-										color="#b5b5b5"
-									/>
+									{avt_link === "" ? <Image
+										className="w-20 h-20 rounded-full mt-1 mr-2"
+										source={require("../../../assets/avt.jpg")}
+									/> : <Image
+									className="w-20 h-20 rounded-full mt-1 mr-2"
+									source={{ uri: avt_link}}
+									/>}
 								</View>
 								{param && param.userInfo ? (
 									<View>

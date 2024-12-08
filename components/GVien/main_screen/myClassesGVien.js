@@ -107,18 +107,19 @@ const MyClassesScreenGVien = () => {
 			<FontAwesome name="chevron-right" size={12} color="gray" />
 		</TouchableOpacity>
 	);
-
+	
 	return (
 		<View>
-			<View className="bg-red-700 pt-8 pb-5 relative">
-				<View className="absolute left-3 top-8">
+			<View className="bg-red-700 pt-11 pb-5 relative z-10">
+				<View className="absolute left-3 top-11">
 					<TouchableOpacity onPress={() => goBack()}>
 						<FontAwesome name="long-arrow-left" size={26} color="white" />
 					</TouchableOpacity>
 				</View>
 				<View className="flex justify-center items-center">
-					<LogoHust width={140} height={25}></LogoHust>
+					<LogoHust width={130} height={24}></LogoHust>
 				</View>
+
 			</View>
 
 			<View className="pt-2 pl-5">

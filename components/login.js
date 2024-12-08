@@ -33,8 +33,8 @@ const LoginScreen = () => {
 		// Ở đây bạn sẽ thêm logic xác thực đăng nhập thực tế
 		if (!(username === "" || password === "")) {
 			try {
-				console.log(username);
-				console.log(password);
+				// console.log(username);
+				// console.log(password);
 				const response = await api.post("/it4788/login", {
 					email: username,
 					password: password,
@@ -71,7 +71,7 @@ const LoginScreen = () => {
 							})
 						);
 					} else {
-						//console.log(PARAMS)
+						console.log(PARAMS.token);
 						dispatch(
 							navigate({
 								screen: "TabMainGVien",
