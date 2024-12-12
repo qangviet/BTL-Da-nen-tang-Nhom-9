@@ -20,7 +20,7 @@ const HomeGVien = ({ route }) => {
 	const [avtLink, setAvtLink] = useState("");
 
 	useEffect(() => {
-		if (currentScreen !== "HomeGVien") {
+		if (currentScreen !== "TabMainGVien") {
 			navigation.navigate(currentScreen);
 		}
 	}, [currentScreen]);

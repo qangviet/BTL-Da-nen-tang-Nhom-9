@@ -17,14 +17,12 @@ const HomeSVien = () => {
 
 	//console.log(param);
 
-
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	useEffect(() => {
-		if (currentScreen !== "HomeSVien") {
+		if (currentScreen !== "TabMainSVien") {
 			navigation.navigate(currentScreen);
 		}
 	}, [currentScreen]);
-
 	const goToMyClasses = () => {
 		dispatch(
 			navigate({
@@ -94,21 +92,16 @@ const HomeSVien = () => {
 						<View className="flex flex-row justify-between items-center ">
 							<View className="flex flex-row gap-x-2 items-center">
 								<View>
-									<Ionicons
-										name="person-circle-sharp"
-										size={60}
-										color="#b5b5b5"
-									/>
+									<Ionicons name="person-circle-sharp" size={60} color="#b5b5b5" />
 								</View>
-								{param && param.userInfo ? 
-								(<View>
-									<Text className="font-bold text-lg">{param.userInfo.name}</Text>
-									<Text className="text-sm">{param.role === 1 ? "Sinh viên" : "Giảng viên"}</Text>
-								</View>
+								{param && param.userInfo ? (
+									<View>
+										<Text className="font-bold text-lg">{param.userInfo.name}</Text>
+										<Text className="text-sm">{param.role === 1 ? "Sinh viên" : "Giảng viên"}</Text>
+									</View>
 								) : (
-								<Text className="text-red-500">Không tìm thấy thông tin người dùng</Text>
+									<Text className="text-red-500">Không tìm thấy thông tin người dùng</Text>
 								)}
-
 							</View>
 							<View className="mr-1">
 								<TouchableOpacity>
@@ -129,9 +122,7 @@ const HomeSVien = () => {
 									</TouchableOpacity>
 								</View>
 								<View className="pt-3">
-									<Text className="self-center text-base font-bold">
-										Thời khóa biểu
-									</Text>
+									<Text className="self-center text-base font-bold">Thời khóa biểu</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
 											Tra cứu thời khóa biểu, lịch thi
@@ -150,9 +141,7 @@ const HomeSVien = () => {
 								</View>
 								<View className="pt-3 ">
 									<Text className="self-center text-base font-bold">Đồ án</Text>
-									<Text className="self-center text-sm font-[650]">
-										Thông tin các đồ án
-									</Text>
+									<Text className="self-center text-sm font-[650]">Thông tin các đồ án</Text>
 								</View>
 							</View>
 						</View>
@@ -167,9 +156,7 @@ const HomeSVien = () => {
 									</TouchableOpacity>
 								</View>
 								<View className="pt-3">
-									<Text className="self-center text-base font-bold">
-										Danh sách lớp
-									</Text>
+									<Text className="self-center text-base font-bold">Danh sách lớp</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
 											Thông tin các lớp của sinh viên
@@ -187,12 +174,8 @@ const HomeSVien = () => {
 									</TouchableOpacity>
 								</View>
 								<View className="pt-3">
-									<Text className="self-center text-base font-bold">
-										Đăng ký lớp
-									</Text>
-									<Text className="self-center text-sm font-[650]">
-										Đăng ký lớp cho học kỳ
-									</Text>
+									<Text className="self-center text-base font-bold">Đăng ký lớp</Text>
+									<Text className="self-center text-sm font-[650]">Đăng ký lớp cho học kỳ</Text>
 								</View>
 							</View>
 						</View>
@@ -207,9 +190,7 @@ const HomeSVien = () => {
 									</TouchableOpacity>
 								</View>
 								<View className="pt-3">
-									<Text className="self-center text-base font-bold">
-										Thông báo tin tức
-									</Text>
+									<Text className="self-center text-base font-bold">Thông báo tin tức</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
 											Các thông báo quan trọng
@@ -227,12 +208,8 @@ const HomeSVien = () => {
 									</TouchableOpacity>
 								</View>
 								<View className="pt-3">
-									<Text className="self-center text-base font-bold">
-										Kết quả học tập
-									</Text>
-									<Text className="self-center text-sm font-[650]">
-										Thông tin kết quả học tập
-									</Text>
+									<Text className="self-center text-base font-bold">Kết quả học tập</Text>
+									<Text className="self-center text-sm font-[650]">Thông tin kết quả học tập</Text>
 								</View>
 							</View>
 						</View>
@@ -247,9 +224,7 @@ const HomeSVien = () => {
 									</TouchableOpacity>
 								</View>
 								<View className="pt-3">
-									<Text className="self-center text-base font-bold">
-										Biểu mẫu online
-									</Text>
+									<Text className="self-center text-base font-bold">Biểu mẫu online</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
 											Bảng điểm, chứng nhận sv, giấy giới thiệu...

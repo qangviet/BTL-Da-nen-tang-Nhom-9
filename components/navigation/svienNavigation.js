@@ -7,6 +7,7 @@ import ClassScreenSVien from "../SVien/each_class/tabClassSVien";
 import TabMainSVien from "../SVien/main_screen/tabMainSVien";
 import ClassSubmitSurveysSVien from "../SVien/each_class/classSubmitSurveysSVien";
 import NotiSVien from "../SVien/main_screen/notiSVien";
+import ChangePassword from "../changePassword";
 import RegisterClassScreenSVien from "../SVien/main_screen/registerClassSVien";
 const Stack = createNativeStackNavigator();
 
@@ -60,6 +61,14 @@ const SVienNavigation = () => {
 					options={{
 						headerShown: false,
 						title: "NotiSVien",
+					}}
+				/>
+				<Stack.Screen
+					name="ChangePassword"
+					component={ChangePassword}
+					options={{
+						headerShown: false,
+						title: "ChangePassword",
 					}}
 				/>
 			</Stack.Navigator>
