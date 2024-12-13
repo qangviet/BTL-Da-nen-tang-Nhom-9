@@ -27,7 +27,7 @@ const ManageClassesScreenGVien = () => {
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const param = useSelector((state) => state.navigation.params);
-	console.log(param)
+	// console.log(param);
 	useEffect(() => {
 		if (currentScreen !== "MyClassesScreenGVien") {
 			navigation.navigate(currentScreen);
@@ -62,42 +62,38 @@ const ManageClassesScreenGVien = () => {
 	const [tableData, setTableData] = useState([]);
 	const [tableDataOpen, setTableDataOpen] = useState([]);
 
-	useEffect(() => {
-		if (currentScreen !== "MyClassesScreenGVien") {
-			navigation.navigate(currentScreen);
+	const [searchedClassId, setSearchedClassId] = useState("");
+
+	const fetchClassList = async () => {
+		// console.log(">>>> LOADED!");
+		try {
+			const response = await api.post("/it5023e/get_class_list", {
+				token: param.token,
+				role: param.role == 2 ? "LECTURER" : "STUDENT",
+				account_id: "24",
+				pageable_request: null,
+			});
+			const pageContent = response.data.data.page_content;
+			// Map dữ liệu để phù hợp với cấu trúc tableData
+			const formattedData = pageContent.map((item) => [
+				item.class_id,
+				item.class_name,
+				item.class_type,
+				item.start_date,
+				item.end_date,
+				item.status,
+				false, // Cột checkbox mặc định là false
+			]);
+			setTableData(formattedData);
+			return formattedData;
+		} catch (error) {
+			console.error("Error fetching class list:", error);
+			console.error("Error Data:", error.response.data);
+			console.error("Error Status:", error.response.status);
 		}
-	}, [currentScreen]);
+	};
 
 	useEffect(() => {
-		// Hàm gọi API để lấy danh sách lớp
-		const fetchClassList = async () => {
-			// console.log(">>>> LOADED!");
-			try {
-				const response = await api.post("/it5023e/get_class_list", {
-					token: param.token,
-					role: param.role == 2 ? "LECTURER" : "STUDENT",
-					account_id: "24",
-					pageable_request: null,
-				});
-				const pageContent = response.data.data.page_content;
-				// Map dữ liệu để phù hợp với cấu trúc tableData
-				const formattedData = pageContent.map((item) => [
-					item.class_id,
-					item.class_name,
-					item.class_type,
-					item.start_date,
-					item.end_date,
-					item.status,
-					false, // Cột checkbox mặc định là false
-				]);
-				setTableData(formattedData);
-			} catch (error) {
-				console.error("Error fetching class list:", error);
-				console.error("Error Data:", error.response.data);
-				console.error("Error Status:", error.response.status);
-			}
-		};
-
 		fetchClassList();
 	}, [currentScreen]);
 
@@ -168,6 +164,24 @@ const ManageClassesScreenGVien = () => {
 		}
 	};
 
+	const searchClassId = async (class_id) => {
+		console.log("Searched class_id: ", class_id);
+		print("Table data: ", tableData);
+		let classes = await fetchClassList();
+		if (class_id !== "") {
+			let temp = [];
+			classes.forEach(item => {
+				// console.log(item);
+				if (item[0] === class_id) {
+					temp.push(item);
+				}
+			})
+			setTableData(temp);
+		} else {
+			await fetchClassList();
+		}
+	}
+
 	// Kiểm tra xem có một checkbox được chọn hay không
 	useEffect(() => {
 		if (checkedData !== null) {
@@ -200,6 +214,8 @@ const ManageClassesScreenGVien = () => {
 		setIsOpenModal(false);
 	};
 
+	// console.log("Classes: ", tableData);
+
 	return (
 		<ScrollView>
 			<View className="bg-red-700 pt-10 pb-5 relative">
@@ -219,10 +235,11 @@ const ManageClassesScreenGVien = () => {
 						className=" text-red-600 text-lg px-3"
 						placeholder="Mã lớp"
 						placeholderTextColor={"#ad1d1d"}
+						onChangeText={(text) => setSearchedClassId(text)}
 					/>
 				</View>
 				<View className="basis-[35%] flex justify-center items-center bg-red-700 rounded-lg">
-					<TouchableOpacity>
+					<TouchableOpacity onPress={() => searchClassId(searchedClassId)}>
 						<Text className="text-white italic font-bold text-lg">Tìm kiếm</Text>
 					</TouchableOpacity>
 				</View>
