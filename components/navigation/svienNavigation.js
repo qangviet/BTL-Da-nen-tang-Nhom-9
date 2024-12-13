@@ -6,6 +6,7 @@ import MyClassesScreenSVien from "../SVien/main_screen/myClassesSVien";
 import ClassScreenSVien from "../SVien/each_class/tabClassSVien";
 import TabMainSVien from "../SVien/main_screen/tabMainSVien";
 import ClassSubmitSurveysSVien from "../SVien/each_class/classSubmitSurveysSVien";
+import ClassDocsScreenSVien from "../SVien/each_class/classDocsSVien";
 import NotiSVien from "../SVien/main_screen/notiSVien";
 import ChangePassword from "../changePassword";
 import RegisterClassScreenSVien from "../SVien/main_screen/registerClassSVien";
@@ -45,6 +46,14 @@ const SVienNavigation = () => {
 					options={{
 						headerShown: false,
 						title: "ClassSubmitSurveysSVien",
+					}}
+				/>
+				<Stack.Screen
+					name="ClassDocsScreenSVien"
+					component={ClassDocsScreenSVien}
+					options={{
+						headerShown: false,
+						title: "ClassDocsScreenSVien",
 					}}
 				/>
 				<Stack.Screen

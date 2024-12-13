@@ -109,15 +109,12 @@ const ClassDocsScreenSVien = ({ route }) => {
       );
 
       const Item = ({ item }) => (
-            <View className="bg-white p-4 m-2 rounded-lg shadow flex-row justify-between items-center border border-gray-200">
+            <TouchableOpacity className="bg-white p-4 m-2 rounded-lg shadow flex-row justify-between items-center border border-gray-200" onPress={() => openMaterial(item.material_link)}>
                   <View>
                         <Text className='text-lg'>{item.material_name}</Text>
                         <Text className='text-gray-500'>Chỉnh sửa bởi: {params.classInfo.teacher}</Text>
                   </View>
-                  <TouchableOpacity onPress={() => handleOpenModal(item)}>
-                        <FontAwesome name="ellipsis-h" size={20} color="gray" />
-                  </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
       );
 
       return (
