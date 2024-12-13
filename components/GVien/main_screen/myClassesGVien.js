@@ -21,6 +21,7 @@ const MyClassesScreenGVien = () => {
 	const navigation = useReactNavigation();
 	const state = useSelector((state) => state.navigation);
 	const param = useSelector((state) => state.navigation.params)
+	console.log("Param.....", param)
 	//console.log(state)
 	//console.log("Current screen: ", state);
 	useEffect(() => {

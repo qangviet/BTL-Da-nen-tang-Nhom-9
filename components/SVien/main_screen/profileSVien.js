@@ -19,22 +19,30 @@ import { logoutAct } from "../../../redux/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
 import * as DocumentPicker from "expo-document-picker";
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from "expo-file-system";
 import api from "../../api";
 import axios from "axios";
 import { useIsFocused } from "@react-navigation/native";
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { navigate } from "../../../redux/navigationSlice";
 
 const Profile = () => {
 	const dispatch = useDispatch();
+	const navigation = useReactNavigation();
 	const param = useSelector((state) => state.navigation.params);
 	token = param.token;
 	console.log("Param: ", param);
+	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 
 	const drawer = useRef(null);
 	const isFocused = useIsFocused(); // Hook để kiểm tra screen có đang focus hay không
 	const drawerPosition = "right";
-	
+	useEffect(() => {
+		if (currentScreen !== "TabMainSVien") {
+			navigation.navigate(currentScreen);
+		}
+	}, [currentScreen]);
 	useEffect(() => {
 		if (isFocused && drawer.current) {
 			drawer.current.closeDrawer();
@@ -60,7 +68,7 @@ const Profile = () => {
 		}
 	};
 
-	const [USER, setUSER] = useState({})
+	const [USER, setUSER] = useState({});
 	const [modalVisible, setModalVisible] = useState(false);
 	const [imageFile, setImageFile] = useState(null);
 
@@ -70,7 +78,7 @@ const Profile = () => {
 			try {
 				const response = await api.post("/it4788/get_user_info", {
 					token: param.token,
-					user_id: param.userInfo.id
+					user_id: param.userInfo.id,
 				});
 
 				// Xử lý dữ liệu và cập nhật state
@@ -84,7 +92,7 @@ const Profile = () => {
 						dob: "03/01/2003",
 						khoaVien: "Trường Công nghệ Thông tin và Truyền thông",
 						he: "Kỹ sư chính quy - k66",
-						class: "Khoa học máy tính 06 - K66"
+						class: "Khoa học máy tính 06 - K66",
 					};
 					setUSER(fetchedUSER);
 				} else {
@@ -105,7 +113,7 @@ const Profile = () => {
 
 	let avt_link = "";
 	if (USER.avatar != null) {
-		avt_link = "https://drive.google.com/thumbnail?id=" + USER.avatar.split('/d/')[1].split('/')[0] + "&sz=w1000"
+		avt_link = "https://drive.google.com/thumbnail?id=" + USER.avatar.split("/d/")[1].split("/")[0] + "&sz=w1000";
 	}
 
 	const handleFilePick = async () => {
@@ -114,22 +122,21 @@ const Profile = () => {
 				type: "image/*",
 				copyToCacheDirectory: true,
 			});
-			
+
 			if (response.assets && response.assets.length > 0) {
 				const { name, size, uri, mimeType } = response.assets[0];
 				const fileToUpload = { name, size, uri, type: mimeType };
 				setImageFile(fileToUpload);
 				console.log("File đã chọn:", fileToUpload);
-			}
-			else {
+			} else {
 				console.log("File selection canceled.");
-				console.log(response)
+				console.log(response);
 			}
 		} catch (error) {
 			console.error("Error picking file:", error);
 		}
-	}
-	
+	};
+
 	function editAvt() {
 		console.log("Edit Avt");
 		setModalVisible(true);
@@ -146,29 +153,29 @@ const Profile = () => {
 		const fileInfo = await FileSystem.getInfoAsync(fileUri);
 		console.log(fileInfo);
 		if (!fileInfo.exists) {
-			console.error('File not found!');
+			console.error("File not found!");
 			return;
 		}
 
 		const formData = new FormData();
-		formData.append('token', param.token);
-		formData.append('file', {
+		formData.append("token", param.token);
+		formData.append("file", {
 			uri: fileUri,
 			name: imageFile.name,
 			type: imageFile.type,
 		});
 
 		try {
-			const response = await axios.post('http://157.66.24.126:8080/it4788/change_info_after_signup', formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-			},
+			const response = await axios.post("http://157.66.24.126:8080/it4788/change_info_after_signup", formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
 			});
 			alert("Cập nhật ảnh thành công!");
 			setImageFile(null);
 			setModalVisible(false);
 		} catch (error) {
-			console.error('Upload failed:', error.response ? error.response.data : error.message);
+			console.error("Upload failed:", error.response ? error.response.data : error.message);
 			console.error("API call failed: ", error);
 			console.error("Error fetching class list:", error);
 			console.error("Error Data:", error.response.data);
@@ -176,11 +183,19 @@ const Profile = () => {
 		}
 	}
 
+	const changePassword = () => {
+		dispatch(navigate({ screen: "ChangePassword", params: { token: param.token } }));
+	};
+
 	const navigationView = () => (
 		<ImageBackground source={require("../../../assets/drawer.jpg")} style={styles.imageDrawer}>
 			<View className="m-20">
 				<LogoHust width={140} height={25}></LogoHust>
 			</View>
+			<TouchableOpacity className="m-10 flex-row justify-start" onPress={() => changePassword()}>
+				<AntDesign name="key" size={30} color="white" />
+				<Text className="text-white text-lg ml-5">Đổi mật khẩu</Text>
+			</TouchableOpacity>
 			<TouchableOpacity className="m-10 flex-row justify-start" onPress={() => logOut()}>
 				<Ionicons name="log-out-outline" size={30} color={"white"} />
 				<Text className="text-white text-lg ml-5">Đăng xuất</Text>
@@ -208,9 +223,7 @@ const Profile = () => {
 			<View className="h-full">
 				<View className="bg-red-700 pt-10 pb-4 relative z-10">
 					<View className="flex justify-center items-center">
-						<Text className="text-xl text-white font-semibold">
-							Thông tin sinh viên
-						</Text>
+						<Text className="text-xl text-white font-semibold">Thông tin sinh viên</Text>
 					</View>
 					<View className="absolute right-4 top-12">
 						<TouchableOpacity onPress={openRightDrawer}>
@@ -229,27 +242,23 @@ const Profile = () => {
 					className="h-full"
 				>
 					<View style={styles.shadow}>
-						<ImageBackground
-							source={require("../../../assets/bg.jpg")}
-							style={styles.image}
-						>
+						<ImageBackground source={require("../../../assets/bg.jpg")} style={styles.image}>
 							<View className="bg-white p-2 m-4 flex-1 flex-row justify-between rounded-xl">
 								<View className="relative w-[25%] h-full">
-									{avt_link === "" ? <Image
-										className="w-full h-full rounded-lg"
-										source={require("../../../assets/avt.jpg")}
-									/> : <Image
-									className="w-full h-full rounded-lg"
-									source={{ uri: avt_link}}
-									/>}
+									{avt_link === "" ? (
+										<Image
+											className="w-full h-full rounded-lg"
+											source={require("../../../assets/avt.jpg")}
+										/>
+									) : (
+										<Image className="w-full h-full rounded-lg" source={{ uri: avt_link }} />
+									)}
 									<TouchableOpacity className="absolute -bottom-1 -right-3" onPress={() => editAvt()}>
 										<MaterialIcons name="edit" size={24} color="black" />
 									</TouchableOpacity>
 								</View>
 								<View className="flex-1 pl-3">
-									<Text className="flex-1 text-lg font-bold mb-2">
-										{USER.name}
-									</Text>
+									<Text className="flex-1 text-lg font-bold mb-2">{USER.name}</Text>
 									<Text className="flex-1">Sđt: {USER.phoneNumber}</Text>
 									<Text className="flex-1">Email: {USER.email}</Text>
 								</View>
@@ -257,7 +266,7 @@ const Profile = () => {
 						</ImageBackground>
 					</View>
 					<View className="bg-white m-5 border border-gray-200 rounded-xl h-full flex-1">
-					<View className="justify-between h-16 pl-4 pt-4 pr-4">
+						<View className="justify-between h-16 pl-4 pt-4 pr-4">
 							<View className="h-full w-full justify-start">
 								<Text className="text-xs mb-1">Email cá nhân:</Text>
 								<Text className="text-sm font-bold mb-3">{USER.email}</Text>
@@ -314,20 +323,13 @@ const Profile = () => {
 
 							<View className="w-full mb-4">
 								<Text className="text-xs mb-2">Barcode:</Text>
-								<Image
-									className="self-center w-full"
-									source={require("../../../assets/barcode.png")}
-								/>
+								<Image className="self-center w-full" source={require("../../../assets/barcode.png")} />
 							</View>
 						</View>
 					</View>
 				</ScrollView>
 			</View>
-			<Modal
-				animationType="fade"
-				transparent={true}
-				visible={modalVisible}
-			>
+			<Modal animationType="fade" transparent={true} visible={modalVisible}>
 				<View
 					style={{
 						flex: 1,
@@ -338,32 +340,42 @@ const Profile = () => {
 					<View className="h-3/5 pl-8 pr-8 m-8 rounded-lg bg-white ">
 						<View className="mt-4">
 							<TouchableOpacity
-								onPress={() => {setModalVisible(false); setImageFile(null);}}
+								onPress={() => {
+									setModalVisible(false);
+									setImageFile(null);
+								}}
 								className="self-end"
 							>
-								<Ionicons
-									name="close-outline"
-									size={28}
-									color="gray"
-									className=""
-								/>
+								<Ionicons name="close-outline" size={28} color="gray" className="" />
 							</TouchableOpacity>
 							<View className="mt-3 mb-5">
 								<View className="border border-gray-300 h-64 justify-center rounded-lg">
 									<Image
 										className="w-[95%] h-[95%] rounded-lg self-center"
-										source={{ uri: imageFile != null ? imageFile.uri : avt_link}}
+										source={{ uri: imageFile != null ? imageFile.uri : avt_link }}
 									/>
 								</View>
-								<TouchableOpacity className="bg-red-600 w-1/2 h-8 self-center mt-3 justify-center rounded-lg" onPress={() => handleFilePick()}>
+								<TouchableOpacity
+									className="bg-red-600 w-1/2 h-8 self-center mt-3 justify-center rounded-lg"
+									onPress={() => handleFilePick()}
+								>
 									<Text className="text-white self-center font-bold">Tải ảnh lên</Text>
 								</TouchableOpacity>
 							</View>
 							<View className="self-center flex-row">
-								<TouchableOpacity className="mr-8 bg-sky-600 p-2 w-20 rounded-lg" onPress={() => {setModalVisible(false); setImageFile(null);}}>
+								<TouchableOpacity
+									className="mr-8 bg-sky-600 p-2 w-20 rounded-lg"
+									onPress={() => {
+										setModalVisible(false);
+										setImageFile(null);
+									}}
+								>
 									<Text className="self-center text-white font-bold">Hủy</Text>
 								</TouchableOpacity>
-								<TouchableOpacity className="bg-red-600 p-2 w-20 rounded-lg" onPress={() => saveImage()}>
+								<TouchableOpacity
+									className="bg-red-600 p-2 w-20 rounded-lg"
+									onPress={() => saveImage()}
+								>
 									<Text className="self-center text-white font-bold">Lưu</Text>
 								</TouchableOpacity>
 							</View>

@@ -6,8 +6,14 @@ import { goBack as goBackMavigation } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
+import api from "../../api";
+import { useEffect } from "react";
 
-const ClassSurveysSVien = () => {
+const ClassSurveysSVien = ({ route }) => {
+
+      const { params } = route;
+
+      console.log("Survey params.....",params)
 
       const dispatch = useDispatch();
       const navigation = useReactNavigation();
@@ -22,29 +28,53 @@ const ClassSurveysSVien = () => {
       const today = new Date()
       // console.log("Today: ", today)
 
-      grouped_upcoming = {};
-      grouped_pastdue = {};
-      grouped_completed = {}
 
-      const ASSIGNMENTs = [
-            { id: "0", name: "Bài tập Idk", description: 'des', start: '10 thg 4', end: '12 thg 4', status: 'Completed', file: "Tichphanduong.docx", grade: '10/10', your_file: "bro.docx", your_ans: "LMAO" },
-            { id: "1", name: "Bài tập Đa tảng nền", description: 'des', start: '11 thg 4', end: '12 thg 4', status: 'Completed', file: "Tichphanduong.docx", grade: '10/10', your_file: "bro.docx", your_ans: "LMAO"  },
-            { id: "2", name: "Bài tập Tảng đa nền", description: 'des', start: '12 thg 4', end: '14 thg 4', status: 'Completed', file: "Tichphanduong.docx", grade: '10/10', your_file: "bro.docx", your_ans: "LMAO"  },
-            { id: "3", name: "Bài tập Nền tảng đa", description: 'des', start: '13 thg 4', end: '14 thg 4', status: 'Completed', file: "Tichphanduong.docx", grade: '10/10', your_file: "bro.docx", your_ans: "LMAO"  },
-            { id: "4", name: "Bài tập Nền đa tảng", description: 'des', start: '14 thg 4', end: '16 thg 4', status: 'Completed', file: "Tichphanduong.docx", grade: '10/10', your_file: "bro.docx", your_ans: "LMAO"  },
-            { id: "5", name: "Bài tập Tảng nền đa", description: 'des', start: '15 thg 4', end: '17 thg 4', status: 'Completed', file: "Tichphanduong.docx", grade: '10/10', your_file: "bro.docx", your_ans: "LMAO"  },
-            { id: "6", name: "Bài tập Đa nền tảng 2", description: 'des', start: '16 thg 4', end: '18 thg 4', status: 'Completed', file: "Tichphanduong.docx", grade: 'None', your_file: "bro.docx", your_ans: ""  },
-            { id: "7", name: "Bài tập Đa nền tảng 3", description: 'des', start: '16 thg 10', end: '18 thg 10', status: 'Completed', file: "Tichphanduong.docx", grade: 'None', your_file: "bro.docx", your_ans: ""  },
-            { id: "8", name: "Bài tập Đa nền tảng 4", description: 'des', start: '16 thg 10', end: '18 thg 10', status: 'Completed', file: "Tichphanduong.docx", grade: 'None', your_file: "bro.docx", your_ans: ""  },
-            { id: "9", name: "Bài tập Đa nền tảng 5", description: 'des', start: '20 thg 10', end: '24 thg 10', status: 'Not completed', file: "Tichphanduong.docx", grade: 'None', your_file: "", your_ans: ""  },
-            { id: "10", name: "Bài tập Đa nền tảng 6", description: 'des', start: '21 thg 10', end: '24 thg 10', status: 'Not completed', file: "Tichphanduong.docx", grade: 'None', your_file: "", your_ans: ""  },
-            { id: "11", name: "Bài tập Đa nền tảng 7", description: 'des', start: '22 thg 10', end: '25 thg 10', status: 'Not completed', file: "Tichphanduong.docx", grade: 'None', your_file: "", your_ans: ""  },
-            { id: "12", name: "Bài tập Đa nền tảng 8", description: 'des', start: '22 thg 10', end: '26 thg 11', status: 'Not completed', file: "Tichphanduong.docx", grade: 'None', your_file: "", your_ans: ""  },
-            { id: "13", name: "Bài tập Đa nền tảng 9", description: 'des', start: '23 thg 10', end: '27 thg 11', status: 'Not completed', file: "Tichphanduong.docx", grade: 'None', your_file: "", your_ans: ""  },
-            { id: "14", name: "Bài tập Đa nền tảng 10", description: 'des', start: '24 thg 10', end: '28 thg 11', status: 'Not completed', file: "Tichphanduong.docx", grade: 'None', your_file: "", your_ans: ""  },
-            { id: "15", name: "Bài tập Đa nền tảng 11", description: 'des', start: '24 thg 10', end: '29 thg 11', status: 'Not completed', file: "Tichphanduong.docx", grade: 'None', your_file: "", your_ans: ""  },
-      ]
+      const [grouped_upcoming, setUpcoming] = useState({});
+      const [grouped_pastdue, setPastDue] = useState({});
+      const [grouped_completed, setCompleted] = useState({});
 
+      // Hàm nhóm bài tập theo ngày
+      const groupByDate = (assignments) => {
+            return assignments.reduce((acc, assignment) => {
+            const date = parseDate(assignment.due_date).toLocaleDateString();
+            if (!acc[date]) {
+            acc[date] = [];
+            }
+            acc[date].push(assignment);
+            return acc;
+            }, {});
+      };
+
+      const fetchAssignments = async () => {
+            try {
+                  const token = params.token;
+                  const classId = params.classInfo.id;
+
+                  const [completedRes, pastDueRes, upcomingRes] = await Promise.all([
+                        api.post('/it5023e/get_student_assignments', { token, type: "COMPLETED", class_id: classId }),
+                        api.post('/it5023e/get_student_assignments', { token, type: "PASS_DUE", class_id: classId }),
+                        api.post('/it5023e/get_student_assignments', { token, type: "UPCOMING", class_id: classId }),
+                  ]);
+
+                  // Lưu kết quả vào state
+                  setCompleted(groupByDate(completedRes.data.data));
+                  setPastDue(groupByDate(pastDueRes.data.data));
+                  setUpcoming(groupByDate(upcomingRes.data.data));
+
+                  console.log("Completed.....", completedRes.data.data);
+                  console.log("Upcoming.....", upcomingRes.data.data);
+                  console.log("Pastdue.....", pastDueRes.data.data);
+            } catch (error) {
+                  console.error("Failed to fetch assignments: ", error);
+            }
+      };
+
+      // Gọi API mỗi khi vào tab này
+      useEffect(() => {
+            fetchAssignments();
+      }, []);
+
+      
       const parseDate = (dateString) => {
             const [day, month] = dateString.split(' thg ').map(Number);
             const year = new Date().getFullYear();
@@ -52,27 +82,6 @@ const ClassSurveysSVien = () => {
             return new Date(year, month - 1, day + 1);
       };
 
-
-      ASSIGNMENTs.forEach((assignment) => {
-            const date = assignment.end;
-            if (assignment.status == 'Completed') {
-                  if (!grouped_completed[date]) {
-                        grouped_completed[date] = [];
-                  }
-                  grouped_completed[date].push(assignment);
-            } else if (new parseDate(date) > today) {
-                  if (!grouped_upcoming[date]) {
-                        grouped_upcoming[date] = [];
-                  }
-                  grouped_upcoming[date].push(assignment);
-            } else if (new parseDate(date) < today) {
-                  if (!grouped_pastdue[date]) {
-                        grouped_pastdue[date] = [];
-                  }
-                  grouped_pastdue[date].push(assignment);
-            }
-
-      });
 
       const sortedDates_upcoming = Object.keys(grouped_upcoming).sort((a, b) => new parseDate(b) - new parseDate(a));
       const sortedDates_pastdue = Object.keys(grouped_pastdue).sort((a, b) => new parseDate(b) - new parseDate(a));

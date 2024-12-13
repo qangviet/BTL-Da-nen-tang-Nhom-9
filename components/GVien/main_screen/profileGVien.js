@@ -22,15 +22,17 @@ import { useNavigation as useReactNavigation } from "@react-navigation/native";
 import { useIsFocused } from "@react-navigation/native";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
-import { updateParams } from "../../../redux/navigationSlice";
 import api from "../../api";
 import axios from "axios";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { navigate } from "../../../redux/navigationSlice";
 const ProfileGVien = () => {
+	const dispatch = useDispatch();
+	const navigation = useReactNavigation();
 	const param = useSelector((state) => state.navigation.params);
 	token = param.token;
 	// console.log("Param: ", param);
-	const dispatch = useDispatch();
-
+	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	let drawer = useRef(null);
 	const isFocused = useIsFocused(); // Hook để kiểm tra screen có đang focus hay không
 	useEffect(() => {
@@ -38,6 +40,12 @@ const ProfileGVien = () => {
 			drawer.current.closeDrawer();
 		}
 	}, [isFocused]);
+	useEffect(() => {
+		if (currentScreen !== "TabMainGVien") {
+			navigation.navigate(currentScreen);
+		}
+	}, [currentScreen]);
+
 	const drawerPosition = "right";
 
 	const logOut = async () => {
@@ -117,6 +125,10 @@ const ProfileGVien = () => {
 			<View className="m-20">
 				<LogoHust width={140} height={25}></LogoHust>
 			</View>
+			<TouchableOpacity className="m-10 flex-row justify-start" onPress={() => changePassword()}>
+				<AntDesign name="key" size={30} color="white" />
+				<Text className="text-white text-lg ml-5">Đổi mật khẩu</Text>
+			</TouchableOpacity>
 			<TouchableOpacity className="m-10 flex-row justify-start" onPress={() => logOut()}>
 				<Ionicons name="log-out-outline" size={30} color={"white"} />
 				<Text className="text-white text-lg ml-5">Đăng xuất</Text>
@@ -195,6 +207,10 @@ const ProfileGVien = () => {
 	if (!isFocused) {
 		return null;
 	}
+
+	const changePassword = () => {
+		dispatch(navigate({ screen: "ChangePassword", params: { token: param.token } }));
+	};
 
 	return (
 		<DrawerLayoutAndroid

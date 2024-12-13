@@ -13,6 +13,7 @@ import ManageClassesScreenGVien from "../GVien/main_screen/manageClassGVien";
 import CreateClassScreenGVien from "../GVien/main_screen/createClassGVien";
 import EditClassScreenGVien from "../GVien/main_screen/editClassGVien";
 import NotiGVien from "../GVien/main_screen/notiGVien";
+import ChangePassword from "../changePassword.js";
 import ClassDocsScreenGVien from "../GVien/each_class/classDocsGVien.js";
 const Stack = createNativeStackNavigator();
 
@@ -119,6 +120,14 @@ const GVienNavigation = () => {
 					options={{
 						headerShown: false,
 						title: "NotiGVien",
+					}}
+				/>
+				<Stack.Screen
+					name="ChangePassword"
+					component={ChangePassword}
+					options={{
+						headerShown: false,
+						title: "ChangePassword",
 					}}
 				/>
 			</Stack.Navigator>
