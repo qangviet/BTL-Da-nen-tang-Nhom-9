@@ -64,6 +64,7 @@ const EditSurveyGVien = () => {
 	const closeModalEndDate = () => {
 		setModalEndDate(false);
 	};
+	
 	const openModalConfirmSave = () => {
 		setModalConfirmSave(true);
 	};
@@ -175,12 +176,12 @@ const EditSurveyGVien = () => {
 						Hoặc
 					</Text>
 					<View>
-						{survey.file_url && <View className="flex-row justify-center">
+						{/* {survey.file_url && <View className="flex-row justify-center">
 							<Text className="self-center mt-3 mr-2">Link tài liệu: </Text>
 							<TouchableOpacity onPress={() => handleLinkPressed(survey.file_url)}>
 								<Text className="self-center text-blue-500 mt-3 underline">Google Drive</Text>
 							</TouchableOpacity>
-						</View>}
+						</View>} */}
 						<TouchableOpacity className="px-3 py-2 rounded-2xl bg-red-600 w-[60%] mx-auto mt-2">
 							<View className="self-center flex flex-row items-center gap-x-2">
 								<Text className="text-white font-semibold text-lg italic">

@@ -1,225 +1,57 @@
 import React, { useState, useEffect } from "react";
 
 import { Text, View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
-
+import dayjs from "dayjs";
 import { Dropdown } from "react-native-element-dropdown";
 import { Table, Row, TableWrapper, Cell } from "react-native-table-component";
 import CheckBox from "react-native-check-box";
 import Modal from "react-native-modal";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import DateTimePicker from "react-native-ui-datepicker";
+import { useSelector, useDispatch } from "react-redux";
+import api from "../../api";
+import { useIsFocused } from "@react-navigation/native";
 
-const ClassDiemDanhGVien = ({route}) => {
+const ClassDiemDanhGVien = ({ route }) => {
+	const isFocused = useIsFocused(); // Hook để kiểm tra screen có đang focus hay không
 
-	const {params} = route;
-	console.log("ClassDiemdanh");
-	console.log(params);
+	const { params } = route;
+	console.log();
+	console.log(">>>>>>> ClassDiemdanh");
+	console.log("params: ", params);
+	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 
-	const listDate = [
-		{ value: "01/10/2024", label: "01/10/2024 (Chỉ xem)" },
-		{ value: "08/10/2024", label: "08/10/2024 (Chỉ xem)" },
-		{ value: "15/10/2024", label: "15/10/2024 (Chỉ xem)" },
-		{ value: "22/10/2024", label: "22/10/2024 (Chỉ xem)" },
-		{ value: "29/10/2024", label: "29/10/2024 (Chỉ xem)" },
-		{ value: "5/11/2024", label: "5/11/2024" },
-		{ value: "12/11/2024", label: "12/11/2024" },
-		{ value: "19/11/2024", label: "19/11/2024" },
-		{ value: "26/11/2024", label: "26/11/2024" },
-		{ value: "3/12/2024", label: "3/12/2024" },
-		{ value: "10/12/2024", label: "10/12/2024" },
-		{ value: "17/12/2024", label: "17/12/2024" },
-		{ value: "24/12/2024", label: "24/12/2024" },
-		{ value: "31/12/2024", label: "31/12/2024" },
-	];
-	const [dateCheck, setDateCheck] = useState("");
+	const widthArr = [50, 90, 180, 100];
 
-	const widthArr = [50, 120, 200, 120, 100];
+	const tableHead = ["STT", "MSSV", "Họ và tên", "Có mặt"];
+	
+	const [dsSinhVien, setDsSinhVien] = useState([]);
+	const [absentStudentIds, setAbsentStudentIds] = useState([]);
+	console.log("Absent ids: ", absentStudentIds);
 
-	const tableHead = ["STT", "MSSV", "Họ và tên", "Điểm danh", "Tổng số ca vắng"];
-	const [dsSinhVien, setDsSinhVien] = useState([
-		{
-			stt: 1,
-			mssv: "20215515",
-			name: "Nguyễn Văn A",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 2,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 3,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 4,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 5,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 6,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-		{
-			stt: 7,
-			mssv: "20215516",
-			name: "Nguyễn Văn B",
-			diemdanh: true,
-			sum_absent: 2,
-		},
-	]);
+	const [attendances, setAttendances] = useState([]);
 
-	const list_absent = [
-		{
-			name: "Lường Mạnh Tú",
-			mssv: "20215500",
-			title: "Xin nghỉ ốm",
-			description:
-				"Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm .Xin nghỉ ốm Xin nghỉ ốm",
-			image: "Giay_kham.jpg",
-		},
-		{
-			name: "Lường Mạnh Tú",
-			mssv: "20215500",
-			title: "Xin nghỉ ốm",
-			description:
-				"Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm .Xin nghỉ ốm Xin nghỉ ốm",
-			image: "Giay_kham.jpg",
-		},
-		{
-			name: "Lường Mạnh Tú",
-			mssv: "20215500",
-			title: "Xin nghỉ ốm",
-			description:
-				"Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm .Xin nghỉ ốm Xin nghỉ ốm",
-			image: "Giay_kham.jpg",
-		},
-		{
-			name: "Lường Mạnh Tú",
-			mssv: "20215500",
-			title: "Xin nghỉ ốm",
-			description:
-				"Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm Xin nghỉ ốm .Xin nghỉ ốm Xin nghỉ ốm",
-			image: "Giay_kham.jpg",
-		},
-	];
+	const [absentRequests, setAbsentRequests] = useState([]);
 
+	const [acceptedStudentIds, setAcceptedStudentIds] = useState([]);
+
+	const format_Date = (date) => {
+		return dayjs(date).format("YYYY-MM-DD");
+	};
+
+	const [dateCheck, setDateCheck] = useState(format_Date(dayjs()));
+	const [DATES, setDATES] = useState([]);
+	
+	const [isCheckAbsent, setIsCheckAbsent] = useState(false);
+	const displayAbsent = () => {
+		setIsCheckAbsent(true);
+	};
+	const hideAbsent = () => {
+		setIsCheckAbsent(false);
+	};
+	
+	const [viewDescription, setViewDescription] = useState(-1);
+	
 	const renderItem = (item) => {
 		return (
 			<View style={styles.item}>
@@ -230,20 +62,261 @@ const ClassDiemDanhGVien = ({route}) => {
 
 	const selectRow = (index_r, index_c) => {
 		let newDsSinhVien = [...dsSinhVien];
-		newDsSinhVien[index_r].diemdanh = !newDsSinhVien[index_r].diemdanh;
+		newDsSinhVien[index_r].present = !newDsSinhVien[index_r].present;
 		setDsSinhVien(newDsSinhVien);
+		
+		let newAbsentStudentIds = [...absentStudentIds];
+		if (newDsSinhVien[index_r].present) {
+			const index = newAbsentStudentIds.indexOf(newDsSinhVien[index_r].student_id);
+			if (index !== -1) {
+			   	newAbsentStudentIds.splice(index, 1); // Xóa phần tử
+			}
+		} else {
+			if (!newAbsentStudentIds.includes(newDsSinhVien[index_r].student_id)) {
+			    	newAbsentStudentIds.push(newDsSinhVien[index_r].student_id);
+			}
+		}
+		setAbsentStudentIds(newAbsentStudentIds);
 	};
 
-	const [isCheckAbsent, setIsCheckAbsent] = useState(false);
+	const fetchStudents = async () => {
+		try {
+			const response = await api.post('/it5023e/get_class_info', {
+				token: params.token,
+				class_id: params.class.id,
+			});
 
-	const displayAbsent = () => {
-		setIsCheckAbsent(true);
-	};
-	const hideAbsent = () => {
-		setIsCheckAbsent(false);
+			if (response.data.meta.code === "1000") {
+				const fetchedData = response.data.data.student_accounts.map((item, index) => ({
+					stt: index + 1,
+					student_id: item.student_id,
+					student_name: item.first_name + " " + item.last_name,
+					present: true,
+					student_account_id: item.account_id,
+				}));
+				const temp_attendances = await fetchAttendences();
+				if (temp_attendances != null) {
+					let absentList = temp_attendances
+					.filter(attendance => attendance.status !== "PRESENT")
+					.map(attendance => attendance.student_id);
+					setAbsentStudentIds(absentList);
+					
+					let newDsSinhVien = [...fetchedData];
+					newDsSinhVien.forEach(student => {
+						if (absentList.includes(student.student_id)) {
+							student.present = false;
+						}
+					});
+					setDsSinhVien(newDsSinhVien);
+				} else {xcvb
+					setDsSinhVien(fetchedData);
+				}
+			} else {
+				console.error('API error:', response.data.message);
+			}
+		} catch (error) {
+			console.error("Error fetching documents:", error);
+		}
+	}
+
+	const fetchDates = async () => {
+		try {
+			const response = await api.post('/it5023e/get_attendance_dates', {
+				token: params.token,
+				class_id: params.class.id,
+			});
+
+			if (response.data.meta.code === "1000") {
+				const fetchedData = response.data.data.map((item) => ({
+					value: item,
+					label: item
+				}));
+
+				let newItem = { value: format_Date(dayjs()), label: 		format_Date(dayjs()) };
+				let exists = fetchedData.some(item => 
+					item.value === newItem.value && item.label === newItem.label
+				);
+				if (!exists) {
+					fetchedData.push(newItem);
+				}
+
+				fetchedData.sort((a, b) => new Date(b.value) - new Date(a.value));
+				setDATES(fetchedData);
+				console.log("Dates: ", DATES);
+			} else {
+				console.error('API error:', response.data.message);
+			}
+		} catch (error) {
+			console.error("Error fetching documents:", error);
+		}
 	};
 
-	const [viewDescription, setViewDescription] = useState(-1);
+	const fetchAttendences = async () => {
+		try {
+			const response = await api.post('/it5023e/get_attendance_list', {
+				token: params.token,
+				class_id: params.class.id,
+				date: dateCheck
+			});
+
+			if (response.data.meta.code === "1000") {
+				const fetchedData = response.data.data.attendance_student_details.map((item) => ({
+					attendance_id: item.attendance_id,
+					student_id: item.student_id,
+					status: item.status
+				}));
+				setAttendances(fetchedData);
+				return fetchedData;
+			} else {
+				console.error('API error:', response.data.message);
+			}
+		} catch (error) {
+			console.error("Error fetching attendences:", error);
+		}
+	};
+
+	const fetchAbsentRequests = async () => {
+		try {
+			const response = await api.post('/it5023e/get_absence_requests', {
+				token: params.token,
+				class_id: params.class.id,
+				date: dateCheck
+			});
+
+			if (response.data.meta.code === "1000") {
+				const fetchedData = response.data.data.page_content.map((item) => ({
+					request_id: item.id,
+
+					student_name: item.student_account.first_name + " " + item.student_account.last_name,
+					student_account_id: item.student_account.account_id,
+					student_id: item.student_account.student_id,
+
+					title: item.title,
+					reason: item.reason,
+					status: item.status,
+					file_url: item.file_url
+				}));
+				let sortedRequests = fetchedData.sort((a, b) => {
+					if (a.status === "PENDING" && b.status !== "PENDING") return -1;
+					if (a.status !== "PENDING" && b.status === "PENDING") return 1;
+					return 0;
+				});
+				setAbsentRequests(sortedRequests);
+
+				let temp_acceptedStudentIds = sortedRequests
+					.filter(request => request.status === "ACCEPTED")
+					.map(request => request.student_id);
+				setAcceptedStudentIds(temp_acceptedStudentIds);
+			} else {
+				console.error('API error:', response.data.message);
+			}
+		} catch (error) {
+			console.error("Error fetching documents:", error);
+		}
+	};
+
+	useEffect(() => {
+		if (isFocused) {
+			fetchDates();
+			fetchStudents();
+			fetchAbsentRequests();
+		}
+		// fetchAttendences();
+		setAbsentStudentIds([]);
+
+	}, [dateCheck, isFocused]);
+
+	console.log("attendences: ", attendances);
+	console.log("Students: ", dsSinhVien);
+
+	useEffect(() => {
+		fetchAbsentRequests();
+	}, [viewDescription])
+
+	console.log("Accepted ids: ", acceptedStudentIds);
+
+	const reviewRequest = async (request_id, status) => {
+		try {
+			const response = await api.post('/it5023e/review_absence_request', {
+				token: params.token,
+				request_id: request_id,
+				status: status
+			});
+
+			if (response.data.meta.code === "1000") {
+				console.log("Request reviewed!");
+			} else {
+				console.error('API error:', response.data.message);
+			}
+		} catch (error) {
+			console.error("Error fetching documents:", error);
+		}
+	};
+
+	function acceptRequest(request_id) {
+		setViewDescription(-1);
+		reviewRequest(request_id, "ACCEPTED");
+	}
+
+	function rejectRequest(request_id) {
+		setViewDescription(-1);
+		reviewRequest(request_id, "REJECTED");
+	}
+
+	const takeAttendence = async () => {
+		try {
+			const response = await api.post('/it5023e/take_attendance', {
+				token: params.token,
+				class_id: params.class.id,
+				date: dateCheck,
+				attendance_list: absentStudentIds
+			});
+
+			if (response.data.meta.code === "1000") {
+				alert("Điểm danh thành công!");
+			} else {
+				console.error('API error:', response.data.message);
+			}
+		} catch (error) {
+			console.error("Error fetching documents:", error);
+		}
+	};
+
+	const setAttendanceStatus = async (attendance_id) => {
+		try {
+			const response = await api.post('/it5023e/set_attendance_status', {
+				token: params.token,
+				status: "EXCUSED_ABSENCE",
+				attendance_id: attendance_id
+			});
+
+			if (response.data.meta.code === "1000") {
+				console.log("Đổi Excused thành công: ", attendance_id);
+			} else {
+				console.error('API error:', response.data.message);
+			}
+		} catch (error) {
+			console.error("Error fetching documents:", error);
+		}
+	};
+
+	const submitDiemDanh = async () => {
+		await takeAttendence();
+		const temp_attendances = await fetchAttendences();
+		console.log("2 attendences: ", temp_attendances);
+
+		let excusedIds = [];
+		temp_attendances.forEach(attendance => {
+		if (absentStudentIds.includes(attendance.student_id) && acceptedStudentIds.includes(attendance.student_id) && attendance.status !== "PRESENT") {
+			excusedIds.push(attendance.attendance_id);
+		}
+		console.log("Excused attendence ids: ", excusedIds);
+		excusedIds.forEach(attendance_id => {
+			setAttendanceStatus(attendance_id);
+		});
+		
+});
+	}
 
 	const checkAbsent = (date) => {
 		//  Fetch api
@@ -257,77 +330,110 @@ const ClassDiemDanhGVien = ({route}) => {
 		};
 
 		return (
-			<>
-				<View className="border-t border-gray-400">
-					<TouchableOpacity onPress={hideAbsent}>
-						<Text className="text-lg pt-2 underline self-center text-red-700">
-							Quay lại điểm danh
-						</Text>
-					</TouchableOpacity>
-					{list_absent.map((item, index) => {
-						return (
-							<View
-								key={index}
-								className="mx-3 bg-white rounded-lg my-2 border border-gray-300"
-							>
-								<TouchableOpacity onPress={() => displayDescription(index)}>
-									<Text className="text-lg font-bold px-4 pt-2">
-										{item.name + " " + item.mssv}
-									</Text>
-									<Text className="px-5 pt-1 pb-2 text-lg">
-										- {item.title}
-									</Text>
-								</TouchableOpacity>
-							</View>
-						);
-					})}
-				</View>
-				{viewDescription >= 0 && (
-					<Modal
-						isVisible={viewDescription >= 0 ? true : false}
-						onBackdropPress={hideDescription}
-					>
-						<View className="h-[60%] bg-gray-200 rounded-lg">
-							<View>
-								<TouchableOpacity
-									onPress={() => setViewDescription(-1)}
-									className="h-9 justify-center"
-								>
-									<Ionicons
-										name="close-outline"
-										size={28}
-										color="gray"
-										className="self-end mt-2 mr-3"
-									/>
-								</TouchableOpacity>
-							</View>
-							<View className="mx-4">
-								<Text className="text-2xl font-bold">
-									{list_absent[viewDescription].title}
+			<View>
+				{absentRequests != [] ? (
+					<View>
+						<View className="border-t border-gray-400">
+							<TouchableOpacity onPress={hideAbsent}>
+								<Text className="text-lg pt-2 underline self-center text-red-700">
+									Quay lại điểm danh
 								</Text>
-								<Text className="text-base mt-1 pl-2 text-gray-500">
-									{list_absent[viewDescription].mssv} -{" "}
-									{list_absent[viewDescription].name}
-								</Text>
-							</View>
-							<View className="border-t border-gray-400 mx-4 mt-4"></View>
-							<View className="mt-4 mx-4 rounded-md">
-								<Text className="text-base">
-									{list_absent[viewDescription].description}
-								</Text>
-								<View className="flex flex-row gap-x-1 pt-6">
-									<Text className="font-semibold text-base">File đính kèm:</Text>
-									<TouchableOpacity>
-										<Text className="text-blue-500 underline text-base">
-											{list_absent[viewDescription].image}
-										</Text>
-									</TouchableOpacity>
-								</View>
-							</View>
+							</TouchableOpacity>
+							{absentRequests.map((item, index) => {
+								return (
+									<View
+										key={index}
+										className="mx-3 bg-white rounded-lg my-2 border border-gray-300"
+									>
+										<TouchableOpacity className="flex-row justify-between"
+										onPress={() => displayDescription(index)}>
+											<View>
+												<Text className="text-lg font-bold px-5 pt-2">
+													{item.student_name + " - " + item.student_id}
+												</Text>
+												<Text className="px-5 pt-1 pb-2 text-lg">
+													{item.title}
+												</Text>
+											</View>
+											<View className="justify-center mr-5">
+												{item.status === "PENDING" ? (
+													<Text className="text-red-600 italic font-bold text-base">
+														PENDING
+													</Text>
+												) : (
+													<Text className="text-base">
+														{item.status}
+													</Text>
+												)}
+											</View>
+										</TouchableOpacity>
+									</View>
+								);
+							})}
 						</View>
-					</Modal>
+						{viewDescription >= 0 && (
+							<Modal
+								isVisible={viewDescription >= 0 ? true : false}
+								onBackdropPress={hideDescription}
+							>
+								<View className="h-[60%] bg-gray-200 rounded-lg p-3">
+									<View>
+										<TouchableOpacity
+											onPress={() => setViewDescription(-1)}
+											className="h-9 justify-center self-end"
+										>
+											<Ionicons
+												name="close-outline"
+												size={28}
+												color="gray"
+												className="self-end mt-2 mr-3"
+											/>
+										</TouchableOpacity>
+									</View>
+									<View className="mx-4">
+										<Text className="text-2xl font-bold">
+											{absentRequests[viewDescription].title}
+										</Text>
+										<Text className="text-lg mt-2 text-gray-600">
+											{absentRequests[viewDescription].student_name} - {" "}
+											{absentRequests[viewDescription].student_id}
+										</Text>
+									</View>
+									<View className="border-t border-gray-400 mx-4 mt-4"></View>
+									<View className="mt-4 mx-4 rounded-md">
+										<Text className="text-base">
+											{absentRequests[viewDescription].reason}
+										</Text>
+										<View className="gap-x-1 pt-6">
+											<Text className="font-semibold text-base">File đính kèm:</Text>
+											<TouchableOpacity>
+												<Text className="text-blue-500 underline text-base">
+													{absentRequests[viewDescription].file_url}
+												</Text>
+											</TouchableOpacity>
+										</View>
+									</View>
+									<View className="flex-row justify-center mt-10">
+										<TouchableOpacity className="rounded-lg bg-red-600 h-10 mr-8 justify-center p-2"
+										onPress={() => acceptRequest(absentRequests[viewDescription].request_id)}>
+											<Text className="self-center text-white text-base font-bold">Chấp nhận</Text>
+										</TouchableOpacity>
+										<TouchableOpacity className="rounded-lg bg-red-600 h-10 justify-center p-2"
+										onPress={() => rejectRequest(absentRequests[viewDescription].request_id)}>
+											<Text className="self-center text-white text-base font-bold">Từ chối</Text>
+										</TouchableOpacity>
+									</View>
+								</View>
+							</Modal>
+						)}
+					</View>) : (
+					<View>
+						<Text>
+							Không có yêu cầu vắng mặt trong ngày này
+						</Text>
+					</View>
 				)}
-			</>
+			</View>
 		);
 	};
 
@@ -348,7 +454,7 @@ const ClassDiemDanhGVien = ({route}) => {
 						selectedTextStyle={styles.selectedTextStyle}
 						inputSearchStyle={styles.inputSearchStyle}
 						iconStyle={styles.iconStyle}
-						data={listDate}
+						data={DATES}
 						search
 						maxHeight={400}
 						labelField="label"
@@ -363,7 +469,9 @@ const ClassDiemDanhGVien = ({route}) => {
 						renderItem={(item) => renderItem(item)}
 					/>
 				</View>
+
 			</View>
+
 			{isCheckAbsent ? (
 				checkAbsent(dateCheck)
 			) : (
@@ -371,12 +479,12 @@ const ClassDiemDanhGVien = ({route}) => {
 					<View className="border-t border-gray-400">
 						<TouchableOpacity onPress={displayAbsent}>
 							<Text className="text-lg pt-2 underline self-center text-red-700">
-								Yêu cầu xin vắng mặt ({list_absent.length})
+								Yêu cầu xin vắng mặt ({absentRequests.length})
 							</Text>
 						</TouchableOpacity>
 					</View>
 					<View className="max-h-[70%] mt-3 ml-1 mr-1">
-						<ScrollView horizontal={true}>
+						{dsSinhVien != [] && <ScrollView horizontal={true}>
 							<View className="border-t">
 								<Table
 									borderStyle={{
@@ -414,7 +522,7 @@ const ClassDiemDanhGVien = ({route}) => {
 														flexDirection: "row",
 													}}
 												>
-													{Object.values(rowData).map(
+													{Object.values(rowData).slice(0, -1).map(
 														(cellData, index_c) => {
 															return (
 																<Cell
@@ -458,7 +566,7 @@ const ClassDiemDanhGVien = ({route}) => {
 									}}
 								>
 									<Row
-										data={["Tổng", 40, 35, ""]}
+										data={["Tổng", dsSinhVien.length, dsSinhVien.length - absentStudentIds.length, ""]}
 										textStyle={{
 											textAlign: "center",
 											fontSize: 16,
@@ -476,10 +584,10 @@ const ClassDiemDanhGVien = ({route}) => {
 									/>
 								</Table>
 							</View>
-						</ScrollView>
+						</ScrollView>}
 					</View>
 					<View className="bg-red-600 mx-auto rounded-lg mt-5">
-						<TouchableOpacity>
+						<TouchableOpacity onPress={() => submitDiemDanh()}>
 							<Text
 								className="text-lg px-4 py-2 
                         text-white font-semibold"

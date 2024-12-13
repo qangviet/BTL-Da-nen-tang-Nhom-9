@@ -115,17 +115,17 @@ const HomeGVien = ({ route }) => {
 			</View>
 			<ScrollView>
 				<View>
-					<View className="mt-7 mb-4 mx-4">
+					<View className="mt-6 mb-4 mx-4">
 						<View className="flex flex-row justify-between items-center ">
 							<View className="flex flex-row gap-x-2 items-center">
 								<View>
 									{avtLink === "" ? (
 										<Image
-											className="w-20 h-20 rounded-full mt-1 mr-2"
+											className="w-16 h-16 rounded-full mt-1 mr-2"
 											source={require("../../../assets/avt.jpg")}
 										/>
 									) : (
-										<Image className="w-20 h-20 rounded-full mt-1 mr-2" source={{ uri: avtLink }} />
+										<Image className="w-16 h-16 rounded-full mt-1 mr-2" source={{ uri: avtLink }} />
 									)}
 								</View>
 								{param && param.userInfo ? (
@@ -155,7 +155,7 @@ const HomeGVien = ({ route }) => {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View className="pt-3">
+								<View className="pt-3 w-28">
 									<Text className="self-center text-base font-bold">Danh sách lớp</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
@@ -173,7 +173,7 @@ const HomeGVien = ({ route }) => {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View className="pt-3">
+								<View className="pt-3 w-28">
 									<Text className="self-center text-base font-bold">Quản lý lớp</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
@@ -193,7 +193,7 @@ const HomeGVien = ({ route }) => {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View className="pt-3">
+								<View className="pt-3 w-28">
 									<Text className="self-center text-base font-bold">Lịch dạy</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
@@ -211,7 +211,7 @@ const HomeGVien = ({ route }) => {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View className="pt-3 ">
+								<View className="pt-3 w-28">
 									<Text className="self-center text-base font-bold">Đồ án</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
@@ -231,8 +231,8 @@ const HomeGVien = ({ route }) => {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View className="pt-3">
-									<Text className="self-center text-base font-bold">Thông báo tin tức</Text>
+								<View className="pt-3 w-28">
+									<Text className="self-center text-base font-bold">Tin tức</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
 											Các thông báo quan trọng
