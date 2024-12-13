@@ -20,6 +20,7 @@ const ClassScreenSVien = () => {
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const params = useSelector((state) => state.navigation.params);
+	//console.log("Tab class Svien params:...", params)
 
 	useEffect(() => {
 		if (currentScreen !== "RegisterClassScreenSVien") {
@@ -59,9 +60,9 @@ const ClassScreenSVien = () => {
 					// tabBarInactiveTintColor: 'gray', // Màu chữ khi tab không chọn
 				}}
 			>
-				<Tab.Screen name="Tài liệu" component={ClassDocs} />
-				<Tab.Screen name="Bài tập" component={ClassSurveys} />
-				<Tab.Screen name="Xin Nghỉ" component={ClassXinNghi} />
+				<Tab.Screen name="Tài liệu" component={ClassDocs} initialParams={params}/>
+				<Tab.Screen name="Bài tập" component={ClassSurveys} initialParams={params}/>
+				<Tab.Screen name="Xin Nghỉ" component={ClassXinNghi} initialParams={params}/>
 			</Tab.Navigator>
 		);
 	};
