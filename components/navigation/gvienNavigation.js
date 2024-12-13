@@ -13,6 +13,7 @@ import ManageClassesScreenGVien from "../GVien/main_screen/manageClassGVien";
 import CreateClassScreenGVien from "../GVien/main_screen/createClassGVien";
 import EditClassScreenGVien from "../GVien/main_screen/editClassGVien";
 import NotiGVien from "../GVien/main_screen/notiGVien";
+import ClassDocsScreenGVien from "../GVien/each_class/classDocsGVien.js";
 const Stack = createNativeStackNavigator();
 
 const GVienNavigation = () => {
@@ -92,6 +93,15 @@ const GVienNavigation = () => {
 					options={{
 						headerShown: false,
 						title: "CreateClassScreenGVien",
+					}}
+				/>
+
+				<Stack.Screen
+					name="ClassDocsScreenGVien"
+					component={ClassDocsScreenGVien}
+					options={{
+						headerShown: false,
+						title: "ClassDocsScreenGVien",
 					}}
 				/>
 

@@ -103,7 +103,7 @@ const ViewSurveysGVien = ({ params, survey }) => {
 			navigate({
 				screen: "EditSurveyGVien",
 				params: {
-					token: token,
+					token: params.token,
 					survey: survey
 				}
 			})
@@ -123,7 +123,7 @@ const ViewSurveysGVien = ({ params, survey }) => {
 	async function gradingResponse(cur_response) {
 		console.log(tempGrade);
 		// console.log(cur_response.id);
-		if (tempGrade)
+		if (0 <= tempGrade && tempGrade <= 10)
 			{
 				const message = `Bài tập ${survey.title} - Lớp ${params.class.name} - Điểm : ${tempGrade}/10`
 				console.log("Diem tam thoi:...", tempGrade);
@@ -156,7 +156,7 @@ const ViewSurveysGVien = ({ params, survey }) => {
 				}
 	
 				
-			} else console.log("Null");
+			} else alert("Điểm phải là số từ 0 đến 10!");
 
 		try {
 			const response = await api.post('/it5023e/get_survey_response', {
@@ -175,6 +175,7 @@ const ViewSurveysGVien = ({ params, survey }) => {
 				console.error('API error:', response.data.meta.message);
 			}
 		} catch (error) {
+			alert("Điểm phải là số từ 0 đến 10!");
 			console.error('Network error:', error);
 			console.error("API call failed: ", error);
 			console.error("Error fetching class list:", error);
@@ -214,16 +215,16 @@ const ViewSurveysGVien = ({ params, survey }) => {
 				<ScrollView horizontal={true}>
 					<View className="bg-white">
 						{RESPONSES.map((item, index) => (
-							<TouchableOpacity
+							<View
 								key={index}
 								//onPress={() => openModalViewSubmitted(index)}
 								className="flex flex-row items-center border-b border-gray-400"
 							>
-								<View>
+								{/* <View>
 									<Text className="w-20 px-3 py-2 text-base ">{item.student_id}</Text>
-								</View>
+								</View> */}
 								<Text className="w-[220px] px-3 py-2 text-base border-l border-r border-slate-400">
-									{item.student_name}
+									{item.student_id} - {item.student_name}
 								</Text>
 								<Text className="w-[100px] px-3 py-2 text-base border-r border-slate-400">
 									{item.grade == null ? "-" : item.grade} / 10
@@ -237,7 +238,7 @@ const ViewSurveysGVien = ({ params, survey }) => {
 										Xem
 									</Text>
 								</TouchableOpacity>
-							</TouchableOpacity>
+							</View>
 						))}
 					</View>
 				</ScrollView>
