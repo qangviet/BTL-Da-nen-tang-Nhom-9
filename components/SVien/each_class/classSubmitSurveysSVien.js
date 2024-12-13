@@ -22,6 +22,7 @@ const ClassSubmitSurveysSVien = () => {
 	console.log("Submit survey params.......", params)
 
 	useEffect(() => {
+		setFileUpload(null);
 		if (currentScreen !== "ClassSubmitSurveysSVien") {
 			navigation.navigate(currentScreen);
 		}
@@ -102,7 +103,6 @@ const ClassSubmitSurveysSVien = () => {
 			console.log('Upload success:', response.data);
 			alert("Nộp bài thành công!");
 			goBack();
-			setFileUpload(null);
 		} catch (error) {
 			console.error('Upload failed:', error.response ? error.response.data : error.message);
 			console.error("API call failed: ", error);

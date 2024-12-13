@@ -19,7 +19,11 @@ const ClassSurveysSVien = ({ route }) => {
       const dispatch = useDispatch();
      
       const navigation = useReactNavigation();
-      
+    //   const currentScreen = useSelector((state) => state.navigation.currentScreen);
+
+    //   useEffect(() => {
+    //         fetchCompletedSurveys();
+    //     }, [currentScreen]);
 
       function viewAssignment(name) {
             console.log("Viewing " + name)
@@ -170,85 +174,6 @@ const ClassSurveysSVien = ({ route }) => {
             }
         };
 
-      // return (
-      //       <View>
-      //             <View className="flex flex-row justify-between p-3">
-      //                   {['Sắp tới', 'Quá hạn', 'Đã hoàn thành'].map((label, index) => (
-      //                         <TouchableOpacity
-      //                               key={index}
-      //                               className={`flex-1 mx-2 rounded-lg h-6 justify-center ${mode === index ? 'bg-red-600' : 'bg-gray-300'}`}
-      //                               onPress={() => setModeBtn(index)}>
-      //                               <Text className={`text-center ${mode === index ? 'text-white' : 'text-black'}`}>{label}</Text>
-      //                         </TouchableOpacity>
-      //                   ))}
-      //             </View>
-
-      //             <View>
-
-      //                   {mode === 0 && <FlatList
-      //                         data={sortedDates_upcoming}
-
-      //                         keyExtractor={(item) => item}
-      //                         renderItem={({ item }) => (
-      //                               <View className="mb-2">
-      //                                     <Text className="text-lg ml-3 mb-2 font-bold">{item}</Text>
-      //                                     {grouped_upcoming[item].map((assignment, index) => (
-      //                                           <TouchableOpacity key={index} className="bg-white p-4 mb-2 ml-2 mr-2 rounded-lg shadow justify-between border border-gray-200 flex-row" onPress={() => goSubmitSurvey(assignment, mode)}>
-      //                                                 <View>
-      //                                                       <Text className="text-base">{assignment.name}</Text>
-      //                                                       <Text className="text-s mt-1 italic">Đóng lúc 11h59</Text>
-      //                                                 </View>
-      //                                                 <Text className="self-center text-base">{assignment.grade}</Text>
-      //                                           </TouchableOpacity>
-      //                                     ))}
-      //                               </View>
-      //                         )}
-      //                   />}
-
-      //                   {mode === 1 && <FlatList
-      //                         data={sortedDates_pastdue}
-
-      //                         keyExtractor={(item) => item}
-      //                         renderItem={({ item }) => (
-      //                               <View className="mb-2">
-      //                                     <Text className="text-lg ml-3 mb-2 font-bold">{item}</Text>
-      //                                     {grouped_pastdue[item].map((assignment, index) => (
-      //                                           <TouchableOpacity key={index} className="bg-white p-4 mb-2 ml-2 mr-2 rounded-lg shadow justify-between border border-gray-200 flex-row" onPress={() => goSubmitSurvey(assignment, mode)}>
-      //                                                 <View>
-      //                                                       <Text className="text-base">{assignment.name}</Text>
-      //                                                       <Text className="text-s mt-1 italic">Đóng lúc 11h59</Text>
-      //                                                 </View>
-      //                                                 <Text className="self-center text-base">{assignment.grade}</Text>
-      //                                           </TouchableOpacity>
-      //                                     ))}
-      //                               </View>
-      //                         )}
-      //                   />}
-
-      //                   {mode === 2 && <FlatList
-      //                         data={sortedDates_completed}
-
-      //                         keyExtractor={(item) => item}
-      //                         renderItem={({ item }) => (
-      //                               <View className="mb-2">
-      //                                     <Text className="text-lg ml-3 mb-2 font-bold">{item}</Text>
-      //                                     {grouped_completed[item].map((assignment, index) => (
-      //                                           <TouchableOpacity key={index} className="bg-white p-4 mb-2 ml-2 mr-2 rounded-lg shadow justify-between border border-gray-200 flex-row" onPress={() => goSubmitSurvey(assignment, mode)}>
-      //                                                 <View>
-      //                                                       <Text className="text-base">{assignment.name}</Text>
-      //                                                       <Text className="text-s mt-1 italic">Đóng lúc 11h59</Text>
-      //                                                 </View>
-      //                                                 <Text className="self-center text-base">{assignment.grade}</Text>
-      //                                           </TouchableOpacity>
-      //                                     ))}
-      //                               </View>
-      //                         )}
-      //                   />}
-
-      //             </View>
-
-      //       </View>
-      // )
       return (
             <View>
                 <View className="flex flex-row justify-between p-3">
@@ -256,7 +181,17 @@ const ClassSurveysSVien = ({ route }) => {
                         <TouchableOpacity
                             key={index}
                             className={`flex-1 mx-2 rounded-lg h-6 justify-center ${mode === index ? 'bg-red-600' : 'bg-gray-300'}`}
-                            onPress={() => setModeBtn(index)}>
+                            onPress={() => {
+                                if (mode === index) {
+                                    // Nếu đang ở tab hiện tại, gọi API tương ứng
+                                    if (index === 0) fetchUpcomingSurveys();
+                                    if (index === 1) fetchPastDueSurveys();
+                                    if (index === 2) fetchCompletedSurveys();
+                                } else {
+                                    // Đổi tab
+                                    setModeBtn(index);
+                                }
+                            }}>
                             <Text className={`text-center ${mode === index ? 'text-white' : 'text-black'}`}>{label}</Text>
                         </TouchableOpacity>
                     ))}
