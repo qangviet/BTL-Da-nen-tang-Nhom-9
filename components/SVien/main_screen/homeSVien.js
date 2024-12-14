@@ -1,12 +1,14 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
-import { useNavigation as useReactNavigation } from "@react-navigation/native";
+import { useNavigation as useReactNavigation, useFocusEffect } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LogoHust, LogoBK } from "../../logo";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useToast } from "react-native-toast-notifications";
+import api from "../../api";
+
 const HomeSVien = () => {
 	const toast = useToast();
 
@@ -16,6 +18,36 @@ const HomeSVien = () => {
 	const param = useSelector((state) => state.navigation.params);
 
 	//console.log(param);
+
+	const[noti_count, setNotiCount] = useState(0);
+
+	const fetchCountNoti = async () => {
+		try {
+			const response = await api.post("/it5023e/get_unread_notification_count", {
+				token: param.token
+			});
+	
+	
+			if (response.data.meta.code === "1000") {
+				const notiCount = response.data.data;
+				setNotiCount(notiCount);
+			} else {
+				console.error('API error:', response.data);
+			}
+		} catch (error) {
+			console.error("Error fetching notifications:", error.data.message);
+		}
+	};
+
+	console.log("Notification count:.....", noti_count)
+
+	// Tự động gọi API mỗi khi màn hình HomeSVien được focus
+	useFocusEffect(
+		useCallback(() => {
+		  fetchCountNoti();
+		}, []) // Không cần dependencies vì chỉ chạy khi focus
+	  );
+
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	useEffect(() => {
@@ -71,12 +103,16 @@ const HomeSVien = () => {
 					<View className="absolute right-4 top-10">
 						<TouchableOpacity onPress={gotoNotification}>
 							<View className="relative">
+							{noti_count > 0 && (
 								<View
 									className="bg-red-500 rounded-full h-6 w-6 
 								flex justify-center items-center absolute z-10 -right-3 -top-3"
 								>
-									<Text className="text-white text-[11px]">10+</Text>
+									
+									<Text className="text-white text-[11px]">{noti_count}+</Text>
 								</View>
+								)}
+
 								<Ionicons name="notifications" size={24} color="white" />
 							</View>
 						</TouchableOpacity>
