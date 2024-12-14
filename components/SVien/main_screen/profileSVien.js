@@ -26,6 +26,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { navigate } from "../../../redux/navigationSlice";
+import { startLoading, stopLoading } from "../../../redux/loadingSlice";
 
 const Profile = () => {
 	const dispatch = useDispatch();
@@ -54,8 +55,9 @@ const Profile = () => {
 		console.log("LOGGING OUT!");
 		try {
 			// Gọi API đăng xuất
+			dispatch(startLoading());
 			const response = await api.post("/it4788/logout", { token });
-
+			dispatch(stopLoading());
 			// Kiểm tra phản hồi từ API
 			if (response.data.code === "1000") {
 				console.log(response.data.message);
@@ -76,11 +78,13 @@ const Profile = () => {
 		// Gọi API để lấy danh sách lớp học
 		const fetchUSER = async () => {
 			try {
+				// Gọi API
+				dispatch(startLoading());
 				const response = await api.post("/it4788/get_user_info", {
 					token: param.token,
 					user_id: param.userInfo.id,
 				});
-
+				dispatch(stopLoading());
 				// Xử lý dữ liệu và cập nhật state
 				if (response.data.code === "1000") {
 					const fetchedUSER = {
@@ -99,6 +103,7 @@ const Profile = () => {
 					console.error("Error fetching classes: ", response.data.meta.message);
 				}
 			} catch (error) {
+				dispatch(stopLoading());
 				console.error("API call failed: ", error);
 				console.error("Error fetching class list:", error);
 				console.error("Error Data:", error.response.data);
@@ -118,6 +123,7 @@ const Profile = () => {
 
 	const handleFilePick = async () => {
 		try {
+			dispatch(startLoading());
 			const response = await DocumentPicker.getDocumentAsync({
 				type: "image/*",
 				copyToCacheDirectory: true,
@@ -132,7 +138,9 @@ const Profile = () => {
 				console.log("File selection canceled.");
 				console.log(response);
 			}
+			dispatch(stopLoading());
 		} catch (error) {
+			dispatch(stopLoading());
 			console.error("Error picking file:", error);
 		}
 	};
@@ -150,7 +158,10 @@ const Profile = () => {
 		}
 		const fileUri = imageFile.uri;
 		// Kiểm tra xem file có tồn tại không
+		// dispatch(startLoading());
 		const fileInfo = await FileSystem.getInfoAsync(fileUri);
+		// dispatch(stopLoading());
+
 		console.log(fileInfo);
 		if (!fileInfo.exists) {
 			console.error("File not found!");
@@ -166,6 +177,7 @@ const Profile = () => {
 		});
 
 		try {
+			dispatch(startLoading());
 			const response = await axios.post("http://157.66.24.126:8080/it4788/change_info_after_signup", formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
@@ -174,7 +186,9 @@ const Profile = () => {
 			alert("Cập nhật ảnh thành công!");
 			setImageFile(null);
 			setModalVisible(false);
+			dispatch(stopLoading());
 		} catch (error) {
+			dispatch(stopLoading());
 			console.error("Upload failed:", error.response ? error.response.data : error.message);
 			console.error("API call failed: ", error);
 			console.error("Error fetching class list:", error);

@@ -1,18 +1,12 @@
 import React, { useState } from "react";
 
-import {
-	TouchableOpacity,
-	StyleSheet,
-	Image,
-	View,
-	Text,
-	TextInput,
-	SafeAreaView,
-} from "react-native";
+import { TouchableOpacity, StyleSheet, Image, View, Text, TextInput, SafeAreaView } from "react-native";
+import { useDispatch } from "react-redux";
 import DropDownPicker from "react-native-dropdown-picker";
 import api from "./api";
-
+import { startLoading, stopLoading } from "../redux/loadingSlice";
 const RegisterScreen = ({ navigation }) => {
+	const dispatch = useDispatch();
 	const [first_name, setFirst_name] = useState("");
 	const [last_name, setLast_name] = useState("");
 	const [email, setEmail] = useState("");
@@ -35,7 +29,7 @@ const RegisterScreen = ({ navigation }) => {
 			alert("Vui lòng nhập đầy đủ thông tin!");
 			return;
 		}
-	
+		// Loading
 		// Tạo dữ liệu gửi đi
 		const requestBody = {
 			ho: first_name,
@@ -45,33 +39,35 @@ const RegisterScreen = ({ navigation }) => {
 			uuid: Math.floor(Math.random() * 900000) + 100000, // UUID 6 chữ số ngẫu nhiên
 			role: value === "Giảng viên" ? "LECTURER" : "STUDENT", // Teacher/Student -> GIẢNG VIÊN/SINH VIÊN
 		};
-	
+
 		try {
 			// Gửi yêu cầu POST đến API server
 			console.log("Sending request:", requestBody); // Log request để kiểm tra
+			dispatch(startLoading());
 			const response = await api.post("/it4788/signup", requestBody);
-	
+			dispatch(stopLoading());
+
 			// Log phản hồi
 			console.log("Response Data:", response.data);
-	
+
 			// Kiểm tra phản hồi từ server
 			if (response.status === 200) {
 				const verifyCode = response.data.verify_code;
 				const verifyResponse = await api.post("/it4788/check_verify_code", {
 					email: email,
 					verify_code: verifyCode,
-				  });
+				});
 				if (verifyResponse.status === 200) {
 					alert("Đăng ký thành công!");
 					navigation.navigate("LoginScreen"); // Chuyển hướng đến màn hình đăng nhập
-				}
-				else {
+				} else {
 					alert(`Đăng ký không thành công: ${verifyResponse.data.message || "Không xác định"}`);
 				}
 			} else {
 				alert(`Đăng ký không thành công: ${response.data.message || "Không xác định"}`);
 			}
 		} catch (error) {
+			dispatch(stopLoading());
 			// Xử lý lỗi
 			if (error.response) {
 				console.error("Error Response:", error.response); // Log chi tiết phản hồi lỗi
@@ -86,12 +82,8 @@ const RegisterScreen = ({ navigation }) => {
 		}
 	};
 
-
 	return (
-		<View
-			className="bg-red-700 h-full"
-			style={{ justifyContent: "center", alignItems: "center" }}
-		>
+		<View className="bg-red-700 h-full" style={{ justifyContent: "center", alignItems: "center" }}>
 			<View className="flex items-center mt-0">
 				<Image source={require("../assets/logo.png")} style={styles.logo} />
 			</View>
@@ -102,7 +94,7 @@ const RegisterScreen = ({ navigation }) => {
 				<View className="flex flex-row items-center justify-center gap-x-4">
 					<TextInput
 						className="basis-[35%] font-medium 
-                        border-white rounded-xl px-5 py-3 text-lg"
+                        border-white rounded-xl px-5 py-3 text-lg text-white"
 						value={first_name}
 						onChangeText={setFirst_name}
 						placeholder="Họ"
@@ -112,7 +104,7 @@ const RegisterScreen = ({ navigation }) => {
 					/>
 					<TextInput
 						className="basis-[55%] font-medium 
-                        border-white rounded-xl px-5 py-3 text-lg"
+                        border-white rounded-xl px-5 py-3 text-lg text-white"
 						value={last_name}
 						onChangeText={setLast_name}
 						placeholder="Tên"
@@ -123,7 +115,7 @@ const RegisterScreen = ({ navigation }) => {
 				</View>
 				<View>
 					<TextInput
-						className="font-medium border-white 
+						className="font-medium border-white  text-white
                         rounded-lg px-5 py-3 text-lg"
 						value={email}
 						onChangeText={setEmail}
@@ -135,7 +127,7 @@ const RegisterScreen = ({ navigation }) => {
 				</View>
 				<View>
 					<TextInput
-						className="font-medium border-white 
+						className="font-medium border-white  text-white
                         rounded-lg px-5 py-3 text-lg"
 						value={password}
 						onChangeText={setPassword}
