@@ -38,14 +38,14 @@ const RegisterClassScreenSVien = () => {
     "Chọn",
   ]);
   const [tableHeadOpen] = useState([
-      "Mã lớp học",
-      "Tên lớp học ",
-      "Loại",
-      "Ngày bắt đầu",
-      "Ngày kết thúc",
-      "Trạng thái",
-      "Số sinh viên",
-    ]);
+    "Mã lớp học",
+    "Tên lớp học ",
+    "Loại",
+    "Ngày bắt đầu",
+    "Ngày kết thúc",
+    "Trạng thái",
+    "Số sinh viên",
+  ]);
   const [widthArrOpen] = useState([70, 130, 80, 130, 130, 100, 70]);
   const [widthArr] = useState([70, 120, 80, 100, 100, 100, 80]);
   const [tableData, setTableData] = useState([]);
@@ -53,47 +53,47 @@ const RegisterClassScreenSVien = () => {
   //Lay thong tin lop mo:
   const [tableDataOpen, setTableDataOpen] = useState([]);
   useEffect(() => {
-	// Hàm gọi API để lấy danh sách lớp
-	const fetchOpenClassList = async () => {
-		// console.log(">>>> LOADED!");
-		try {
-			const response = await api.post("/it5023e/get_open_classes", {
-				token: userInfo.token,
-				// role: userInfo.role == 2 ? "LECTURER" : "STUDENT",
-				// account_id: userInfo.id,
-				pageable_request: null,
-			});
-			const pageContent = response.data.data.page_content;
-			// Map dữ liệu để phù hợp với cấu trúc tableData
-			const formattedData = pageContent.map((item) => [
-				item.class_id,
-				item.class_name,
-				item.class_type,
-				item.start_date,
-				item.end_date,
-				item.status,
-				item.student_count,
-			]);
-			setTableDataOpen(formattedData);
-		} catch (error) {
-			console.error("Error fetching class list:", error);
-			console.error("Error Data:", error.response.data);
-			console.error("Error Status:", error.response.status);
-		}
-	};
+    // Hàm gọi API để lấy danh sách lớp
+    const fetchOpenClassList = async () => {
+      // console.log(">>>> LOADED!");
+      try {
+        const response = await api.post("/it5023e/get_open_classes", {
+          token: userInfo.token,
+          // role: userInfo.role == 2 ? "LECTURER" : "STUDENT",
+          // account_id: userInfo.id,
+          pageable_request: null,
+        });
+        const pageContent = response.data.data.page_content;
+        // Map dữ liệu để phù hợp với cấu trúc tableData
+        const formattedData = pageContent.map((item) => [
+          item.class_id,
+          item.class_name,
+          item.class_type,
+          item.start_date,
+          item.end_date,
+          item.status,
+          item.student_count,
+        ]);
+        setTableDataOpen(formattedData);
+      } catch (error) {
+        console.error("Error fetching class list:", error);
+        console.error("Error Data:", error.response.data);
+        console.error("Error Status:", error.response.status);
+      }
+    };
 
-	fetchOpenClassList();
-}, [currentScreen]);
+    fetchOpenClassList();
+  }, [currentScreen]);
 
-const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
-const openModalListClass = () => {
-	setIsOpenModal(true);
-};
+  const openModalListClass = () => {
+    setIsOpenModal(true);
+  };
 
-const closeModalListClass = (e) => {
-	setIsOpenModal(false);
-};
+  const closeModalListClass = (e) => {
+    setIsOpenModal(false);
+  };
 
   useEffect(() => {
     if (currentScreen !== "RegisterClassScreenSVien") {
@@ -111,42 +111,42 @@ const closeModalListClass = (e) => {
     setTableData(temp);
   };
   //Xóa lớp
-	const handleDeleteClasses = () => {
-		const updatedData = tableData.filter(row => !row[row.length - 1]);
-		setTableData(updatedData);
-		};
-	// Đăng ký lớp
-	const handleSubmitRegister = async () => {
-		const selectedClasses = tableData
-			.filter(row => row[row.length - 1])
-			.map(row => row[0]);
-	
-		if (selectedClasses.length === 0) {
-			alert("Vui lòng chọn ít nhất một lớp để đăng ký!");
-			return;
-		}
-	
-		try {
-			await api.post("/it5023e/register_class", {
-			token: userInfo.token,
-			class_ids: selectedClasses,
-			});
-	
-			alert("Đã gửi đăng ký lớp thành công!");
-			console.log("Register success!")
-			setTableData([]); // Reset table data
-		} catch (error) {
-			console.error("Error submitting registration:", error);
-			alert("Không thể gửi đăng ký. Vui lòng thử lại!");
-		}
-		};
+  const handleDeleteClasses = () => {
+    const updatedData = tableData.filter(row => !row[row.length - 1]);
+    setTableData(updatedData);
+  };
+  // Đăng ký lớp
+  const handleSubmitRegister = async () => {
+    const selectedClasses = tableData
+      .filter(row => row[row.length - 1])
+      .map(row => row[0]);
+
+    if (selectedClasses.length === 0) {
+      alert("Vui lòng chọn ít nhất một lớp để đăng ký!");
+      return;
+    }
+
+    try {
+      await api.post("/it5023e/register_class", {
+        token: userInfo.token,
+        class_ids: selectedClasses,
+      });
+
+      alert("Đã gửi đăng ký lớp thành công!");
+      console.log("Register success!")
+      setTableData([]); // Reset table data
+    } catch (error) {
+      console.error("Error submitting registration:", error);
+      alert("Không thể gửi đăng ký. Vui lòng thử lại!");
+    }
+  };
 
   const handleRegisterClass = async () => {
     if (!classId) {
       alert("Vui lòng nhập mã lớp học!");
       return;
     }
-	// Kiểm tra nếu mã lớp đã tồn tại
+    // Kiểm tra nếu mã lớp đã tồn tại
     const classExists = tableData.some((row) => row[0] === classId);
     if (classExists) {
       alert("Lớp học đã tồn tại trong danh sách!");
@@ -178,7 +178,7 @@ const closeModalListClass = (e) => {
       console.error("Error fetching class info:", error);
       alert("Không thể lấy thông tin lớp học. Vui lòng thử lại!");
     }
-	
+
   };
 
   return (
@@ -194,7 +194,7 @@ const closeModalListClass = (e) => {
           <Text className="text-white text-[28px] pt-5">REGISTER FOR CLASS</Text>
         </View>
       </View>
-      <View className="mt-10 mx-8 flex flex-row">
+      <View className="mt-8 mx-8 flex flex-row">
         <View className="basis-[55%] mx-3 bg-[#f2eceb] border-red-600 border py-2">
           <TextInput
             className=" text-red-600 text-xl px-3"
@@ -211,8 +211,8 @@ const closeModalListClass = (e) => {
         </View>
       </View>
       <View className="w-full ">
-        <View className="p-4 pt-7 h-[400px] ">
-          <ScrollView horizontal={true}>
+        <View className="p-4 pt-7 h-[350px] ">
+          <ScrollView horizontal={true} style={styles.dataWrapper}>
             <View>
               <Table borderStyle={{ borderWidth: 1, borderColor: "#C1C0B9" }}>
                 <Row
@@ -262,7 +262,7 @@ const closeModalListClass = (e) => {
           </Text>
         </View>
       </View>
-      <View className="flex flex-row mt-10 justify-center gap-x-3">
+      <View className="flex flex-row mt-8 justify-center gap-x-3">
         <View
           className="flex justify-center items-center
                  bg-red-700 rounded-lg px-5 py-1"
@@ -287,60 +287,60 @@ const closeModalListClass = (e) => {
           </Text>
         </TouchableOpacity>
       </View>
-	  <Modal isVisible={isOpenModal} onBackdropPress={(e) => closeModalListClass(e)}>
-				<View className="w-full bg-white rounded-xl">
-					<View className="mt-4 justify-between flex-row items-center">
-						<Text className="text-lg ml-24">Danh sách lớp mở</Text>
+      <Modal isVisible={isOpenModal} onBackdropPress={(e) => closeModalListClass(e)}>
+        <View className="w-full bg-white rounded-xl">
+          <View className="mt-4 justify-between flex-row items-center">
+            <Text className="text-lg ml-24">Danh sách lớp mở</Text>
 
-						<TouchableOpacity className="mr-5" onPress={() => closeModalListClass()}>
-							<Ionicons
-									name="close-outline"
-									size={28}
-									color="gray"
-									className=""
-								/>
-						</TouchableOpacity>
-					</View>
-					<View className="p-4 pt-4 h-[400px]">
-						<ScrollView horizontal={true}>
-							<View>
-								<Table borderStyle={{ borderWidth: 1, borderColor: "#C1C0B9" }}>
-									<Row
-										data={tableHeadOpen}
-										widthArr={widthArrOpen}
-										// style={styles.header}
-										className="bg-red-600 h-11"
-										textStyle={styles.textHeader}
-									/>
-								</Table>
-								<ScrollView style={styles.dataWrapper}>
-									<Table borderStyle={{ borderWidth: 1, borderColor: "#C1C0B9" }}>
-										{tableDataOpen.map((rowData, index) => (
-											<TableWrapper
-												style={{
-													paddingBottom: 5,
-													borderColor: "black",
-													display: "flex",
-													flexDirection: "row",
-												}}
-											>
-												{rowData.map((cellData, cellIndex) => (
-													<Cell
-														data={cellData}
-														textStyle={styles.textRecoder}
-														width={widthArrOpen[cellIndex]}
-													/>
-												))}
-											</TableWrapper>
-										))}
-									</Table>
-								</ScrollView>
-								<View className="border-t border-gray-300"></View>
-							</View>
-						</ScrollView>
-					</View>
-				</View>
-			</Modal>
+            <TouchableOpacity className="mr-5" onPress={() => closeModalListClass()}>
+              <Ionicons
+                name="close-outline"
+                size={28}
+                color="gray"
+                className=""
+              />
+            </TouchableOpacity>
+          </View>
+          <View className="p-4 pt-4 h-[400px]">
+            <ScrollView horizontal={true}>
+              <View>
+                <Table borderStyle={{ borderWidth: 1, borderColor: "#C1C0B9" }}>
+                  <Row
+                    data={tableHeadOpen}
+                    widthArr={widthArrOpen}
+                    // style={styles.header}
+                    className="bg-red-600 h-11"
+                    textStyle={styles.textHeader}
+                  />
+                </Table>
+                <ScrollView style={styles.dataWrapper}>
+                  <Table borderStyle={{ borderWidth: 1, borderColor: "#C1C0B9" }}>
+                    {tableDataOpen.map((rowData, index) => (
+                      <TableWrapper
+                        style={{
+                          paddingBottom: 5,
+                          borderColor: "black",
+                          display: "flex",
+                          flexDirection: "row",
+                        }}
+                      >
+                        {rowData.map((cellData, cellIndex) => (
+                          <Cell
+                            data={cellData}
+                            textStyle={styles.textRecoder}
+                            width={widthArrOpen[cellIndex]}
+                          />
+                        ))}
+                      </TableWrapper>
+                    ))}
+                  </Table>
+                </ScrollView>
+                <View className="border-t border-gray-300"></View>
+              </View>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
