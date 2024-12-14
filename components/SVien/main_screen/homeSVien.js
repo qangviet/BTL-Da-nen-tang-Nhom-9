@@ -1,8 +1,8 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
-import { useNavigation as useReactNavigation } from "@react-navigation/native";
+import { useNavigation as useReactNavigation, useFocusEffect } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LogoHust, LogoBK } from "../../logo";
 import { useToast } from "react-native-toast-notifications";
@@ -120,12 +120,16 @@ const HomeSVien = () => {
 					<View className="absolute right-4 top-10">
 						<TouchableOpacity onPress={gotoNotification}>
 							<View className="relative">
+							{noti_count > 0 && (
 								<View
 									className="bg-red-500 rounded-full h-6 w-6 
 								flex justify-center items-center absolute z-10 -right-3 -top-3"
 								>
-									<Text className="text-white text-[11px]">10+</Text>
+									
+									<Text className="text-white text-[11px]">{noti_count}+</Text>
 								</View>
+								)}
+
 								<Ionicons name="notifications" size={24} color="white" />
 							</View>
 						</TouchableOpacity>
