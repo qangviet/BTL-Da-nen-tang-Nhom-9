@@ -5,56 +5,73 @@ import { navigate } from "../../../redux/navigationSlice";
 import { useNavigation as useReactNavigation, useFocusEffect } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LogoHust, LogoBK } from "../../logo";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useToast } from "react-native-toast-notifications";
 import api from "../../api";
-
+import { useIsFocused } from "@react-navigation/native";
 const HomeSVien = () => {
 	const toast = useToast();
-
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
-
 	const param = useSelector((state) => state.navigation.params);
 
-	//console.log(param);
-
-	const[noti_count, setNotiCount] = useState(0);
-
-	const fetchCountNoti = async () => {
-		try {
-			const response = await api.post("/it5023e/get_unread_notification_count", {
-				token: param.token
-			});
-	
-	
-			if (response.data.meta.code === "1000") {
-				const notiCount = response.data.data;
-				setNotiCount(notiCount);
-			} else {
-				console.error('API error:', response.data);
-			}
-		} catch (error) {
-			console.error("Error fetching notifications:", error.data.message);
-		}
-	};
-
-	console.log("Notification count:.....", noti_count)
-
-	// Tự động gọi API mỗi khi màn hình HomeSVien được focus
-	useFocusEffect(
-		useCallback(() => {
-		  fetchCountNoti();
-		}, []) // Không cần dependencies vì chỉ chạy khi focus
-	  );
-
-
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
+
+	const [USER, setUSER] = useState({});
+	const [avtLink, setAvtLink] = useState("");
+
 	useEffect(() => {
 		if (currentScreen !== "TabMainSVien") {
 			navigation.navigate(currentScreen);
 		}
 	}, [currentScreen]);
+
+	const fetchUSER = async () => {
+		try {
+			const response = await api.post("/it4788/get_user_info", {
+				token: param.token,
+				user_id: param.userInfo.id,
+			});
+
+			// Xử lý dữ liệu và cập nhật state
+			if (response.data.code === "1000") {
+				const fetchedUSER = {
+					id: response.data.data.id,
+					name: response.data.data.name,
+					email: response.data.data.email,
+					avatar: response.data.data.avatar,
+					phoneNumber: "0355064807",
+					dob: "03/01/2003",
+					khoaVien: "Trường Công nghệ Thông tin và Truyền thông",
+					he: "Kỹ sư chính quy - k66",
+					class: "Khoa học máy tính 06 - K66",
+				};
+				if (fetchedUSER.avatar != null) {
+					const avt_link =
+						"https://drive.google.com/thumbnail?id=" +
+						fetchedUSER.avatar.split("/d/")[1].split("/")[0] +
+						"&sz=w1000";
+					setAvtLink(avt_link);
+				}
+				console.log("fetchedUSER: ", fetchedUSER);
+				setUSER(fetchedUSER);
+			} else {
+				console.error("Error fetching classes: ", response.data.meta.message);
+			}
+		} catch (error) {
+			console.error("API call failed: ", error);
+			console.error("Error fetching class list:", error);
+			console.error("Error Data:", error.response.data);
+			console.error("Error Status:", error.response.status);
+		}
+	};
+	const isFocused = useIsFocused();
+
+	useEffect(() => {
+		if (isFocused) {
+			fetchUSER();
+		}
+	}, [isFocused]);
+
 	const goToMyClasses = () => {
 		dispatch(
 			navigate({
@@ -128,7 +145,14 @@ const HomeSVien = () => {
 						<View className="flex flex-row justify-between items-center ">
 							<View className="flex flex-row gap-x-2 items-center">
 								<View>
-									<Ionicons name="person-circle-sharp" size={60} color="#b5b5b5" />
+									{avtLink === "" ? (
+										<Image
+											className="w-16 h-16 rounded-full mt-1 mr-2"
+											source={require("../../../assets/avt.jpg")}
+										/>
+									) : (
+										<Image className="w-16 h-16 rounded-full mt-1 mr-2" source={{ uri: avtLink }} />
+									)}
 								</View>
 								{param && param.userInfo ? (
 									<View>
@@ -157,7 +181,7 @@ const HomeSVien = () => {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View className="pt-3">
+								<View className="pt-3 w-28">
 									<Text className="self-center text-base font-bold">Thời khóa biểu</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
@@ -175,7 +199,7 @@ const HomeSVien = () => {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View className="pt-3 ">
+								<View className="pt-3 w-28">
 									<Text className="self-center text-base font-bold">Đồ án</Text>
 									<Text className="self-center text-sm font-[650]">Thông tin các đồ án</Text>
 								</View>
@@ -191,7 +215,7 @@ const HomeSVien = () => {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View className="pt-3">
+								<View className="pt-3 w-28">
 									<Text className="self-center text-base font-bold">Danh sách lớp</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
@@ -209,7 +233,7 @@ const HomeSVien = () => {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View className="pt-3">
+								<View className="pt-3 w-28">
 									<Text className="self-center text-base font-bold">Đăng ký lớp</Text>
 									<Text className="self-center text-sm font-[650]">Đăng ký lớp cho học kỳ</Text>
 								</View>
@@ -225,7 +249,7 @@ const HomeSVien = () => {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View className="pt-3">
+								<View className="pt-3 w-28">
 									<Text className="self-center text-base font-bold">Thông báo tin tức</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
@@ -243,7 +267,7 @@ const HomeSVien = () => {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View className="pt-3">
+								<View className="pt-3 w-28">
 									<Text className="self-center text-base font-bold">Kết quả học tập</Text>
 									<Text className="self-center text-sm font-[650]">Thông tin kết quả học tập</Text>
 								</View>
@@ -259,7 +283,7 @@ const HomeSVien = () => {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View className="pt-3">
+								<View className="pt-3 w-28">
 									<Text className="self-center text-base font-bold">Biểu mẫu online</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
@@ -277,7 +301,7 @@ const HomeSVien = () => {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View className="pt-3">
+								<View className="pt-3 w-28">
 									<Text className="self-center text-base font-bold">Học phí</Text>
 									<View className="flex flex-row justify-center items-center">
 										<Text className="text-center text-sm font-[650] flex-wrap">
