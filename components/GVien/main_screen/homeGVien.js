@@ -8,7 +8,7 @@ import { LogoHust, LogoBK } from "../../logo";
 import { useToast } from "react-native-toast-notifications";
 import api from "../../api";
 import { useIsFocused } from "@react-navigation/native";
-const HomeGVien = ({ route }) => {
+const HomeGVien = () => {
 	const toast = useToast();
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
@@ -71,8 +71,6 @@ const HomeGVien = ({ route }) => {
 			fetchUSER();
 		}
 	}, [isFocused]);
-
-	// console.log(avtLink);
 
 	const goToMyClasses = () => {
 		dispatch(
