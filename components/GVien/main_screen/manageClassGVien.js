@@ -1,15 +1,6 @@
 import React, { Suspense, useState, useEffect } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-	StyleSheet,
-	Image,
-	ScrollView,
-	View,
-	Text,
-	TextInput,
-	SafeAreaView,
-	TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Image, ScrollView, View, Text, TextInput, SafeAreaView, TouchableOpacity } from "react-native";
 import CheckBox from "react-native-check-box";
 import { Table, TableWrapper, Row, Cell, Col } from "react-native-table-component";
 import Modal from "react-native-modal";
@@ -20,6 +11,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
 import api from "../../api";
+import { startLoading, stopLoading } from "../../../redux/loadingSlice";
 
 const ManageClassesScreenGVien = () => {
 	const dispatch = useDispatch();
@@ -54,8 +46,8 @@ const ManageClassesScreenGVien = () => {
 		"Số sinh viên",
 	]);
 
-	const [widthArr] = useState([70, 130, 80, 130, 130, 100, 70]);
-	const [widthArrOpen] = useState([70, 130, 80, 130, 130, 100, 70]);
+	const [widthArr] = useState([80, 130, 80, 130, 130, 100, 70]);
+	const [widthArrOpen] = useState([80, 130, 80, 130, 130, 100, 70]);
 	const sumTC = 16;
 	const [checkedData, setCheckedData] = useState(null); // Lưu thông tin dòng đã chọn
 	const [isEditEnabled, setIsEditEnabled] = useState(false); // Điều kiện để bật/tắt nút "Chỉnh sửa"
@@ -67,6 +59,7 @@ const ManageClassesScreenGVien = () => {
 	const fetchClassList = async () => {
 		// console.log(">>>> LOADED!");
 		try {
+			dispatch(startLoading());
 			const response = await api.post("/it5023e/get_class_list", {
 				token: param.token,
 				role: param.role == 2 ? "LECTURER" : "STUDENT",
@@ -84,6 +77,7 @@ const ManageClassesScreenGVien = () => {
 				item.status,
 				false, // Cột checkbox mặc định là false
 			]);
+			dispatch(stopLoading());
 			setTableData(formattedData);
 			return formattedData;
 		} catch (error) {
@@ -102,6 +96,7 @@ const ManageClassesScreenGVien = () => {
 		const fetchOpenClassList = async () => {
 			// console.log(">>>> LOADED!");
 			try {
+				dispatch(startLoading());
 				const response = await api.post("/it5023e/get_open_classes", {
 					token: param.token,
 					role: param.role == 2 ? "LECTURER" : "STUDENT",
@@ -120,7 +115,9 @@ const ManageClassesScreenGVien = () => {
 					item.student_count,
 				]);
 				setTableDataOpen(formattedData);
+				dispatch(stopLoading());
 			} catch (error) {
+				dispatch(stopLoading());
 				console.error("Error fetching class list:", error);
 				console.error("Error Data:", error.response.data);
 				console.error("Error Status:", error.response.status);
@@ -170,17 +167,17 @@ const ManageClassesScreenGVien = () => {
 		let classes = await fetchClassList();
 		if (class_id !== "") {
 			let temp = [];
-			classes.forEach(item => {
+			classes.forEach((item) => {
 				// console.log(item);
 				if (item[0] === class_id) {
 					temp.push(item);
 				}
-			})
+			});
 			setTableData(temp);
 		} else {
 			await fetchClassList();
 		}
-	}
+	};
 
 	// Kiểm tra xem có một checkbox được chọn hay không
 	useEffect(() => {
@@ -261,6 +258,7 @@ const ManageClassesScreenGVien = () => {
 								<Table borderStyle={{ borderWidth: 1, borderColor: "#C1C0B9" }}>
 									{tableData.map((rowData, index) => (
 										<TableWrapper
+											key={index}
 											style={{
 												display: "flex",
 												flexDirection: "row",
@@ -268,6 +266,7 @@ const ManageClassesScreenGVien = () => {
 										>
 											{rowData.map((cellData, cellIndex) => (
 												<Cell
+													key={cellIndex}
 													data={
 														cellIndex === rowData.length - 1 ? (
 															<CheckBox
@@ -335,12 +334,7 @@ const ManageClassesScreenGVien = () => {
 						<Text className="text-lg ml-24">Danh sách lớp mở</Text>
 
 						<TouchableOpacity className="mr-5" onPress={() => closeModalListClass()}>
-							<Ionicons
-									name="close-outline"
-									size={28}
-									color="gray"
-									className=""
-								/>
+							<Ionicons name="close-outline" size={28} color="gray" className="" />
 						</TouchableOpacity>
 					</View>
 					<View className="p-4 pt-4 h-[400px]">
@@ -359,6 +353,7 @@ const ManageClassesScreenGVien = () => {
 									<Table borderStyle={{ borderWidth: 1, borderColor: "#C1C0B9" }}>
 										{tableDataOpen.map((rowData, index) => (
 											<TableWrapper
+												key={index}
 												style={{
 													paddingBottom: 5,
 													borderColor: "black",

@@ -26,6 +26,7 @@ import api from "../../api";
 import axios from "axios";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { navigate } from "../../../redux/navigationSlice";
+import { startLoading, stopLoading } from "../../../redux/loadingSlice";
 const ProfileGVien = () => {
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
@@ -52,6 +53,7 @@ const ProfileGVien = () => {
 		console.log("LOGGING OUT!");
 		try {
 			// Gọi API đăng xuất
+			dispatch(startLoading());
 			const response = await api.post("/it4788/logout", { token });
 
 			// Kiểm tra phản hồi từ API
@@ -61,7 +63,9 @@ const ProfileGVien = () => {
 			} else {
 				console.log("Logout failed:", response.data.message);
 			}
+			dispatch(stopLoading());
 		} catch (error) {
+			dispatch(stopLoading());
 			console.error("Error logging out:", error);
 		}
 	};
@@ -74,6 +78,7 @@ const ProfileGVien = () => {
 		// Gọi API để lấy danh sách lớp học
 		const fetchUSER = async () => {
 			try {
+				dispatch(startLoading());
 				const response = await api.post("/it4788/get_user_info", {
 					token: param.token,
 					user_id: param.userInfo.id,
@@ -104,7 +109,9 @@ const ProfileGVien = () => {
 				} else {
 					console.error("Error fetching classes: ", response.data.meta.message);
 				}
+				dispatch(stopLoading());
 			} catch (error) {
+				dispatch(stopLoading());
 				console.error("API call failed: ", error);
 				console.error("Error fetching class list:", error);
 				console.error("Error Data:", error.response.data);
@@ -138,6 +145,7 @@ const ProfileGVien = () => {
 
 	const handleFilePick = async () => {
 		try {
+			dispatch(startLoading());
 			const response = await DocumentPicker.getDocumentAsync({
 				type: "image/*",
 				copyToCacheDirectory: true,
@@ -152,7 +160,9 @@ const ProfileGVien = () => {
 				console.log("File selection canceled.");
 				console.log(response);
 			}
+			dispatch(stopLoading());
 		} catch (error) {
+			dispatch(stopLoading());
 			console.error("Error picking file:", error);
 		}
 	};
@@ -170,10 +180,12 @@ const ProfileGVien = () => {
 		}
 		const fileUri = imageFile.uri;
 		// Kiểm tra xem file có tồn tại không
+		dispatch(startLoading());
 		const fileInfo = await FileSystem.getInfoAsync(fileUri);
 		console.log(fileInfo);
 		if (!fileInfo.exists) {
 			console.error("File not found!");
+			dispatch(stopLoading());
 			return;
 		}
 
@@ -195,7 +207,9 @@ const ProfileGVien = () => {
 			setImageFile(null);
 			setModalVisible(false);
 			setReload(!reload);
+			dispatch(stopLoading());
 		} catch (error) {
+			dispatch(stopLoading());
 			console.error("Upload failed:", error.response ? error.response.data : error.message);
 			console.error("API call failed: ", error);
 			console.error("Error fetching class list:", error);

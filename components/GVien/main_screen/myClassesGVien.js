@@ -1,12 +1,4 @@
-import {
-	StyleSheet,
-	ScrollView,
-	View,
-	Text,
-	TextInput,
-	TouchableOpacity,
-	FlatList,
-} from "react-native";
+import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { LogoHust } from "./../../logo";
@@ -20,8 +12,8 @@ const MyClassesScreenGVien = () => {
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
 	const state = useSelector((state) => state.navigation);
-	const param = useSelector((state) => state.navigation.params)
-	console.log("Param.....", param)
+	const param = useSelector((state) => state.navigation.params);
+	console.log("Param.....", param);
 	//console.log(state)
 	//console.log("Current screen: ", state);
 	useEffect(() => {
@@ -29,7 +21,7 @@ const MyClassesScreenGVien = () => {
 			navigation.navigate(state.currentScreen);
 		}
 	}, [state.currentScreen]);
-	
+
 	useEffect(() => {
 		// Gọi API để lấy danh sách lớp học
 		const fetchClasses = async () => {
@@ -62,19 +54,9 @@ const MyClassesScreenGVien = () => {
 		fetchClasses();
 	}, [state.currentScreen]); // Chỉ gọi một lần khi component được mount
 
-
 	// State để lưu danh sách lớp học từ API
 	const [classes, setClasses] = useState([]);
 	const [classID, setClassID] = useState(null);
-
-	useEffect(() => {
-		// Kiểm tra màn hình hiện tại và điều hướng nếu cần
-		if (state.currentScreen !== "MyClassesScreenGVien") {
-			navigation.navigate(state.currentScreen);
-		}
-	}, [state.currentScreen]);
-
-	
 
 	function goToClass(item) {
 		//setClassID(item.id)
@@ -108,7 +90,7 @@ const MyClassesScreenGVien = () => {
 			<FontAwesome name="chevron-right" size={12} color="gray" />
 		</TouchableOpacity>
 	);
-	
+
 	return (
 		<View>
 			<View className="bg-red-700 pt-11 pb-5 relative z-10">
@@ -120,7 +102,6 @@ const MyClassesScreenGVien = () => {
 				<View className="flex justify-center items-center">
 					<LogoHust width={130} height={24}></LogoHust>
 				</View>
-
 			</View>
 
 			<View className="pt-2 pl-5">

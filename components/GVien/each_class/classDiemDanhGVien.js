@@ -11,20 +11,30 @@ import DateTimePicker from "react-native-ui-datepicker";
 import { useSelector, useDispatch } from "react-redux";
 import api from "../../api";
 import { useIsFocused } from "@react-navigation/native";
-
+import { startLoading, stopLoading } from "../../../redux/loadingSlice";
+import { useNavigation } from "@react-navigation/native";
 const ClassDiemDanhGVien = ({ route }) => {
+	const navigation = useNavigation();
 	const isFocused = useIsFocused(); // Hook để kiểm tra screen có đang focus hay không
-
+	const dispatch = useDispatch();
+	const isLoading = useSelector((state) => state.loading.isLoading);
 	const { params } = route;
-	console.log();
 	console.log(">>>>>>> ClassDiemdanh");
-	console.log("params: ", params);
+	// console.log("params: ", params);
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
+
+	useEffect(() => {
+		if (currentScreen !== "ClassScreenGVien") {
+			if (isFocused) {
+				navigation.navigate(currentScreen);
+			}
+		}
+	}, [currentScreen]);
 
 	const widthArr = [50, 90, 180, 100];
 
 	const tableHead = ["STT", "MSSV", "Họ và tên", "Có mặt"];
-	
+
 	const [dsSinhVien, setDsSinhVien] = useState([]);
 	const [absentStudentIds, setAbsentStudentIds] = useState([]);
 	console.log("Absent ids: ", absentStudentIds);
@@ -41,7 +51,7 @@ const ClassDiemDanhGVien = ({ route }) => {
 
 	const [dateCheck, setDateCheck] = useState(format_Date(dayjs()));
 	const [DATES, setDATES] = useState([]);
-	
+
 	const [isCheckAbsent, setIsCheckAbsent] = useState(false);
 	const displayAbsent = () => {
 		setIsCheckAbsent(true);
@@ -49,9 +59,9 @@ const ClassDiemDanhGVien = ({ route }) => {
 	const hideAbsent = () => {
 		setIsCheckAbsent(false);
 	};
-	
+
 	const [viewDescription, setViewDescription] = useState(-1);
-	
+
 	const renderItem = (item) => {
 		return (
 			<View style={styles.item}>
@@ -61,27 +71,30 @@ const ClassDiemDanhGVien = ({ route }) => {
 	};
 
 	const selectRow = (index_r, index_c) => {
+		dispatch(startLoading());
 		let newDsSinhVien = [...dsSinhVien];
 		newDsSinhVien[index_r].present = !newDsSinhVien[index_r].present;
 		setDsSinhVien(newDsSinhVien);
-		
+
 		let newAbsentStudentIds = [...absentStudentIds];
 		if (newDsSinhVien[index_r].present) {
 			const index = newAbsentStudentIds.indexOf(newDsSinhVien[index_r].student_id);
 			if (index !== -1) {
-			   	newAbsentStudentIds.splice(index, 1); // Xóa phần tử
+				newAbsentStudentIds.splice(index, 1); // Xóa phần tử
 			}
 		} else {
 			if (!newAbsentStudentIds.includes(newDsSinhVien[index_r].student_id)) {
-			    	newAbsentStudentIds.push(newDsSinhVien[index_r].student_id);
+				newAbsentStudentIds.push(newDsSinhVien[index_r].student_id);
 			}
 		}
 		setAbsentStudentIds(newAbsentStudentIds);
+		dispatch(stopLoading());
 	};
 
 	const fetchStudents = async () => {
+		dispatch(startLoading());
 		try {
-			const response = await api.post('/it5023e/get_class_info', {
+			const response = await api.post("/it5023e/get_class_info", {
 				token: params.token,
 				class_id: params.class.id,
 			});
@@ -97,31 +110,40 @@ const ClassDiemDanhGVien = ({ route }) => {
 				const temp_attendances = await fetchAttendences();
 				if (temp_attendances != null) {
 					let absentList = temp_attendances
-					.filter(attendance => attendance.status !== "PRESENT")
-					.map(attendance => attendance.student_id);
+						.filter((attendance) => attendance.status !== "PRESENT")
+						.map((attendance) => attendance.student_id);
 					setAbsentStudentIds(absentList);
-					
+
 					let newDsSinhVien = [...fetchedData];
-					newDsSinhVien.forEach(student => {
+					newDsSinhVien.forEach((student) => {
 						if (absentList.includes(student.student_id)) {
 							student.present = false;
 						}
 					});
 					setDsSinhVien(newDsSinhVien);
-				} else {xcvb
+				} else {
+					// xcvb;
 					setDsSinhVien(fetchedData);
 				}
+				dispatch(stopLoading());
 			} else {
-				console.error('API error:', response.data.message);
+				dispatch(stopLoading());
+
+				console.error("API error:", response.data.message);
 			}
 		} catch (error) {
-			console.error("Error fetching documents:", error);
+			dispatch(stopLoading());
+			console.error(
+				`Error fetching documents - Api get_class_info - Data: token: ${params.token}, class_id: ${params.class.id}`,
+				error
+			);
 		}
-	}
+	};
 
 	const fetchDates = async () => {
+		dispatch(startLoading());
 		try {
-			const response = await api.post('/it5023e/get_attendance_dates', {
+			const response = await api.post("/it5023e/get_attendance_dates", {
 				token: params.token,
 				class_id: params.class.id,
 			});
@@ -129,13 +151,11 @@ const ClassDiemDanhGVien = ({ route }) => {
 			if (response.data.meta.code === "1000") {
 				const fetchedData = response.data.data.map((item) => ({
 					value: item,
-					label: item
+					label: item,
 				}));
 
-				let newItem = { value: format_Date(dayjs()), label: 		format_Date(dayjs()) };
-				let exists = fetchedData.some(item => 
-					item.value === newItem.value && item.label === newItem.label
-				);
+				let newItem = { value: format_Date(dayjs()), label: format_Date(dayjs()) };
+				let exists = fetchedData.some((item) => item.value === newItem.value && item.label === newItem.label);
 				if (!exists) {
 					fetchedData.push(newItem);
 				}
@@ -143,44 +163,58 @@ const ClassDiemDanhGVien = ({ route }) => {
 				fetchedData.sort((a, b) => new Date(b.value) - new Date(a.value));
 				setDATES(fetchedData);
 				console.log("Dates: ", DATES);
+				dispatch(stopLoading());
 			} else {
-				console.error('API error:', response.data.message);
+				console.error("API error:", response.data.message);
+				dispatch(stopLoading());
 			}
 		} catch (error) {
-			console.error("Error fetching documents:", error);
+			dispatch(stopLoading());
+			console.error(
+				`Error fetching documents - Api get_attendance_dates - Data: token: ${params.token}, class_id: ${params.class.id}`,
+				error
+			);
 		}
 	};
 
 	const fetchAttendences = async () => {
+		dispatch(startLoading());
 		try {
-			const response = await api.post('/it5023e/get_attendance_list', {
+			const response = await api.post("/it5023e/get_attendance_list", {
 				token: params.token,
 				class_id: params.class.id,
-				date: dateCheck
+				date: dateCheck,
 			});
 
 			if (response.data.meta.code === "1000") {
 				const fetchedData = response.data.data.attendance_student_details.map((item) => ({
 					attendance_id: item.attendance_id,
 					student_id: item.student_id,
-					status: item.status
+					status: item.status,
 				}));
+				dispatch(stopLoading());
 				setAttendances(fetchedData);
 				return fetchedData;
 			} else {
-				console.error('API error:', response.data.message);
+				console.error("API error:", response.data.message);
 			}
 		} catch (error) {
+			console.log(
+				"Error fetching attendences - data: ",
+				`Token: ${params.token}, Class_id: ${params.class.id}, Date: ${dateCheck}`
+			);
 			console.error("Error fetching attendences:", error);
 		}
+		dispatch(stopLoading());
 	};
 
 	const fetchAbsentRequests = async () => {
+		dispatch(startLoading());
 		try {
-			const response = await api.post('/it5023e/get_absence_requests', {
+			const response = await api.post("/it5023e/get_absence_requests", {
 				token: params.token,
 				class_id: params.class.id,
-				date: dateCheck
+				date: dateCheck,
 			});
 
 			if (response.data.meta.code === "1000") {
@@ -194,7 +228,7 @@ const ClassDiemDanhGVien = ({ route }) => {
 					title: item.title,
 					reason: item.reason,
 					status: item.status,
-					file_url: item.file_url
+					file_url: item.file_url,
 				}));
 				let sortedRequests = fetchedData.sort((a, b) => {
 					if (a.status === "PENDING" && b.status !== "PENDING") return -1;
@@ -204,52 +238,66 @@ const ClassDiemDanhGVien = ({ route }) => {
 				setAbsentRequests(sortedRequests);
 
 				let temp_acceptedStudentIds = sortedRequests
-					.filter(request => request.status === "ACCEPTED")
-					.map(request => request.student_id);
+					.filter((request) => request.status === "ACCEPTED")
+					.map((request) => request.student_id);
 				setAcceptedStudentIds(temp_acceptedStudentIds);
+				dispatch(stopLoading());
 			} else {
-				console.error('API error:', response.data.message);
+				dispatch(stopLoading());
+
+				console.error("API error:", response.data.message);
 			}
 		} catch (error) {
-			console.error("Error fetching documents:", error);
+			dispatch(stopLoading());
+			console.error(
+				`Error fetching documents - Api get_absence_requests - Data: token: ${params.token}, 
+				class_id: ${params.class.id}, data: ${dateCheck}`,
+				error
+			);
 		}
 	};
 
 	useEffect(() => {
-		if (isFocused) {
-			fetchDates();
-			fetchStudents();
-			fetchAbsentRequests();
-		}
+		dispatch(startLoading());
+		fetchDates();
+		fetchStudents();
+		fetchAbsentRequests();
+
 		// fetchAttendences();
 		setAbsentStudentIds([]);
-
-	}, [dateCheck, isFocused]);
+		dispatch(stopLoading());
+	}, [dateCheck]);
 
 	console.log("attendences: ", attendances);
 	console.log("Students: ", dsSinhVien);
 
 	useEffect(() => {
 		fetchAbsentRequests();
-	}, [viewDescription])
+	}, [viewDescription]);
 
 	console.log("Accepted ids: ", acceptedStudentIds);
 
 	const reviewRequest = async (request_id, status) => {
+		dispatch(startLoading());
 		try {
-			const response = await api.post('/it5023e/review_absence_request', {
+			const response = await api.post("/it5023e/review_absence_request", {
 				token: params.token,
 				request_id: request_id,
-				status: status
+				status: status,
 			});
 
 			if (response.data.meta.code === "1000") {
 				console.log("Request reviewed!");
 			} else {
-				console.error('API error:', response.data.message);
+				console.error("API error:", response.data.message);
 			}
+			dispatch(stopLoading());
 		} catch (error) {
-			console.error("Error fetching documents:", error);
+			console.error(
+				`Error fetching documents - Api review_absence_request - Data - token: ${params.token}, 
+				request_id: ${request_id}, status: ${status} `,
+				error
+			);
 		}
 	};
 
@@ -264,59 +312,81 @@ const ClassDiemDanhGVien = ({ route }) => {
 	}
 
 	const takeAttendence = async () => {
+		dispatch(startLoading());
 		try {
-			const response = await api.post('/it5023e/take_attendance', {
+			const response = await api.post("/it5023e/take_attendance", {
 				token: params.token,
 				class_id: params.class.id,
 				date: dateCheck,
-				attendance_list: absentStudentIds
+				attendance_list: absentStudentIds,
 			});
 
 			if (response.data.meta.code === "1000") {
+				dispatch(stopLoading());
 				alert("Điểm danh thành công!");
 			} else {
-				console.error('API error:', response.data.message);
+				dispatch(stopLoading());
+
+				console.error("API error:", response.data.message);
 			}
 		} catch (error) {
-			console.error("Error fetching documents:", error);
+			dispatch(stopLoading());
+			console.error(
+				`Error fetching documents - Api take_attendance - Data - token: ${params.token}, 
+				date: ${dateCheck}, attendance_list: ${absentStudentIds} `,
+				error
+			);
 		}
 	};
 
 	const setAttendanceStatus = async (attendance_id) => {
+		dispatch(startLoading());
 		try {
-			const response = await api.post('/it5023e/set_attendance_status', {
+			const response = await api.post("/it5023e/set_attendance_status", {
 				token: params.token,
 				status: "EXCUSED_ABSENCE",
-				attendance_id: attendance_id
+				attendance_id: attendance_id,
 			});
 
 			if (response.data.meta.code === "1000") {
 				console.log("Đổi Excused thành công: ", attendance_id);
 			} else {
-				console.error('API error:', response.data.message);
+				console.error("API error:", response.data.message);
 			}
+			dispatch(stopLoading());
 		} catch (error) {
-			console.error("Error fetching documents:", error);
+			dispatch(stopLoading());
+			console.error(
+				`Error fetching documents - Api take_attendance - Data - token: ${params.token}, 
+				status: "EXCUSED_ABSENCE", attendance_id: ${attendance_id} `,
+				error
+			);
 		}
 	};
 
 	const submitDiemDanh = async () => {
+		dispatch(startLoading());
 		await takeAttendence();
+		dispatch(startLoading());
 		const temp_attendances = await fetchAttendences();
 		console.log("2 attendences: ", temp_attendances);
 
 		let excusedIds = [];
-		temp_attendances.forEach(attendance => {
-		if (absentStudentIds.includes(attendance.student_id) && acceptedStudentIds.includes(attendance.student_id) && attendance.status !== "PRESENT") {
-			excusedIds.push(attendance.attendance_id);
-		}
-		console.log("Excused attendence ids: ", excusedIds);
-		excusedIds.forEach(attendance_id => {
-			setAttendanceStatus(attendance_id);
+		temp_attendances.forEach((attendance) => {
+			if (
+				absentStudentIds.includes(attendance.student_id) &&
+				acceptedStudentIds.includes(attendance.student_id) &&
+				attendance.status !== "PRESENT"
+			) {
+				excusedIds.push(attendance.attendance_id);
+			}
+			console.log("Excused attendence ids: ", excusedIds);
+			excusedIds.forEach((attendance_id) => {
+				setAttendanceStatus(attendance_id);
+			});
 		});
-		
-});
-	}
+		dispatch(stopLoading());
+	};
 
 	const checkAbsent = (date) => {
 		//  Fetch api
@@ -341,19 +411,16 @@ const ClassDiemDanhGVien = ({ route }) => {
 							</TouchableOpacity>
 							{absentRequests.map((item, index) => {
 								return (
-									<View
-										key={index}
-										className="mx-3 bg-white rounded-lg my-2 border border-gray-300"
-									>
-										<TouchableOpacity className="flex-row justify-between"
-										onPress={() => displayDescription(index)}>
+									<View key={index} className="mx-3 bg-white rounded-lg my-2 border border-gray-300">
+										<TouchableOpacity
+											className="flex-row justify-between"
+											onPress={() => displayDescription(index)}
+										>
 											<View>
 												<Text className="text-lg font-bold px-5 pt-2">
 													{item.student_name + " - " + item.student_id}
 												</Text>
-												<Text className="px-5 pt-1 pb-2 text-lg">
-													{item.title}
-												</Text>
+												<Text className="px-5 pt-1 pb-2 text-lg">{item.title}</Text>
 											</View>
 											<View className="justify-center mr-5">
 												{item.status === "PENDING" ? (
@@ -361,9 +428,7 @@ const ClassDiemDanhGVien = ({ route }) => {
 														PENDING
 													</Text>
 												) : (
-													<Text className="text-base">
-														{item.status}
-													</Text>
+													<Text className="text-base">{item.status}</Text>
 												)}
 											</View>
 										</TouchableOpacity>
@@ -372,10 +437,7 @@ const ClassDiemDanhGVien = ({ route }) => {
 							})}
 						</View>
 						{viewDescription >= 0 && (
-							<Modal
-								isVisible={viewDescription >= 0 ? true : false}
-								onBackdropPress={hideDescription}
-							>
+							<Modal isVisible={viewDescription >= 0 ? true : false} onBackdropPress={hideDescription}>
 								<View className="h-[60%] bg-gray-200 rounded-lg p-3">
 									<View>
 										<TouchableOpacity
@@ -395,15 +457,13 @@ const ClassDiemDanhGVien = ({ route }) => {
 											{absentRequests[viewDescription].title}
 										</Text>
 										<Text className="text-lg mt-2 text-gray-600">
-											{absentRequests[viewDescription].student_name} - {" "}
+											{absentRequests[viewDescription].student_name} -{" "}
 											{absentRequests[viewDescription].student_id}
 										</Text>
 									</View>
 									<View className="border-t border-gray-400 mx-4 mt-4"></View>
 									<View className="mt-4 mx-4 rounded-md">
-										<Text className="text-base">
-											{absentRequests[viewDescription].reason}
-										</Text>
+										<Text className="text-base">{absentRequests[viewDescription].reason}</Text>
 										<View className="gap-x-1 pt-6">
 											<Text className="font-semibold text-base">File đính kèm:</Text>
 											<TouchableOpacity>
@@ -414,23 +474,28 @@ const ClassDiemDanhGVien = ({ route }) => {
 										</View>
 									</View>
 									<View className="flex-row justify-center mt-10">
-										<TouchableOpacity className="rounded-lg bg-red-600 h-10 mr-8 justify-center p-2"
-										onPress={() => acceptRequest(absentRequests[viewDescription].request_id)}>
-											<Text className="self-center text-white text-base font-bold">Chấp nhận</Text>
+										<TouchableOpacity
+											className="rounded-lg bg-red-600 h-10 mr-8 justify-center p-2"
+											onPress={() => acceptRequest(absentRequests[viewDescription].request_id)}
+										>
+											<Text className="self-center text-white text-base font-bold">
+												Chấp nhận
+											</Text>
 										</TouchableOpacity>
-										<TouchableOpacity className="rounded-lg bg-red-600 h-10 justify-center p-2"
-										onPress={() => rejectRequest(absentRequests[viewDescription].request_id)}>
+										<TouchableOpacity
+											className="rounded-lg bg-red-600 h-10 justify-center p-2"
+											onPress={() => rejectRequest(absentRequests[viewDescription].request_id)}
+										>
 											<Text className="self-center text-white text-base font-bold">Từ chối</Text>
 										</TouchableOpacity>
 									</View>
 								</View>
 							</Modal>
 						)}
-					</View>) : (
+					</View>
+				) : (
 					<View>
-						<Text>
-							Không có yêu cầu vắng mặt trong ngày này
-						</Text>
+						<Text>Không có yêu cầu vắng mặt trong ngày này</Text>
 					</View>
 				)}
 			</View>
@@ -469,7 +534,6 @@ const ClassDiemDanhGVien = ({ route }) => {
 						renderItem={(item) => renderItem(item)}
 					/>
 				</View>
-
 			</View>
 
 			{isCheckAbsent ? (
@@ -484,107 +548,110 @@ const ClassDiemDanhGVien = ({ route }) => {
 						</TouchableOpacity>
 					</View>
 					<View className="max-h-[70%] mt-3 ml-1 mr-1">
-						{dsSinhVien != [] && <ScrollView horizontal={true}>
-							<View className="border-t">
-								<Table
-									borderStyle={{
-										borderWidth: 1,
-										borderColor: "darkgray",
-									}}
-								>
-									<Row
-										data={tableHead}
-										widthArr={widthArr}
-										textStyle={{
-											textAlign: "center",
-											fontSize: 16,
-											padding: 5,
-											color: "#fff",
-											fontWeight: "600",
-
-										}}
-										className="bg-red-600"
-									/>
-								</Table>
-								<ScrollView>
+						{dsSinhVien != [] && (
+							<ScrollView horizontal={true}>
+								<View className="border-t">
 									<Table
 										borderStyle={{
 											borderWidth: 1,
-											borderColor: "lightgray",
+											borderColor: "darkgray",
 										}}
 									>
-										{dsSinhVien.map((rowData, index_r) => {
-											return (
-												<TableWrapper
-													key={index_r}
-													style={{
-														display: "flex",
-														flexDirection: "row",
-													}}
-												>
-													{Object.values(rowData).slice(0, -1).map(
-														(cellData, index_c) => {
-															return (
-																<Cell
-																	width={widthArr[index_c]}
-																	data={
-																		index_c === 3 ? (
-																			<CheckBox
-																				// style={{ flex: 1, padding: 10 }}
-																				className="py-1 self-center"
-																				onClick={() => {
-																					selectRow(
-																						index_r,
-																						index_c
-																					);
-																				}}
-																				isChecked={cellData}
-																			/>
-																		) : (
-																			cellData
-																		)
-																	}
-																	textStyle={{
-																		textAlign: "center",
-																		fontSize: 16,
-																		padding: 5,
-																		color: "#000",
-																	}}
-																/>
-															);
-														}
-													)}
-												</TableWrapper>
-											);
-										})}
+										<Row
+											data={tableHead}
+											widthArr={widthArr}
+											textStyle={{
+												textAlign: "center",
+												fontSize: 16,
+												padding: 5,
+												color: "#fff",
+												fontWeight: "600",
+											}}
+											className="bg-red-600"
+										/>
 									</Table>
-								</ScrollView>
-								<Table
-									borderStyle={{
-										borderWidth: 1,
-										borderColor: "darkgray",
-									}}
-								>
-									<Row
-										data={["Tổng", dsSinhVien.length, dsSinhVien.length - absentStudentIds.length, ""]}
-										textStyle={{
-											textAlign: "center",
-											fontSize: 16,
-											padding: 2,
-											fontWeight: "500",
-											color: "white"
+									<ScrollView>
+										<Table
+											borderStyle={{
+												borderWidth: 1,
+												borderColor: "lightgray",
+											}}
+										>
+											{dsSinhVien.map((rowData, index_r) => {
+												return (
+													<TableWrapper
+														key={index_r}
+														style={{
+															display: "flex",
+															flexDirection: "row",
+														}}
+													>
+														{Object.values(rowData)
+															.slice(0, -1)
+															.map((cellData, index_c) => {
+																return (
+																	<Cell
+																		width={widthArr[index_c]}
+																		data={
+																			index_c === 3 ? (
+																				<CheckBox
+																					// style={{ flex: 1, padding: 10 }}
+																					className="py-1 self-center"
+																					onClick={() => {
+																						selectRow(index_r, index_c);
+																					}}
+																					isChecked={cellData}
+																				/>
+																			) : (
+																				cellData
+																			)
+																		}
+																		textStyle={{
+																			textAlign: "center",
+																			fontSize: 16,
+																			padding: 5,
+																			color: "#000",
+																		}}
+																	/>
+																);
+															})}
+													</TableWrapper>
+												);
+											})}
+										</Table>
+									</ScrollView>
+									<Table
+										borderStyle={{
+											borderWidth: 1,
+											borderColor: "darkgray",
 										}}
-										widthArr={[
-											widthArr[0],
-											widthArr[1] + widthArr[2],
-											widthArr[3],
-											widthArr[4],
-										]}
-										className="bg-red-600"
-									/>
-								</Table>
-							</View>
-						</ScrollView>}
+									>
+										<Row
+											data={[
+												"Tổng",
+												dsSinhVien.length,
+												dsSinhVien.length - absentStudentIds.length,
+												"",
+											]}
+											textStyle={{
+												textAlign: "center",
+												fontSize: 16,
+												padding: 2,
+												fontWeight: "500",
+												color: "white",
+											}}
+											widthArr={[
+												widthArr[0],
+												widthArr[1] + widthArr[2],
+												widthArr[3],
+												widthArr[4],
+											]}
+											className="bg-red-600"
+										/>
+									</Table>
+								</View>
+							</ScrollView>
+						)}
 					</View>
 					<View className="bg-red-600 mx-auto rounded-lg mt-5">
 						<TouchableOpacity onPress={() => submitDiemDanh()}>

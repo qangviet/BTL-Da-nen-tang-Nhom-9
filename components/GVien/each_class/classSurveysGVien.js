@@ -4,25 +4,28 @@ import { TouchableOpacity } from "react-native";
 import ViewSurveysGVien from "./viewSurveysGVien";
 import api from "../../api";
 import { useEffect } from "react";
-import * as Clipboard from 'expo-clipboard';
-import * as FileSystem from 'expo-file-system';
-import { shareAsync } from 'expo-sharing';
+import * as Clipboard from "expo-clipboard";
+import * as FileSystem from "expo-file-system";
+import { shareAsync } from "expo-sharing";
 import { Platform } from "react-native";
-import { Linking } from 'react-native';
-
-
-
+import { Linking } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import { useSelector, useDispatch } from "react-redux";
+import { startLoading, stopLoading } from "../../../redux/loadingSlice";
 const ClassSurveysGVien = ({ route }) => {
-
 	const { params } = route;
+	const dispatch = useDispatch();
+	const navigation = useNavigation();
+	const focused = useIsFocused();
 	// console.log();
 	// console.log("ClassSurvey");
 	// console.log(params);
 
 	// 0 - upcoming, 1 - past due
 	const [mode, setModeBtn] = useState(0);
-
-	const today = new Date()
+	const currentScreen = useSelector((state) => state.navigation.currentScreen);
+	const today = new Date();
 	// console.log("Today: ", today)
 	const [SURVEYS, setSURVEYS] = useState([]);
 	const [chosenSurvey, setChosenSurvey] = useState(null);
@@ -32,6 +35,14 @@ const ClassSurveysGVien = ({ route }) => {
 
 	// let SURVEYS = [];
 
+	useEffect(() => {
+		if (currentScreen !== "ClassScreenGVien") {
+			if (focused) {
+				navigation.navigate(currentScreen);
+			}
+		}
+	}, [currentScreen]);
+
 	let grouped_upcoming = {};
 	let grouped_pastdue = {};
 	let sortedDates_upcoming = [];
@@ -40,7 +51,8 @@ const ClassSurveysGVien = ({ route }) => {
 	useEffect(() => {
 		async function fetchSurveys() {
 			try {
-				const response = await api.post('/it5023e/get_all_surveys', {
+				dispatch(startLoading());
+				const response = await api.post("/it5023e/get_all_surveys", {
 					token: params.token,
 					class_id: params.class.id,
 				});
@@ -53,11 +65,13 @@ const ClassSurveysGVien = ({ route }) => {
 						lecturer_id: item.lecturer_id,
 						deadline: item.deadline,
 						file_url: item.file_url,
-						class_id: item.class_id
+						class_id: item.class_id,
 					}));
 					setSURVEYS(fetchedSurveys);
+					dispatch(stopLoading());
 				} else {
-					console.error('API error:', response.data.meta.message);
+					dispatch(stopLoading());
+					console.error("API error:", response.data.meta.message);
 				}
 			} catch (error) {
 				// console.error('Network error:', error);
@@ -65,7 +79,11 @@ const ClassSurveysGVien = ({ route }) => {
 				// console.error("Error fetching class list:", error);
 				// console.error("Error Data:", error.response.data);
 				// console.error("Error Status:", error.response.status);
-				console.log("ERROR!");
+				dispatch(stopLoading());
+				console.error(
+					`Error fetching get_all_surveys - Api get_all_surveys - Data: token: ${params.token}, class_id: ${params.class.id}`,
+					error
+				);
 			}
 		}
 
@@ -94,14 +112,14 @@ const ClassSurveysGVien = ({ route }) => {
 	}
 
 	function extractDate(isoDateString) {
-		const parts = isoDateString.split('T');
+		const parts = isoDateString.split("T");
 		const timePart = parts[0];
 		return timePart;
 	}
 
 	function extractTime(isoDateString) {
-		const parts = isoDateString.split('T');
-		const timePart = parts[1].split(':');
+		const parts = isoDateString.split("T");
+		const timePart = parts[1].split(":");
 		const hours = timePart[0];
 		const minutes = timePart[1];
 		const formattedTime = `${hours}h${minutes}`;
@@ -125,7 +143,6 @@ const ClassSurveysGVien = ({ route }) => {
 	console.log("Sorted Upcoming:", sortedDates_upcoming);
 	console.log("Sorted Past Due:", sortedDates_pastdue);
 
-
 	const [viewSurvey, setViewSurvey] = useState(-1);
 	//const [is_open, setIsOpen] = useState(false);
 
@@ -135,7 +152,7 @@ const ClassSurveysGVien = ({ route }) => {
 	// 	setModalVisible(true);
 	// 	setIsOpen(true);
 	//   };
-	  const openDriveDocument = (url) => {
+	const openDriveDocument = (url) => {
 		console.log("Mo tai lieu...");
 		//setIsOpen(true);
 		try {
@@ -148,10 +165,10 @@ const ClassSurveysGVien = ({ route }) => {
 			alert("Error", "Không thể lấy URL từ tài liệu Google Drive.");
 		}
 	};
-	
+
 	return viewSurvey !== -1 ? (
 		<View className="justify-between">
-			<ViewSurveysGVien params={params} survey={chosenSurvey}/>
+			<ViewSurveysGVien params={params} survey={chosenSurvey} />
 			<View className="justify-center items-center bg-white h-[9%] border-t border-gray-400">
 				<TouchableOpacity className="bg-red-600 rounded-lg p-2 w-24" onPress={() => setViewSurvey(-1)}>
 					<Text className="self-center text-white font-bold">Đóng</Text>
@@ -159,82 +176,95 @@ const ClassSurveysGVien = ({ route }) => {
 			</View>
 		</View>
 	) : (
-
 		<View>
 			<View className="flex flex-row justify-between p-3">
-				{['Sắp tới', 'Quá hạn'].map((label, index) => (
+				{["Sắp tới", "Quá hạn"].map((label, index) => (
 					<TouchableOpacity
 						key={index}
-						className={`flex-1 mx-2 rounded-lg h-6 justify-center ${mode === index ? 'bg-red-600' : 'bg-gray-300'}`}
-						onPress={() => setModeBtn(index)}>
-						<Text className={`text-center ${mode === index ? 'text-white' : 'text-black'}`}>{label}</Text>
+						className={`flex-1 mx-2 rounded-lg h-6 justify-center ${
+							mode === index ? "bg-red-600" : "bg-gray-300"
+						}`}
+						onPress={() => setModeBtn(index)}
+					>
+						<Text className={`text-center ${mode === index ? "text-white" : "text-black"}`}>{label}</Text>
 					</TouchableOpacity>
 				))}
 			</View>
 
 			<View>
-
-				{mode === 0 && <FlatList
-					data={sortedDates_upcoming}
-
-					keyExtractor={(item) => item}
-					renderItem={({ item }) => (
-						<View className="mb-2">
-							<Text className="text-lg ml-3 mb-2 font-bold">{extractDate(item)}</Text>
-							{grouped_upcoming[item].map((survey, index) => (
-								<TouchableOpacity key={index} className="bg-white p-4 mb-2 ml-2 mr-2 rounded-lg shadow justify-between border border-gray-200 flex-row" onPress={() => handleOpenSurvey(index, survey)}>
-									<View>
-										<Text className="text-base">{survey.title}</Text>
-										<Text className="text-s mt-1 italic">Đóng lúc {extractTime(survey.deadline)}</Text>
-									</View>
+				{mode === 0 && (
+					<FlatList
+						data={sortedDates_upcoming}
+						keyExtractor={(item) => item}
+						renderItem={({ item }) => (
+							<View className="mb-2">
+								<Text className="text-lg ml-3 mb-2 font-bold">{extractDate(item)}</Text>
+								{grouped_upcoming[item].map((survey, index) => (
 									<TouchableOpacity
-									onPress={() => {
-										openDriveDocument(survey.file_url);
-										//setEachFileName(survey.id); 
-									  }}
-									className="self-center"
+										key={index}
+										className="bg-white p-4 mb-2 ml-2 mr-2 rounded-lg shadow justify-between border border-gray-200 flex-row"
+										onPress={() => handleOpenSurvey(index, survey)}
 									>
-									<Text className="text-blue-500 underline text-base">File đính kèm</Text>
+										<View>
+											<Text className="text-base">{survey.title}</Text>
+											<Text className="text-s mt-1 italic">
+												Đóng lúc {extractTime(survey.deadline)}
+											</Text>
+										</View>
+										<TouchableOpacity
+											onPress={() => {
+												openDriveDocument(survey.file_url);
+												//setEachFileName(survey.id);
+											}}
+											className="self-center"
+										>
+											<Text className="text-blue-500 underline text-base">File đính kèm</Text>
+										</TouchableOpacity>
 									</TouchableOpacity>
-								</TouchableOpacity>
-							))}
-						</View>
-					)}
-				/>}
+								))}
+							</View>
+						)}
+					/>
+				)}
 
-				{mode === 1 && <FlatList
-					data={sortedDates_pastdue}
-
-					keyExtractor={(item) => item}
-					renderItem={({ item }) => (
-						<View className="mb-2">
-							<Text className="text-lg ml-3 mb-2 font-bold">{extractDate(item)}</Text>
-							{grouped_pastdue[item].map((survey, index) => (
-								<TouchableOpacity key={index} className="bg-white p-4 mb-2 ml-2 mr-2 rounded-lg shadow justify-between border border-gray-200 flex-row" onPress={() => handleOpenSurvey(index, survey)}>
-									<View>
-										<Text className="text-base">{survey.title}</Text>
-										<Text className="text-s mt-1 italic">Đóng lúc {extractTime(survey.deadline)}</Text>
-									</View>
-									<Text className="self-center text-base">{survey.grade}</Text>
+				{mode === 1 && (
+					<FlatList
+						data={sortedDates_pastdue}
+						keyExtractor={(item) => item}
+						renderItem={({ item }) => (
+							<View className="mb-2">
+								<Text className="text-lg ml-3 mb-2 font-bold">{extractDate(item)}</Text>
+								{grouped_pastdue[item].map((survey, index) => (
 									<TouchableOpacity
-									onPress={() => {
-										openDriveDocument(survey.file_url);
-										//setEachFileName(survey.id); 
-									  }}
-									className="self-center"
+										key={index}
+										className="bg-white p-4 mb-2 ml-2 mr-2 rounded-lg shadow justify-between border border-gray-200 flex-row"
+										onPress={() => handleOpenSurvey(index, survey)}
 									>
-									<Text className="text-blue-500 underline text-base">File đính kèm</Text>
+										<View>
+											<Text className="text-base">{survey.title}</Text>
+											<Text className="text-s mt-1 italic">
+												Đóng lúc {extractTime(survey.deadline)}
+											</Text>
+										</View>
+										<Text className="self-center text-base">{survey.grade}</Text>
+										<TouchableOpacity
+											onPress={() => {
+												openDriveDocument(survey.file_url);
+												//setEachFileName(survey.id);
+											}}
+											className="self-center"
+										>
+											<Text className="text-blue-500 underline text-base">File đính kèm</Text>
+										</TouchableOpacity>
 									</TouchableOpacity>
-								</TouchableOpacity>
-							))}
-						</View>
-					)}
-				/>}
+								))}
+							</View>
+						)}
+					/>
+				)}
 			</View>
-			
-
 		</View>
-	)
+	);
 };
 
 export default ClassSurveysGVien;

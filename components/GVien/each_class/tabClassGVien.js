@@ -9,20 +9,14 @@ import ClassDocs from "./classDocsGVien.js";
 import ClassSurveys from "./classSurveysGVien.js";
 import ClassDiemDanhGVien from "./classDiemDanhGVien.js";
 import CreateSurveyGVien from "./createSurveyGVien.js";
-import UploadMaterialGVien from "./uploadMaterials.js"
+import UploadMaterialGVien from "./uploadMaterials.js";
 import { navigate } from "../../../redux/navigationSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { goBack as goBackMavigation } from "../../../redux/navigationSlice.js";
 import api from "../../API/api.js";
 // import { Menu, Provider } from "react-native-paper";
-import {
-	MenuProvider,
-	Menu,
-	MenuOptions,
-	MenuOption,
-	MenuTrigger,
-} from 'react-native-popup-menu';
+import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 
 const ClassScreenGVien = ({ route }) => {
 	const navigation = useNavigation();
@@ -87,21 +81,9 @@ const ClassScreenGVien = ({ route }) => {
 					},
 				}}
 			>
-				<Tab.Screen
-					name="Tài liệu"
-					component={ClassDocs}
-					initialParams={params}
-				/>
-				<Tab.Screen
-					name="Bài tập"
-					component={ClassSurveys}
-					initialParams={params}
-				/>
-				<Tab.Screen
-					name="Điểm danh"
-					component={ClassDiemDanhGVien}
-					initialParams={params}
-				/>
+				<Tab.Screen name="Tài liệu" component={ClassDocs} initialParams={params} />
+				<Tab.Screen name="Bài tập" component={ClassSurveys} initialParams={params} />
+				<Tab.Screen name="Điểm danh" component={ClassDiemDanhGVien} initialParams={params} />
 			</Tab.Navigator>
 		);
 	};
@@ -159,11 +141,12 @@ const ClassScreenGVien = ({ route }) => {
 										width: 120,
 										height: 80,
 										alignItems: "center",
-       									justifyContent: "center"
-									}
-								}}>
-								<MenuOption onSelect={openUploadMaterials} text='Tài liệu' />
-								<MenuOption onSelect={openCreateSurveys} text='Bài tập' />
+										justifyContent: "center",
+									},
+								}}
+							>
+								<MenuOption onSelect={openUploadMaterials} text="Tài liệu" />
+								<MenuOption onSelect={openCreateSurveys} text="Bài tập" />
 							</MenuOptions>
 						</Menu>
 					</View>
@@ -173,9 +156,7 @@ const ClassScreenGVien = ({ route }) => {
 							<Text className="mt-4 ml-2 mr-2 text-xl self-center text-white font-bold">
 								{CURRENT_CLASS.name}
 							</Text>
-							<Text className="mt-1 ml-2 mr-2 self-center text-white">
-								{CURRENT_CLASS.teacher}
-							</Text>
+							<Text className="mt-1 ml-2 mr-2 self-center text-white">{CURRENT_CLASS.teacher}</Text>
 						</View>
 					) : null}
 				</View>

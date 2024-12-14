@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { Modal } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -87,15 +87,18 @@ const SVienNavigation = () => {
 					/>
 				</Stack.Navigator>
 			</NavigationContainer>
-			<Modal animationType="fade" visible={visible}>
-				<View className="flex-1 bg-white bg-or justify-center items-center">
-					<CircleSnail
-						color={["red", "green", "blue"]}
-						size={80}
-						thickness={5}
-						duration={1000}
-						spinDuration={5000}
-					/>
+			<Modal animationType="fade" visible={visible} transparent={true}>
+				<View className="w-full h-full flex justify-center bg-black/50">
+					<View className="bg-transparent py-6 mx-12 rounded-2xl justify-center items-center bg-white">
+						<CircleSnail
+							color={["red", "green", "blue"]}
+							size={40}
+							thickness={4}
+							duration={1000}
+							spinDuration={5000}
+						/>
+						<Text className="text-gray-700 py-1 mt-3">Vui lòng đợi ...</Text>
+					</View>
 				</View>
 			</Modal>
 		</>

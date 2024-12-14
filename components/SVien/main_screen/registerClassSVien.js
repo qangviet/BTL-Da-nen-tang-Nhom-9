@@ -19,19 +19,11 @@ const RegisterClassScreenSVien = () => {
 
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const userInfo = useSelector((state) => state.navigation.params);
-	console.log("Infor....", userInfo);
+	// console.log("Infor....");
 
 	const [classId, setClassId] = useState("");
-	const [tableHead] = useState([
-		"Mã lớp học",
-		"Tên lớp học ",
-		"Loại",
-		"Ngày bắt đầu",
-		"Ngày kết thúc",
-		"Trạng thái",
-		"Chọn",
-	]);
-	const [tableHeadOpen] = useState([
+	const tableHead = ["Mã lớp học", "Tên lớp học ", "Loại", "Ngày bắt đầu", "Ngày kết thúc", "Trạng thái", "Chọn"];
+	const tableHeadOpen = [
 		"Mã lớp học",
 		"Tên lớp học ",
 		"Loại",
@@ -39,13 +31,13 @@ const RegisterClassScreenSVien = () => {
 		"Ngày kết thúc",
 		"Trạng thái",
 		"Số sinh viên",
-	]);
-	const [widthArrOpen] = useState([80, 130, 80, 130, 130, 100, 70]);
-	const [widthArr] = useState([80, 120, 80, 100, 100, 100, 80]);
-	const [tableData, setTableData] = useState([]);
+	];
+	const widthArrOpen = [80, 130, 80, 130, 130, 100, 70];
+	const widthArr = [80, 120, 80, 100, 100, 100, 80];
 
-	//Lay thong tin lop mo:
+	const [tableData, setTableData] = useState([]);
 	const [tableDataOpen, setTableDataOpen] = useState([]);
+	//Lay thong tin lop mo:
 	useEffect(() => {
 		// Hàm gọi API để lấy danh sách lớp
 		const fetchOpenClassList = async () => {
@@ -78,9 +70,13 @@ const RegisterClassScreenSVien = () => {
 				console.error("Error Status:", error.response.status);
 			}
 		};
-
-		fetchOpenClassList();
+		if (currentScreen === "RegisterClassScreenSVien") {
+			fetchOpenClassList();
+		} else {
+			navigation.navigate(currentScreen);
+		}
 	}, [currentScreen]);
+	// console.log(tableDataOpen);
 
 	const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -91,12 +87,6 @@ const RegisterClassScreenSVien = () => {
 	const closeModalListClass = (e) => {
 		setIsOpenModal(false);
 	};
-
-	useEffect(() => {
-		if (currentScreen !== "RegisterClassScreenSVien") {
-			navigation.navigate(currentScreen);
-		}
-	}, [currentScreen]);
 
 	function goBack() {
 		dispatch(goBackMavigation());
@@ -115,13 +105,12 @@ const RegisterClassScreenSVien = () => {
 	// Đăng ký lớp
 	const handleSubmitRegister = async () => {
 		const selectedClasses = tableData.filter((row) => row[row.length - 1]).map((row) => row[0]);
-
 		if (selectedClasses.length === 0) {
 			alert("Vui lòng chọn ít nhất một lớp để đăng ký!");
 			return;
 		}
-
 		try {
+			dispatch(startLoading());
 			await api.post("/it5023e/register_class", {
 				token: userInfo.token,
 				class_ids: selectedClasses,
@@ -130,12 +119,13 @@ const RegisterClassScreenSVien = () => {
 			alert("Đã gửi đăng ký lớp thành công!");
 			console.log("Register success!");
 			setTableData([]); // Reset table data
+			dispatch(stopLoading());
 		} catch (error) {
+			dispatch(stopLoading());
 			console.error("Error submitting registration:", error);
 			alert("Không thể gửi đăng ký. Vui lòng thử lại!");
 		}
 	};
-
 	const handleRegisterClass = async () => {
 		if (!classId) {
 			alert("Vui lòng nhập mã lớp học!");
@@ -147,8 +137,8 @@ const RegisterClassScreenSVien = () => {
 			alert("Lớp học đã tồn tại trong danh sách!");
 			return;
 		}
-
 		try {
+			dispatch(startLoading());
 			const response = await api.post("/it5023e/get_basic_class_info", {
 				token: userInfo.token,
 				role: "STUDENT",
@@ -169,7 +159,9 @@ const RegisterClassScreenSVien = () => {
 
 			setTableData((prevTableData) => [...prevTableData, newRow]);
 			setClassId(""); // Clear input field
+			dispatch(stopLoading());
 		} catch (error) {
+			dispatch(stopLoading());
 			console.error("Error fetching class info:", error);
 			alert("Không thể lấy thông tin lớp học. Vui lòng thử lại!");
 		}

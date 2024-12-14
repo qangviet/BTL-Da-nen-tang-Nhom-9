@@ -23,7 +23,7 @@ const ClassScreenSVien = () => {
 	//console.log("Tab class Svien params:...", params)
 
 	useEffect(() => {
-		if (currentScreen !== "RegisterClassScreenSVien") {
+		if (currentScreen !== "ClassScreenSVien") {
 			navigation.navigate(currentScreen);
 		}
 	}, [currentScreen]);
@@ -60,9 +60,9 @@ const ClassScreenSVien = () => {
 					// tabBarInactiveTintColor: 'gray', // Màu chữ khi tab không chọn
 				}}
 			>
-				<Tab.Screen name="Tài liệu" component={ClassDocs} initialParams={params}/>
-				<Tab.Screen name="Bài tập" component={ClassSurveys} initialParams={params}/>
-				<Tab.Screen name="Xin Nghỉ" component={ClassXinNghi} initialParams={params}/>
+				<Tab.Screen name="Tài liệu" component={ClassDocs} initialParams={params} />
+				<Tab.Screen name="Bài tập" component={ClassSurveys} initialParams={params} />
+				<Tab.Screen name="Xin Nghỉ" component={ClassXinNghi} initialParams={params} />
 			</Tab.Navigator>
 		);
 	};
@@ -84,9 +84,7 @@ const ClassScreenSVien = () => {
 						<Text className="mt-4 ml-2 mr-2 text-xl self-center text-white font-bold">
 							{params.classInfo.name}
 						</Text>
-						<Text className="mt-1 ml-2 mr-2 self-center text-white">
-							{params.classInfo.teacher}
-						</Text>
+						<Text className="mt-1 ml-2 mr-2 self-center text-white">{params.classInfo.teacher}</Text>
 					</View>
 				) : null}
 			</View>

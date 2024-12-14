@@ -84,7 +84,6 @@ const Profile = () => {
 					token: param.token,
 					user_id: param.userInfo.id,
 				});
-				dispatch(stopLoading());
 				// Xử lý dữ liệu và cập nhật state
 				if (response.data.code === "1000") {
 					const fetchedUSER = {
@@ -102,6 +101,7 @@ const Profile = () => {
 				} else {
 					console.error("Error fetching classes: ", response.data.meta.message);
 				}
+				dispatch(stopLoading());
 			} catch (error) {
 				dispatch(stopLoading());
 				console.error("API call failed: ", error);

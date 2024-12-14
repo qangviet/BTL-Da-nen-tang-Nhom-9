@@ -1,12 +1,4 @@
-import {
-	StyleSheet,
-	ScrollView,
-	View,
-	Text,
-	TextInput,
-	TouchableOpacity,
-	FlatList,
-} from "react-native";
+import { StyleSheet, ScrollView, View, Text, TextInput, TouchableOpacity, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { LogoHust } from "./../../logo";
@@ -16,14 +8,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { navigate } from "../../../redux/navigationSlice";
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
 import api from "../../api";
-
+import { startLoading, stopLoading } from "../../../redux/loadingSlice";
 const MyClassesScreenSVien = () => {
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
 	const state = useSelector((state) => state.navigation);
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 	const userInfo = useSelector((state) => state.navigation.params);
-	console.log("Sinh vien infor:",userInfo)
+	console.log("Sinh vien infor:", userInfo);
 
 	useEffect(() => {
 		if (currentScreen !== "MyClassesScreenSVien") {
@@ -35,6 +27,7 @@ const MyClassesScreenSVien = () => {
 		// Gọi API để lấy danh sách lớp học
 		const fetchClasses = async () => {
 			try {
+				dispatch(startLoading());
 				const response = await api.post("/it5023e/get_class_list", {
 					token: userInfo.token,
 					role: userInfo.role == 2 ? "LECTURER" : "STUDENT",
@@ -52,7 +45,9 @@ const MyClassesScreenSVien = () => {
 				} else {
 					console.error("Error fetching classes: ", response.data.meta.message);
 				}
+				dispatch(stopLoading());
 			} catch (error) {
+				dispatch(stopLoading());
 				console.error("API call failed: ", error);
 				console.error("Error fetching class list:", error);
 				console.error("Error Data:", error.response.data);

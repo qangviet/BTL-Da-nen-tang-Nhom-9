@@ -1,15 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import {
-	StyleSheet,
-	Image,
-	ScrollView,
-	View,
-	Text,
-	TextInput,
-	SafeAreaView,
-	TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Image, ScrollView, View, Text, TextInput, SafeAreaView, TouchableOpacity } from "react-native";
 import { Table, Row } from "react-native-table-component";
 
 import { Dropdown } from "react-native-element-dropdown";
@@ -25,7 +16,7 @@ import api from "../../api";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import Feather from "@expo/vector-icons/Feather";
-
+import { startLoading, stopLoading } from "../../../redux/loadingSlice";
 const CreateClassScreenGVien = () => {
 	const dispatch = useDispatch();
 	const navigation = useReactNavigation();
@@ -48,11 +39,11 @@ const CreateClassScreenGVien = () => {
 
 	const [typeClass, setTypeClass] = useState(null);
 	const [classId, setClassId] = useState("");
-    const [className, setClassName] = useState("");
+	const [className, setClassName] = useState("");
 	const [maxStudentAmount, setMaxStudentAmount] = useState("");
 	const modifyDate = (dateString) => {
-		return new Date(dateString).toISOString().split('T')[0];
-	  };
+		return new Date(dateString).toISOString().split("T")[0];
+	};
 
 	const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -90,43 +81,50 @@ const CreateClassScreenGVien = () => {
 	};
 	//Call API create_class
 	const handleCreateClass = async () => {
-		console.log()
+		console.log();
 		console.log("Tạo lớp học đã được nhấn");
-        if (!classId || !className || !typeClass || !startDate || !endDate || !maxStudentAmount ) {
+		if (!classId || !className || !typeClass || !startDate || !endDate || !maxStudentAmount) {
 			alert("Vui lòng nhập đầy đủ thông tin lớp học!");
 			return;
-		}	
+		}
 		console.log("Token:", param.token, "Type:", typeof param.token);
 		console.log("Class ID:", classId, "Type:", typeof classId);
 		console.log("Class Name:", className, "Type:", typeof className);
 		console.log("Class Type:", typeClass, "Type:", typeof typeClass);
 		console.log("Start Date:", modifyDate(startDate), "Type:", typeof modifyDate(startDate));
 		console.log("End Date:", modifyDate(endDate), "Type:", typeof modifyDate(endDate));
-		console.log("Parsed Max Student Amount:", parseInt(maxStudentAmount), "Type:", typeof parseInt(maxStudentAmount));
+		console.log(
+			"Parsed Max Student Amount:",
+			parseInt(maxStudentAmount),
+			"Type:",
+			typeof parseInt(maxStudentAmount)
+		);
 
-        try {
-            const response = await api.post("/it5023e/create_class", {
+		try {
+			dispatch(startLoading());
+			const response = await api.post("/it5023e/create_class", {
 				token: param.token,
-                class_id: classId,
-                class_name: className,
-                class_type: typeClass,
-                start_date: modifyDate(startDate),
-                end_date: modifyDate(endDate),
-                max_student_amount: parseInt(maxStudentAmount)
+				class_id: classId,
+				class_name: className,
+				class_type: typeClass,
+				start_date: modifyDate(startDate),
+				end_date: modifyDate(endDate),
+				max_student_amount: parseInt(maxStudentAmount),
 			});
-			
 
-            if (response.status === 200) {
-                alert("Lớp học đã được tạo thành công!");
+			if (response.status === 200) {
+				alert("Lớp học đã được tạo thành công!");
 				console.log(response.data);
+				dispatch(stopLoading());
 				goBack();
-            } else {
-                alert("Tạo lớp học không thành công. Vui lòng thử lại.");
-            }
-        } catch (error) {
+			} else {
+				alert("Tạo lớp học không thành công. Vui lòng thử lại.");
+			}
+		} catch (error) {
+			dispatch(stopLoading());
 			// console.error(error.response.data.meta.code);
 			if (error.response.data.meta.code === "1004") {
-				console.error("Error Data:", error.response.data); 
+				console.error("Error Data:", error.response.data);
 				console.error("Error Status:", error.response.status);
 				alert(error.response.data.meta.message);
 			} else {
@@ -140,9 +138,7 @@ const CreateClassScreenGVien = () => {
 			<>
 				<View style={styles.item}>
 					<Text style={styles.textItem}>{item.label}</Text>
-					{item.value === value && (
-						<AntDesign style={styles.icon} color="black" name="Safety" size={20} />
-					)}
+					{item.value === value && <AntDesign style={styles.icon} color="black" name="Safety" size={20} />}
 				</View>
 				<View className="border-t border-slate-300"></View>
 			</>
@@ -168,14 +164,14 @@ const CreateClassScreenGVien = () => {
 					placeholderTextColor={"#e86456"}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 					value={classId} // Liên kết với state
-    				onChangeText={(text) => setClassId(text)} // Cập nhật state
+					onChangeText={(text) => setClassId(text)} // Cập nhật state
 				/>
 				<TextInput
 					placeholder="Tên lớp*"
 					placeholderTextColor={"#e86456"}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 					value={className}
-    				onChangeText={(text) => setClassName(text)}
+					onChangeText={(text) => setClassName(text)}
 				/>
 				<TextInput
 					placeholder="Mã học phần*"
@@ -198,9 +194,7 @@ const CreateClassScreenGVien = () => {
 						onChange={(item) => {
 							setTypeClass(item.value);
 						}}
-						renderLeftIcon={() => (
-							<AntDesign style={styles.icon} color="black" name="Safety" size={20} />
-						)}
+						renderLeftIcon={() => <AntDesign style={styles.icon} color="black" name="Safety" size={20} />}
 						renderItem={(item) => renderItem(item, typeClass)}
 					/>
 				</View>
@@ -223,9 +217,7 @@ const CreateClassScreenGVien = () => {
 							className="py-2 px-2 bg-white border border-red-500 relative"
 							onPress={chooseEndDate}
 						>
-							<Text className="text-red-400 text-lg">
-								{endDate ? formatDate(endDate) : "Kết thúc*"}
-							</Text>
+							<Text className="text-red-400 text-lg">{endDate ? formatDate(endDate) : "Kết thúc*"}</Text>
 							<View className="absolute right-2 top-3">
 								<Feather name="chevron-down" size={22} color="#f87171" />
 							</View>
@@ -237,7 +229,7 @@ const CreateClassScreenGVien = () => {
 					placeholderTextColor={"#e86456"}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 					onChangeText={(text) => setMaxStudentAmount(text)}
-    				keyboardType="numeric" // Chỉ nhập số
+					keyboardType="numeric" // Chỉ nhập số
 				/>
 				<View className="mx-auto py-2 px-4 bg-red-700 rounded-lg mt-10">
 					<TouchableOpacity onPress={() => handleCreateClass()}>
@@ -265,10 +257,7 @@ const CreateClassScreenGVien = () => {
 						</View>
 					)}
 					<View className="flex justify-end flex-row mt-4 mb-2">
-						<TouchableOpacity
-							className="bg-blue-500 py-2 w-[30%] rounded-lg"
-							onPress={closeModalStartDate}
-						>
+						<TouchableOpacity className="bg-blue-500 py-2 w-[30%] rounded-lg" onPress={closeModalStartDate}>
 							<Text className="text-white font-mediu self-center">Xong</Text>
 						</TouchableOpacity>
 					</View>
@@ -294,10 +283,7 @@ const CreateClassScreenGVien = () => {
 						</View>
 					)}
 					<View className="flex justify-end flex-row mt-4 mb-2">
-						<TouchableOpacity
-							className="bg-blue-500 py-2 w-[30%] rounded-lg"
-							onPress={closeModalEndDate}
-						>
+						<TouchableOpacity className="bg-blue-500 py-2 w-[30%] rounded-lg" onPress={closeModalEndDate}>
 							<Text className="text-white font-mediu self-center">Xong</Text>
 						</TouchableOpacity>
 					</View>

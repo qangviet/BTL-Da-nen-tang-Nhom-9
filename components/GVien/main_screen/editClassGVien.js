@@ -1,15 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import {
-	StyleSheet,
-	Image,
-	ScrollView,
-	View,
-	Text,
-	TextInput,
-	SafeAreaView,
-	TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Image, ScrollView, View, Text, TextInput, SafeAreaView, TouchableOpacity } from "react-native";
 
 import { Dropdown } from "react-native-element-dropdown";
 import { FontAwesome } from "@expo/vector-icons";
@@ -25,6 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { useNavigation as useReactNavigation } from "@react-navigation/native";
 import api from "../../api";
+import { startLoading, stopLoading } from "../../../redux/loadingSlice";
 
 const EditClassScreenGVien = () => {
 	const dispatch = useDispatch();
@@ -104,9 +96,7 @@ const EditClassScreenGVien = () => {
 			<>
 				<View style={styles.item}>
 					<Text style={styles.textItem}>{item.label}</Text>
-					{item.value === value && (
-						<AntDesign style={styles.icon} color="black" name="Safety" size={20} />
-					)}
+					{item.value === value && <AntDesign style={styles.icon} color="black" name="Safety" size={20} />}
 				</View>
 				<View className="border-t border-slate-300"></View>
 			</>
@@ -138,6 +128,7 @@ const EditClassScreenGVien = () => {
 			return;
 		}
 		try {
+			dispatch(startLoading());
 			const response = await api.post("/it5023e/edit_class", {
 				token: param.token,
 				class_id: classID,
@@ -150,27 +141,30 @@ const EditClassScreenGVien = () => {
 			if (response.status === 200) {
 				alert("Lớp học đã được lưu thành công!");
 				console.log(response.data);
+				dispatch(stopLoading());
 				goBack();
 			} else {
 				alert("Chỉnh sửa lớp học không thành công. Vui lòng thử lại.");
 			}
-		  } catch (error) {
-				console.error(error.response);
-				if (error.response.data.meta.code === "9994") {
-					console.error("Error Data:", error.response.data); 
-					console.error("Error Status:", error.response.status);
-					alert("Lớp đã tồn tại");
-				} else {
-					alert("Thông tin lớp không hợp lệ");
-					console.error("Error:", error.message);
-				}
+		} catch (error) {
+			dispatch(stopLoading());
+			console.error(error.response);
+			if (error.response.data.meta.code === "9994") {
+				console.error("Error Data:", error.response.data);
+				console.error("Error Status:", error.response.status);
+				alert("Lớp đã tồn tại");
+			} else {
+				alert("Thông tin lớp không hợp lệ");
+				console.error("Error:", error.message);
 			}
-		};
-		
+		}
+	};
+
 	const deleteClass = async () => {
 		console.log("Deleting class");
 		setConfirmDelete(false);
 		try {
+			dispatch(startLoading());
 			const response = await api.post("/it5023e/delete_class", {
 				token: param.token,
 				role: param.role == 1 ? "STUDENT" : "LECTURER",
@@ -181,11 +175,13 @@ const EditClassScreenGVien = () => {
 			if (response.status === 200) {
 				alert("Lớp học đã được xóa thành công!");
 				console.log(response.data);
+				dispatch(stopLoading());
 				goBack();
 			} else {
 				alert("Xóa lớp học không thành công. Vui lòng thử lại.");
 			}
 		} catch (error) {
+			dispatch(stopLoading());
 			// console.error(error.response.data.meta.code);
 			if (error.response.data.meta.code === "9994") {
 				console.error("Error Data:", error.response.data);
@@ -217,7 +213,7 @@ const EditClassScreenGVien = () => {
 				<TextInput
 					placeholderTextColor={"#e86456"}
 					value={classID ?? "Mã lớp*"}
-    				onChangeText={(text) => setClassID(text)}
+					onChangeText={(text) => setClassID(text)}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 					editable={false}
 				/>
@@ -231,7 +227,7 @@ const EditClassScreenGVien = () => {
 					placeholder="Tên lớp*"
 					placeholderTextColor={"#e86456"}
 					value={className ?? "Tên lớp"}
-    				onChangeText={(text) => setClassName(text)}
+					onChangeText={(text) => setClassName(text)}
 					className="border border-red-600 py-2 px-3 my-2 font-semibold text-lg text-red-700"
 				/>
 				{/* <View>
@@ -298,9 +294,7 @@ const EditClassScreenGVien = () => {
 						onChange={(item) => {
 							setTypeStatus(item.value);
 						}}
-						renderLeftIcon={() => (
-							<AntDesign style={styles.icon} color="black" name="Safety" size={20} />
-						)}
+						renderLeftIcon={() => <AntDesign style={styles.icon} color="black" name="Safety" size={20} />}
 						renderItem={(item) => renderItem(item, typeStatus)}
 					/>
 				</View>
@@ -353,9 +347,7 @@ const EditClassScreenGVien = () => {
 							</TouchableOpacity>
 						</View>
 					</View>
-					<Text className="text-xl font-semibold self-center px-5 py-2 my-3">
-						Xác nhận xóa lớp học?
-					</Text>
+					<Text className="text-xl font-semibold self-center px-5 py-2 my-3">Xác nhận xóa lớp học?</Text>
 					<View className="flex flex-row justify-end px-5 py-3">
 						<View className="bg-blue-400 px-4 py-2 rounded-lg mx-2">
 							<TouchableOpacity onPress={() => setConfirmDelete(false)}>
@@ -370,63 +362,67 @@ const EditClassScreenGVien = () => {
 					</View>
 				</View>
 			</Modal>
-			{startDate && (<Modal isVisible={modalStartDate} onBackdropPress={closeModalStartDate}>
-				<View className="px-6 bg-gray-200 rounded-lg pb-5">
-					<View className="mt-2">
-						<DateTimePicker
-							mode="single"
-							date={startDate}
-							initialView="day"
-							timePicker={false}
-							onChange={(params) => {
-								setStartDate(params.date);
-							}}
-						/>
-					</View>
-
-					<View className="flex flex-row gap-x-1 items-center">
-						<Text>Thời gian bắt đầu:</Text>
-						<Text className="text-md font-semibold">{formatDate(startDate)}</Text>
-					</View>
-					<View className="flex justify-end flex-row mt-4 mb-2">
-						<TouchableOpacity
-							className="bg-blue-500 py-2 w-[30%] rounded-lg"
-							onPress={closeModalStartDate}
-						>
-							<Text className="text-white font-mediu self-center">Xong</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
-			</Modal>)}
-			{endDate && (<Modal isVisible={modalEndDate} onBackdropPress={closeModalEndDate}>
-				<View className="px-6 bg-gray-200 rounded-lg pb-5">
-					<View className="mt-2">
-						<DateTimePicker
-							mode="single"
-							date={endDate}
-							initialView="day"
-							timePicker={false}
-							onChange={(params) => {
-								setEndDate(params.date);
-							}}
-						/>
-					</View>
-					{endDate && (
-						<View className="flex flex-row gap-x-1 items-center">
-							<Text>Thời gian kết thúc:</Text>
-							<Text className="text-md font-semibold">{formatDate(endDate)}</Text>
+			{startDate && (
+				<Modal isVisible={modalStartDate} onBackdropPress={closeModalStartDate}>
+					<View className="px-6 bg-gray-200 rounded-lg pb-5">
+						<View className="mt-2">
+							<DateTimePicker
+								mode="single"
+								date={startDate}
+								initialView="day"
+								timePicker={false}
+								onChange={(params) => {
+									setStartDate(params.date);
+								}}
+							/>
 						</View>
-					)}
-					<View className="flex justify-end flex-row mt-4 mb-2">
-						<TouchableOpacity
-							className="bg-blue-500 py-2 w-[30%] rounded-lg"
-							onPress={closeModalEndDate}
-						>
-							<Text className="text-white font-mediu self-center">Xong</Text>
-						</TouchableOpacity>
+
+						<View className="flex flex-row gap-x-1 items-center">
+							<Text>Thời gian bắt đầu:</Text>
+							<Text className="text-md font-semibold">{formatDate(startDate)}</Text>
+						</View>
+						<View className="flex justify-end flex-row mt-4 mb-2">
+							<TouchableOpacity
+								className="bg-blue-500 py-2 w-[30%] rounded-lg"
+								onPress={closeModalStartDate}
+							>
+								<Text className="text-white font-mediu self-center">Xong</Text>
+							</TouchableOpacity>
+						</View>
 					</View>
-				</View>
-			</Modal>)}
+				</Modal>
+			)}
+			{endDate && (
+				<Modal isVisible={modalEndDate} onBackdropPress={closeModalEndDate}>
+					<View className="px-6 bg-gray-200 rounded-lg pb-5">
+						<View className="mt-2">
+							<DateTimePicker
+								mode="single"
+								date={endDate}
+								initialView="day"
+								timePicker={false}
+								onChange={(params) => {
+									setEndDate(params.date);
+								}}
+							/>
+						</View>
+						{endDate && (
+							<View className="flex flex-row gap-x-1 items-center">
+								<Text>Thời gian kết thúc:</Text>
+								<Text className="text-md font-semibold">{formatDate(endDate)}</Text>
+							</View>
+						)}
+						<View className="flex justify-end flex-row mt-4 mb-2">
+							<TouchableOpacity
+								className="bg-blue-500 py-2 w-[30%] rounded-lg"
+								onPress={closeModalEndDate}
+							>
+								<Text className="text-white font-mediu self-center">Xong</Text>
+							</TouchableOpacity>
+						</View>
+					</View>
+				</Modal>
+			)}
 		</View>
 	);
 };

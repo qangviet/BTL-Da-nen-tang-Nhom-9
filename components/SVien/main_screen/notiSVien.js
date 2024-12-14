@@ -5,8 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { goBack } from "../../../redux/navigationSlice";
 import { useNavigation } from "@react-navigation/native";
 import api from "../../api";
-
-
+import { startLoading, stopLoading } from "../../../redux/loadingSlice";
 
 const styles = {
 	read: [
@@ -23,20 +22,20 @@ const styles = {
 	],
 };
 function formatDateTime(dateString) {
-    const date = new Date(dateString);
+	const date = new Date(dateString);
 
-    // Lấy giờ, phút, giây
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
+	// Lấy giờ, phút, giây
+	const hours = String(date.getHours()).padStart(2, "0");
+	const minutes = String(date.getMinutes()).padStart(2, "0");
+	const seconds = String(date.getSeconds()).padStart(2, "0");
 
-    // Lấy ngày, tháng, năm
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
-    const year = date.getFullYear();
+	// Lấy ngày, tháng, năm
+	const day = String(date.getDate()).padStart(2, "0");
+	const month = String(date.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
+	const year = date.getFullYear();
 
-    // Kết hợp thành chuỗi định dạng
-    return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
+	// Kết hợp thành chuỗi định dạng
+	return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
 }
 
 const NotiSVien = () => {
@@ -50,19 +49,21 @@ const NotiSVien = () => {
 		}
 	}, [state.currentScreen]);
 
-    const [notifications, setNotifications] = useState([]);
+	const [notifications, setNotifications] = useState([]);
 
-
-    const fetchNotifications = async () => {
+	const fetchNotifications = async () => {
 		try {
+			dispatch(startLoading());
+			// Gọi API để lấy danh sách thông báo
+
 			const response = await api.post("/it5023e/get_notifications", {
 				token: param.token,
 				index: 0,
 				count: 10,
 			});
-	
+
 			const data = response.data.data;
-	
+
 			// Chuyển đổi dữ liệu từ API thành định dạng cần dùng
 			const formattedData = data.map((item) => ({
 				id: item.id,
@@ -72,17 +73,18 @@ const NotiSVien = () => {
 				description: item.message,
 				status: item.status === "UNREAD" ? "unread" : "read",
 			}));
-	
+
 			// Cập nhật state
 			setNotifications(formattedData);
+			dispatch(stopLoading());
 		} catch (error) {
 			console.error("Error fetching notifications:", error);
 		}
 	};
-	
-    useEffect(() => {
-        fetchNotifications();
-    }, [param.token]);
+
+	useEffect(() => {
+		fetchNotifications();
+	}, [param.token]);
 
 	const goBackScreen = () => {
 		dispatch(goBack());
@@ -90,6 +92,7 @@ const NotiSVien = () => {
 	// Hàm gọi API để đánh dấu thông báo đã đọc
 	const markNotificationAsRead = async (notificationId) => {
 		try {
+			dispatch(startLoading());
 			// Gọi API để đánh dấu thông báo đã đọc
 			const response = await api.post("/it5023e/mark_notification_as_read", {
 				token: param.token, // Lấy token từ param
@@ -104,7 +107,9 @@ const NotiSVien = () => {
 			} else {
 				console.error("Failed to mark notification as read:", response.data);
 			}
+			dispatch(stopLoading());
 		} catch (error) {
+			dispatch(stopLoading());
 			console.error("Error marking notification as read:", error);
 		}
 	};
@@ -162,17 +167,13 @@ const NotiSVien = () => {
 							>
 								<View className="flex flex-row justify-between pt-2 pb-2">
 									<Text className="text-base text-red-600">eHUST</Text>
-									<Text className="text-base text-gray-600 font-[200]">
-										{item.date}
-									</Text>
+									<Text className="text-base text-gray-600 font-[200]">{item.date}</Text>
 								</View>
 								<Text className="text-lg font-bold pb-4">{item.title}</Text>
 								<View className="border-t border-gray-400 mb-4"></View>
 								<Text className="text-base text-gray-900 mb-3">{item.content}</Text>
 								<TouchableOpacity onPress={() => openModalViewNoti(index)}>
-									<Text className="underline text-blue-500 text-base self-center">
-										Chi tiết
-									</Text>
+									<Text className="underline text-blue-500 text-base self-center">Chi tiết</Text>
 								</TouchableOpacity>
 								<View className={lstyle[1]}>
 									<Text className={lstyle[2]}>{lstyle[3]}</Text>
@@ -182,12 +183,7 @@ const NotiSVien = () => {
 					})}
 				</View>
 			</ScrollView>
-			<Modal
-				animationType="fade"
-				transparent={true}
-				visible={modalViewNoti}
-				onRequestClose={closeModelViewNoti}
-			>
+			<Modal animationType="fade" transparent={true} visible={modalViewNoti} onRequestClose={closeModelViewNoti}>
 				<View
 					style={{
 						flex: 1,
@@ -197,16 +193,8 @@ const NotiSVien = () => {
 				>
 					<View className="h-3/4 pl-8 pr-8 m-8 rounded-lg bg-white ">
 						<View className="mt-4">
-							<TouchableOpacity
-								onPress={() => closeModelViewNoti()}
-								className="self-end"
-							>
-								<Ionicons
-									name="close-outline"
-									size={28}
-									color="gray"
-									className=""
-								/>
+							<TouchableOpacity onPress={() => closeModelViewNoti()} className="self-end">
+								<Ionicons name="close-outline" size={28} color="gray" className="" />
 							</TouchableOpacity>
 							<Text className="text-lg  self-center font-bold mb-4">
 								{selectedNoti ? selectedNoti.title : ""}
