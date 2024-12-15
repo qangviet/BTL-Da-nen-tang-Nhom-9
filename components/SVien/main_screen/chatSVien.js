@@ -36,36 +36,37 @@ const ChatSVien = () => {
 
 	const fetchCountNoti = async () => {
 		try {
-		  const response = await api.post("/it5023e/get_unread_notification_count", {
-			token: param.token,
-		  });
-	
-		  if (response.data.meta.code === "1000") {
-			const notiCount = response.data.data;
-			setNotiCount(notiCount);
-		  } else {
-			console.error("API error:", response.data);
-		  }
+			const response = await api.post("/it5023e/get_unread_notification_count", {
+				token: param.token,
+			});
+
+			if (response.data.meta.code === "1000") {
+				const notiCount = response.data.data;
+				setNotiCount(notiCount);
+			} else {
+				console.error("API error:", response.data);
+			}
 		} catch (error) {
-		  console.error("Error fetching notifications:", error?.message || error);
+			console.error("Error fetching notifications:", error?.message || error);
 		}
-	  };
-	
-	  // Tự động gọi API mỗi khi màn hình HomeSVien được focus
-	  useFocusEffect(
+	};
+
+	// Tự động gọi API mỗi khi màn hình HomeSVien được focus
+	useFocusEffect(
 		useCallback(() => {
-		  fetchCountNoti();
+			fetchCountNoti();
 		}, []) // Không cần dependencies vì chỉ chạy khi focus
-	  );
+	);
 
 	return (
-		<View className="bg-[#dfe1e2]">
-			<View className="bg-red-700 pt-10 pb-4 relative z-10">
-				<View className="flex justify-center items-center">
-					<Text className="text-xl text-white font-semibold">Nhắn tin</Text>
-				</View>
-				<View className="absolute right-4 top-10">
-				<TouchableOpacity onPress={gotoNotification}>
+		<View>
+			<View className="bg-[#dfe1e2]">
+				<View className="bg-red-700 pt-10 pb-4 relative z-10">
+					<View className="flex justify-center items-center">
+						<Text className="text-xl text-white font-semibold">Nhắn tin</Text>
+					</View>
+					<View className="absolute right-4 top-10">
+						<TouchableOpacity onPress={gotoNotification}>
 							<View className="relative">
 								{noti_count > 0 && (
 									<View
@@ -79,12 +80,13 @@ const ChatSVien = () => {
 								<Ionicons name="notifications" size={24} color="white" />
 							</View>
 						</TouchableOpacity>
-				</View>
-				<View className="absolute left-5 top-14">
-					<LogoBK width={32} height={48} className="mx-auto"></LogoBK>
+					</View>
+					<View className="absolute left-5 top-14">
+						<LogoBK width={32} height={48} className="mx-auto"></LogoBK>
+					</View>
 				</View>
 			</View>
-			<View className="justify-center self-center flex-1">
+			<View className="justify-center self-center mt-72">
 				<Text className="text-lg self-center italic text-red-600 font-bold">Chức năng đang được phát triển</Text>
 			</View>
 		</View>

@@ -51,15 +51,17 @@ const NotiSVien = () => {
 
 	const [notifications, setNotifications] = useState([]);
 
+	const [numNoti, setNumNoti] = useState(10);
+
 	const fetchNotifications = async () => {
 		try {
-			dispatch(startLoading());
+			// dispatch(startLoading());
 			// Gọi API để lấy danh sách thông báo
 
 			const response = await api.post("/it5023e/get_notifications", {
 				token: param.token,
 				index: 0,
-				count: 15,
+				count: numNoti,
 			});
 
 			const data = response.data.data;
@@ -76,7 +78,7 @@ const NotiSVien = () => {
 
 			// Cập nhật state
 			setNotifications(formattedData);
-			dispatch(stopLoading());
+			// dispatch(stopLoading());
 		} catch (error) {
 			console.error("Error fetching notifications:", error);
 		}
@@ -84,7 +86,7 @@ const NotiSVien = () => {
 
 	useEffect(() => {
 		fetchNotifications();
-	}, [param.token]);
+	}, [param.token, numNoti]);
 
 	const goBackScreen = () => {
 		dispatch(goBack());
@@ -92,7 +94,7 @@ const NotiSVien = () => {
 	// Hàm gọi API để đánh dấu thông báo đã đọc
 	const markNotificationAsRead = async (notificationId) => {
 		try {
-			dispatch(startLoading());
+			// dispatch(startLoading());
 			// Gọi API để đánh dấu thông báo đã đọc
 			const response = await api.post("/it5023e/mark_notification_as_read", {
 				token: param.token, // Lấy token từ param
@@ -107,9 +109,9 @@ const NotiSVien = () => {
 			} else {
 				console.error("Failed to mark notification as read:", response.data);
 			}
-			dispatch(stopLoading());
+			// dispatch(stopLoading());
 		} catch (error) {
-			dispatch(stopLoading());
+			// dispatch(stopLoading());
 			console.error("Error marking notification as read:", error);
 		}
 	};
@@ -142,6 +144,13 @@ const NotiSVien = () => {
 		setModalViewNoti(false);
 	};
 
+	const loadMoreNoti = () => {
+		setNumNoti(numNoti + 10);
+		// await fetchNotifications();
+	}
+
+	console.log(notifications.length);
+
 	return (
 		<>
 			<View className="bg-red-700 pt-10 pb-3">
@@ -155,7 +164,7 @@ const NotiSVien = () => {
 				</View>
 			</View>
 			<ScrollView className="bg-[#dee1e1]" showsVerticalScrollIndicator={false}>
-				<View className="my-6">
+				<View className="mt-4 mb-1">
 					{notifications.map((item, index) => {
 						//console.log("Rendering notifications:", notifications);
 						const lstyle = item.status === "read" ? styles.read : styles.unread;
@@ -182,6 +191,9 @@ const NotiSVien = () => {
 						);
 					})}
 				</View>
+				<TouchableOpacity className="bg-red-600 mb-5 self-center p-2 rounded-lg" onPress={() => loadMoreNoti()}>
+					<Text className="text-white">Load more</Text>
+				</TouchableOpacity>
 			</ScrollView>
 			<Modal animationType="fade" transparent={true} visible={modalViewNoti} onRequestClose={closeModelViewNoti}>
 				<View
