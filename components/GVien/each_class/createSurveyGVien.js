@@ -100,11 +100,8 @@ const CreateSurveyGVien = () => {
 			alert("Tạo bài kiểm tra thành công!");
 		} catch (error) {
 			dispatch(stopLoading());
-			console.error("Upload failed:", error.response ? error.response.data : error.message);
-			console.error("API call failed: ", error);
-			console.error("Error fetching class list:", error);
-			console.error("Error Data:", error.response.data);
-			console.error("Error Status:", error.response.status);
+			console.error("Upload failed:",error.response.data);
+			
 		}
 	};
 
