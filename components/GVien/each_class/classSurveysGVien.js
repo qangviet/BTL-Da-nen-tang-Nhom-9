@@ -86,8 +86,9 @@ const ClassSurveysGVien = ({ route }) => {
 				);
 			}
 		}
-
-		fetchSurveys();
+		if (currentScreen === "ClassScreenGVien") {
+			fetchSurveys();
+		}
 	}, [mode]);
 
 	const parseDate = (dateString) => new Date(dateString);

@@ -74,7 +74,7 @@ const ClassDocsScreenGVien = ({ route }) => {
 	};
 
 	useEffect(() => {
-		fetchDocs();
+		if (currentScreen === "ClassScreenGVien") fetchDocs();
 	}, [currentScreen]);
 
 	console.log("DOCS: ", DOCs);

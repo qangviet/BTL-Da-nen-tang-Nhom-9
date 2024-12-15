@@ -189,7 +189,11 @@ const EditClassScreenGVien = () => {
 				alert("Lớp không tồn tại");
 			} else {
 				alert("Thông tin lớp không hợp lệ");
-				console.error("Error:", error.message);
+				console.error(
+					`Error - API - Data: Token - ${param.token}, role - ${param.role == 1 ? "STUDENT" : "LECTURER"}, 
+					account_id - ${param.userInfo.id}, class_id - ${classID}`,
+					error.message
+				);
 			}
 		}
 	};
@@ -315,16 +319,15 @@ const EditClassScreenGVien = () => {
 			<Modal isVisible={confirmSave} onBackdropPress={() => closeModalConfirmSave()}>
 				<View className="bg-white rounded-xl self-center">
 					<View>
-						<View className="self-end px-3 py-3">
+						<View className="self-end px-3 py-2">
 							<TouchableOpacity onPress={closeModalConfirmSave}>
 								<AntDesign name="close" size={24} color="gray" />
 							</TouchableOpacity>
 						</View>
 					</View>
-					<Text className="text-xl font-semibold self-center px-5 py-2 my-3">
-						Xác nhận lưu thông tin lớp học?
-					</Text>
-					<View className="flex flex-row justify-end px-5 py-3">
+					<View className="border-gray-300 border-t"></View>
+					<Text className="text-xl font-semibold self-center px-5 py-2">Xác nhận lưu thông tin lớp ?</Text>
+					<View className="flex flex-row justify-end px-5 pt-2 pb-4">
 						<View className="bg-blue-400 px-4 py-2 rounded-lg mx-2">
 							<TouchableOpacity onPress={() => setConfirmSave(false)}>
 								<Text className="text-base text-white">Hủy</Text>
@@ -341,13 +344,14 @@ const EditClassScreenGVien = () => {
 			<Modal isVisible={confirmDelete} onBackdropPress={() => closeModalConfirmDelete()}>
 				<View className="bg-white rounded-xl self-center">
 					<View>
-						<View className="self-end px-3 py-3">
+						<View className="self-end px-3 py-2">
 							<TouchableOpacity onPress={closeModalConfirmDelete}>
 								<AntDesign name="close" size={24} color="gray" />
 							</TouchableOpacity>
 						</View>
 					</View>
-					<Text className="text-xl font-semibold self-center px-5 py-2 my-3">Xác nhận xóa lớp học?</Text>
+					<View className="border-gray-300 border-t"></View>
+					<Text className="text-xl font-semibold self-center px-5 py-2">Xác nhận xóa lớp học?</Text>
 					<View className="flex flex-row justify-end px-5 py-3">
 						<View className="bg-blue-400 px-4 py-2 rounded-lg mx-2">
 							<TouchableOpacity onPress={() => setConfirmDelete(false)}>
