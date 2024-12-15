@@ -8,7 +8,7 @@ import { goBack } from "../redux/navigationSlice";
 import { LogoHust } from "./logo";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import api from "./api";
-import { startLoadding, stopLoading } from "../redux/loadingSlice";
+import { startLoading, stopLoading } from "../redux/loadingSlice";
 const ChangePassword = () => {
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
@@ -53,8 +53,8 @@ const ChangePassword = () => {
 		console.log("MK cu...", currentPassword);
 		console.log("MK moi...", newPassword);
 		try {
-			// Gọi API đăng xuất
-			dispatch(startLoadding());
+			// Gọi API
+			dispatch(startLoading());
 			const response = await api.post("/it4788/change_password", {
 				token: param.token,
 				old_password: currentPassword,
@@ -64,12 +64,13 @@ const ChangePassword = () => {
 			// Kiểm tra phản hồi từ API
 			if (response.data.code === "1000") {
 				console.log(response.data.message);
+				dispatch(stopLoading());
 				Alert.alert("Thành công", "Đã đổi mật khẩu xong");
 				goBackToHome();
 			} else {
+				dispatch(stopLoading());
 				console.log("Logout failed:", response.data.message);
 			}
-			dispatch(stopLoading());
 		} catch (error) {
 			dispatch(stopLoading());
 			const errorMessage = error.response.data.message;
