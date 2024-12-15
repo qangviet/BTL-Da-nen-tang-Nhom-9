@@ -93,7 +93,7 @@ const ProfileGVien = () => {
 						avatar: response.data.data.avatar,
 						phoneNumber: "0355064807",
 						dob: "03/01/2003",
-						khoaVien: "Trường Công nghệ Thông tin và Truyền thông",
+						khoaVien: "Trường CNTT & TT",
 						he: "Kỹ sư chính quy - k66",
 						class: "Khoa học máy tính 06 - K66",
 					};
@@ -286,20 +286,20 @@ const ProfileGVien = () => {
 							<View className="justify-between h-16 pl-4 pt-4 pr-4">
 								<View className="h-full w-full justify-start">
 									<Text className="text-xs mb-1">Email cá nhân:</Text>
-									<Text className="text-sm font-bold mb-3">{USER.email}</Text>
+									<Text className="text-sm font-bold mb-1">{USER.email}</Text>
 									<View className="w-full h-px bg-gray-300" />
 								</View>
 							</View>
 
-							<View className="flex-row justify-between h-20 pl-4 pt-4 pr-4">
+							<View className="flex-row justify-between pl-4 pt-4 pr-4">
 								<View className="h-full w-[45%] justify-start">
 									<Text className="text-xs mb-1">Ngày sinh:</Text>
-									<Text className="text-sm font-bold mb-3">{USER.dob}</Text>
+									<Text className="text-sm font-bold mb-1">{USER.dob}</Text>
 									<View className="w-full h-px bg-gray-300" />
 								</View>
 								<View className="h-full w-[45%] justify-start">
 									<Text className="text-xs mb-1">Số điện thoại:</Text>
-									<Text className="text-sm font-bold mb-3">{USER.phoneNumber}</Text>
+									<Text className="text-sm font-bold mb-1">{USER.phoneNumber}</Text>
 									<View className="w-full h-px bg-gray-300" />
 								</View>
 							</View>
@@ -307,7 +307,7 @@ const ProfileGVien = () => {
 							<View className="justify-between h-16 pl-4 pt-4 pr-4">
 								<View className="h-full w-full justify-start">
 									<Text className="text-xs mb-1">Khoa/Viện:</Text>
-									<Text className="text-sm font-bold mb-3">{USER.khoaVien}</Text>
+									<Text className="text-sm font-bold mb-1">{USER.khoaVien}</Text>
 									<View className="w-full h-px bg-gray-300" />
 								</View>
 							</View>
@@ -315,7 +315,7 @@ const ProfileGVien = () => {
 							<View className="justify-between h-16 pl-4 pt-4 pr-4">
 								<View className="h-full w-full justify-start">
 									<Text className="text-xs mb-1">Hệ:</Text>
-									<Text className="text-sm font-bold mb-3">{USER.he}</Text>
+									<Text className="text-sm font-bold mb-1">{USER.he}</Text>
 									<View className="w-full h-px bg-gray-300" />
 								</View>
 							</View>
@@ -323,7 +323,7 @@ const ProfileGVien = () => {
 							<View className="justify-start pl-4 pt-4 pr-4">
 								<View className="w-full justify-start">
 									<Text className="text-xs mb-1">Lớp:</Text>
-									<Text className="text-sm font-bold mb-3">{USER.class}</Text>
+									<Text className="text-sm font-bold mb-1">{USER.class}</Text>
 									<View className="w-full h-px bg-gray-300" />
 								</View>
 							</View>

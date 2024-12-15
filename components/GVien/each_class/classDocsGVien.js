@@ -24,7 +24,7 @@ const ClassDocsScreenGVien = ({ route }) => {
 	const [DOCs, setDOCs] = useState([]);
 	const state = useSelector((state) => state.navigation);
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-
+	console.log("class docs screen");
 	useEffect(() => {
 		if (currentScreen !== "ClassScreenGVien") {
 			if (focused) {
@@ -74,7 +74,7 @@ const ClassDocsScreenGVien = ({ route }) => {
 	};
 
 	useEffect(() => {
-		fetchDocs();
+		if (currentScreen === "ClassScreenGVien") fetchDocs();
 	}, [currentScreen]);
 
 	console.log("DOCS: ", DOCs);

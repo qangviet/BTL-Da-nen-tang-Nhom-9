@@ -109,7 +109,7 @@ const CreateSurveyGVien = () => {
 			navigation.navigate(currentScreen);
 		}
 	}, [currentScreen]);
-
+	console.log(currentScreen);
 	function goBack() {
 		dispatch(goBackNavigation());
 		// console.log("Go back!");

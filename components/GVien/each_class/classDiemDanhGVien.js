@@ -74,7 +74,6 @@ const ClassDiemDanhGVien = ({ route }) => {
 	};
 
 	const selectRow = (index_r, index_c) => {
-		dispatch(startLoading());
 		let newDsSinhVien = [...dsSinhVien];
 		newDsSinhVien[index_r].present = !newDsSinhVien[index_r].present;
 		setDsSinhVien(newDsSinhVien);
@@ -91,11 +90,9 @@ const ClassDiemDanhGVien = ({ route }) => {
 			}
 		}
 		setAbsentStudentIds(newAbsentStudentIds);
-		dispatch(stopLoading());
 	};
 
 	const fetchStudents = async () => {
-		dispatch(startLoading());
 		try {
 			const response = await api.post("/it5023e/get_class_info", {
 				token: params.token,
@@ -135,14 +132,10 @@ const ClassDiemDanhGVien = ({ route }) => {
 					// xcvb;
 					setDsSinhVien(fetchedData);
 				}
-				dispatch(stopLoading());
 			} else {
-				dispatch(stopLoading());
-
 				console.error("API error:", response.data.message);
 			}
 		} catch (error) {
-			dispatch(stopLoading());
 			console.error(
 				`Error fetching documents - Api get_class_info - Data: token: ${params.token}, class_id: ${params.class.id}`,
 				error
@@ -151,7 +144,6 @@ const ClassDiemDanhGVien = ({ route }) => {
 	};
 
 	const fetchDates = async () => {
-		dispatch(startLoading());
 		try {
 			const response = await api.post("/it5023e/get_attendance_dates", {
 				token: params.token,
@@ -173,13 +165,10 @@ const ClassDiemDanhGVien = ({ route }) => {
 				fetchedData.sort((a, b) => new Date(b.value) - new Date(a.value));
 				setDATES(fetchedData);
 				console.log("Dates: ", DATES);
-				dispatch(stopLoading());
 			} else {
 				console.error("API error:", response.data.message);
-				dispatch(stopLoading());
 			}
 		} catch (error) {
-			dispatch(stopLoading());
 			console.error(
 				`Error fetching documents - Api get_attendance_dates - Data: token: ${params.token}, class_id: ${params.class.id}`,
 				error
@@ -220,7 +209,6 @@ const ClassDiemDanhGVien = ({ route }) => {
 	}
 
 	const fetchAttendences = async () => {
-		dispatch(startLoading());
 		try {
 			const response = await api.post("/it5023e/get_attendance_list", {
 				token: params.token,
@@ -247,11 +235,9 @@ const ClassDiemDanhGVien = ({ route }) => {
 			);
 			console.error("Error fetching attendences:", error);
 		}
-		dispatch(stopLoading());
 	};
 
 	const fetchAbsentRequests = async () => {
-		dispatch(startLoading());
 		try {
 			const response = await api.post("/it5023e/get_absence_requests", {
 				token: params.token,
@@ -278,19 +264,14 @@ const ClassDiemDanhGVien = ({ route }) => {
 					return 0;
 				});
 				setAbsentRequests(sortedRequests);
-
 				let temp_acceptedStudentIds = sortedRequests
 					.filter((request) => request.status === "ACCEPTED")
 					.map((request) => request.student_id);
 				setAcceptedStudentIds(temp_acceptedStudentIds);
-				dispatch(stopLoading());
 			} else {
-				dispatch(stopLoading());
-
 				console.error("API error:", response.data.message);
 			}
 		} catch (error) {
-			dispatch(stopLoading());
 			console.error(
 				`Error fetching documents - Api get_absence_requests - Data: token: ${params.token}, 
 				class_id: ${params.class.id}, data: ${dateCheck}`,
@@ -300,21 +281,25 @@ const ClassDiemDanhGVien = ({ route }) => {
 	};
 
 	useEffect(() => {
-		dispatch(startLoading());
-		fetchDates();
-		fetchStudents();
-		fetchAbsentRequests();
-
+		if (currentScreen === "ClassScreenGVien") {
+			dispatch(startLoading());
+			fetchDates();
+			fetchStudents();
+			fetchAbsentRequests();
+			setAbsentStudentIds([]);
+			dispatch(stopLoading());
+		}
 		// fetchAttendences();
-		setAbsentStudentIds([]);
-		dispatch(stopLoading());
 	}, [dateCheck]);
 
 	console.log("attendences: ", attendances);
 	console.log("Students: ", dsSinhVien);
 
 	useEffect(() => {
-		fetchAbsentRequests();
+		if (currentScreen === "ClassScreenGVien")
+			if (viewDescription >= 0) {
+				fetchAbsentRequests();
+			}
 	}, [viewDescription]);
 
 	console.log("Accepted ids: ", acceptedStudentIds);
@@ -359,7 +344,6 @@ const ClassDiemDanhGVien = ({ route }) => {
 	}
 
 	const takeAttendence = async () => {
-		dispatch(startLoading());
 		try {
 			const response = await api.post("/it5023e/take_attendance", {
 				token: params.token,
@@ -369,15 +353,11 @@ const ClassDiemDanhGVien = ({ route }) => {
 			});
 
 			if (response.data.meta.code === "1000") {
-				dispatch(stopLoading());
 				alert("Điểm danh thành công!");
 			} else {
-				dispatch(stopLoading());
-
 				console.error("API error:", response.data.message);
 			}
 		} catch (error) {
-			dispatch(stopLoading());
 			console.error(
 				`Error fetching documents - Api take_attendance - Data - token: ${params.token}, 
 				date: ${dateCheck}, attendance_list: ${absentStudentIds} `,
@@ -401,9 +381,7 @@ const ClassDiemDanhGVien = ({ route }) => {
 			} else {
 				console.error("API error:", response.data.message);
 			}
-			dispatch(stopLoading());
 		} catch (error) {
-			dispatch(stopLoading());
 			console.error(
 				`Error fetching documents - Api take_attendance - Data - token: ${params.token}, 
 				status: "EXCUSED_ABSENCE", attendance_id: ${attendance_id} `,
@@ -415,7 +393,6 @@ const ClassDiemDanhGVien = ({ route }) => {
 	const submitDiemDanh = async () => {
 		dispatch(startLoading());
 		await takeAttendence();
-		dispatch(startLoading());
 		const temp_attendances = await fetchAttendences();
 		console.log("2 attendences: ", temp_attendances);
 

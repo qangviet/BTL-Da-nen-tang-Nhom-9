@@ -20,7 +20,7 @@ import { Modal, View, Text } from "react-native";
 const Stack = createNativeStackNavigator();
 
 const GVienNavigation = () => {
-	const visible = useSelector((state) => state.loading.isLoading && state.navigation.currentScreen !== "TabMainGVien" && state.navigation.currentScreen !== "ClassScreenGVien");
+	const visible = useSelector((state) => state.loading.isLoading);
 	return (
 		<>
 			<NavigationContainer>
