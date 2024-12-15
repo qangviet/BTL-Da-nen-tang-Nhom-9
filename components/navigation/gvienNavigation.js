@@ -12,7 +12,6 @@ import TabMainGVien from "../GVien/main_screen/tabMainGVien";
 import ManageClassesScreenGVien from "../GVien/main_screen/manageClassGVien";
 import CreateClassScreenGVien from "../GVien/main_screen/createClassGVien";
 import EditClassScreenGVien from "../GVien/main_screen/editClassGVien";
-import NotiGVien from "../GVien/main_screen/notiGVien";
 import ChangePassword from "../changePassword.js";
 import ClassDocsScreenGVien from "../GVien/each_class/classDocsGVien.js";
 import { CircleSnail } from "react-native-progress";
@@ -21,7 +20,7 @@ import { Modal, View, Text } from "react-native";
 const Stack = createNativeStackNavigator();
 
 const GVienNavigation = () => {
-	const visible = useSelector((state) => state.loading.isLoading);
+	const visible = useSelector((state) => state.loading.isLoading && state.navigation.currentScreen !== "TabMainGVien" && state.navigation.currentScreen !== "ClassScreenGVien");
 	return (
 		<>
 			<NavigationContainer>
@@ -119,14 +118,7 @@ const GVienNavigation = () => {
 							title: "EditClassScreenGVien",
 						}}
 					/>
-					<Stack.Screen
-						name="NotiGVien"
-						component={NotiGVien}
-						options={{
-							headerShown: false,
-							title: "NotiGVien",
-						}}
-					/>
+
 					<Stack.Screen
 						name="ChangePassword"
 						component={ChangePassword}
@@ -139,7 +131,7 @@ const GVienNavigation = () => {
 			</NavigationContainer>
 			<Modal animationType="fade" visible={visible} transparent={true}>
 				<View className="w-full h-full flex justify-center bg-black/50">
-					<View className="bg-transparent py-6 mx-12 rounded-2xl justify-center items-center bg-white">
+					<View className="bg-transparent py-8 mx-12 rounded-2xl justify-center items-center bg-white">
 						<CircleSnail
 							color={["red", "green", "blue"]}
 							size={40}

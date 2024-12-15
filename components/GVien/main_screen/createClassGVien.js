@@ -122,13 +122,19 @@ const CreateClassScreenGVien = () => {
 			}
 		} catch (error) {
 			dispatch(stopLoading());
-			// console.error(error.response.data.meta.code);
+			console.error(error.response.data);
 			if (error.response.data.meta.code === "1004") {
 				console.error("Error Data:", error.response.data);
 				console.error("Error Status:", error.response.status);
-				alert(error.response.data.meta.message);
+				if (error.response.data.data.classId) {
+					alert("Mã lớp phải chứa đúng 6 ký tự!");
+				} else if (error.response.data.data.maxStudentAmount) {
+					alert("Số lượng sinh viên cần lớn hơn 1 và không vượt quá 50!");
+				} else {
+					alert(error.response.data.data);
+				}
 			} else {
-				alert("Thông tin lớp không hợp lệ");
+				alert(error.response.data.data);
 				console.error("Error:", error.message);
 			}
 		}
