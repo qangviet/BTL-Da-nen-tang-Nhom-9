@@ -28,7 +28,7 @@ const HomeGVien = () => {
 
 	const fetchUSER = async () => {
 		try {
-			dispatch(startLoading());
+			// dispatch(startLoading());
 			const response = await api.post("/it4788/get_user_info", {
 				token: param.token,
 				user_id: param.userInfo.id,
@@ -59,9 +59,9 @@ const HomeGVien = () => {
 			} else {
 				console.error("Error fetching classes: ", response.data.meta.message);
 			}
-			dispatch(stopLoading());
+			// dispatch(stopLoading());
 		} catch (error) {
-			dispatch(stopLoading());
+			// dispatch(stopLoading());
 			console.error("API call failed: ", error);
 			console.error("Error fetching class list:", error);
 			console.error("Error Data:", error.response.data);

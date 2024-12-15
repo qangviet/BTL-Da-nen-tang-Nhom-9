@@ -16,26 +16,6 @@ const ClassXinNghiSVien = ({ navigation, route }) => {
 	console.log("Xin nghi params....", params);
 	const dispatch = useDispatch();
 
-	// const LichSuDiemDanh = [
-	//       { id: 0, date: '15/10/2024', status: 'Có mặt' },
-	//       { id: 1, date: '16/10/2024', status: 'Có mặt' },
-	//       { id: 2, date: '17/10/2024', status: 'Có mặt' },
-	//       { id: 3, date: '18/10/2024', status: 'Có mặt' },
-	//       { id: 4, date: '19/10/2024', status: 'Có mặt' },
-	//       { id: 5, date: '20/10/2024', status: 'Có mặt' },
-	//       { id: 6, date: '21/10/2024', status: 'Có mặt' },
-	//       { id: 7, date: '22/10/2024', status: 'Có mặt' },
-	//       { id: 8, date: '23/10/2024', status: 'Có mặt' },
-	//       { id: 9, date: '24/10/2024', status: 'Có mặt' },
-	//       { id: 10, date: '25/10/2024', status: 'Có mặt' },
-	//       { id: 11, date: '26/10/2024', status: 'Có mặt' },
-	//       { id: 12, date: '27/10/2024', status: 'Có mặt' },
-	//       { id: 13, date: '28/10/2024', status: 'Có mặt' },
-	//       { id: 14, date: '29/10/2024', status: 'Có mặt' },
-	//       { id: 15, date: '30/10/2024', status: 'Có mặt' },
-	//       { id: 16, date: '31/10/2024', status: 'Có mặt' },
-	// ]
-
 	const [LichSuDiemDanh, setAttendanceHistory] = useState([]); // State để lưu lịch sử điểm danh
 
 	// Hàm gọi API để lấy lịch sử điểm danh
@@ -91,9 +71,9 @@ const ClassXinNghiSVien = ({ navigation, route }) => {
 	const [reason, setReason] = useState("");
 	const [title, setTitle] = useState("");
 
-	console.log("Date......", date.toLocaleDateString("en-CA"));
-	console.log("Lí do.....", reason);
-	console.log("Tiêu đề....", title);
+	// console.log("Date......", date.toLocaleDateString("en-CA"));
+	// console.log("Lí do.....", reason);
+	// console.log("Tiêu đề....", title);
 
 	const handleFilePick = async () => {
 		try {
@@ -231,12 +211,13 @@ const ClassXinNghiSVien = ({ navigation, route }) => {
 						<Text className="text-base mt-5">Ngày xin nghỉ:</Text>
 						<TouchableOpacity
 							onPress={() => showMode("date")}
-							className="border border-red-700 w-48 justify-between self-center mt-4 h-9 flex-row"
-						>
-							<Text className="text-red-700 mt-1 ml-5 text-base">{date.toLocaleDateString("en-CA")}</Text>
-
-							<FontAwesome className="mt-2 mr-5" name="caret-down" size={14} color="gray" />
+							className="border border-red-700 w-48 justify-center self-center mt-4 h-9 flex-row">
+							<Text className="text-red-700 mt-1 mr-16 text-base">										{date.toLocaleDateString("en-CA")}</Text>
+							<View className="mt-2">
+								<FontAwesome name="caret-down" size={14} color="gray" />
+							</View>
 						</TouchableOpacity>
+
 						{show_timepicker && (
 							<DateTimePicker
 								testID="dateTimePicker"
@@ -247,6 +228,7 @@ const ClassXinNghiSVien = ({ navigation, route }) => {
 								onChange={onChange}
 							/>
 						)}
+
 					</View>
 					<TouchableOpacity
 						className="rounded-lg bg-red-700 h-10 justify-center mt-5 w-32 self-center"
