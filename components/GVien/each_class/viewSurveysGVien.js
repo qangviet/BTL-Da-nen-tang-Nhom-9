@@ -145,11 +145,7 @@ const ViewSurveysGVien = ({ params, survey }) => {
 					console.error("API error:", response.data.meta.message);
 				}
 			} catch (error) {
-				console.error("Network error:", error);
 				console.error("API call failed: ", error);
-				console.error("Error fetching class list:", error);
-				console.error("Error Data:", error.response.data);
-				console.error("Error Status:", error.response.status);
 			}
 		} else alert("Điểm phải là số từ 0 đến 10!");
 
@@ -173,11 +169,7 @@ const ViewSurveysGVien = ({ params, survey }) => {
 		} catch (error) {
 			dispatch(stopLoading());
 			alert("Điểm phải là số từ 0 đến 10!");
-			console.error("Network error:", error);
 			console.error("API call failed: ", error);
-			console.error("Error fetching class list:", error);
-			console.error("Error Data:", error.response.data);
-			console.error("Error Status:", error.response.status);
 		}
 	}
 
