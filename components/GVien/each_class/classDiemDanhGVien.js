@@ -10,6 +10,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "react-native-ui-datepicker";
 import { useSelector, useDispatch } from "react-redux";
 import api from "../../api";
+import axios from "axios";
 import { useIsFocused } from "@react-navigation/native";
 import { startLoading, stopLoading } from "../../../redux/loadingSlice";
 import { useNavigation } from "@react-navigation/native";
@@ -20,7 +21,7 @@ const ClassDiemDanhGVien = ({ route }) => {
 	const isLoading = useSelector((state) => state.loading.isLoading);
 	const { params } = route;
 	console.log(">>>>>>> ClassDiemdanh");
-	// console.log("params: ", params);
+	console.log("params: ", params);
 	const currentScreen = useSelector((state) => state.navigation.currentScreen);
 
 	useEffect(() => {
@@ -44,6 +45,8 @@ const ClassDiemDanhGVien = ({ route }) => {
 	const [absentRequests, setAbsentRequests] = useState([]);
 
 	const [acceptedStudentIds, setAcceptedStudentIds] = useState([]);
+
+	const [studentId_accountId, setStudentId_AccountId] = useState({});
 
 	const format_Date = (date) => {
 		return dayjs(date).format("YYYY-MM-DD");
@@ -107,6 +110,13 @@ const ClassDiemDanhGVien = ({ route }) => {
 					present: true,
 					student_account_id: item.account_id,
 				}));
+
+				let studentMap = {};
+				fetchedData.forEach(student => {
+					studentMap[student.student_id] = student.student_account_id;
+				});
+				setStudentId_AccountId(studentMap);
+
 				const temp_attendances = await fetchAttendences();
 				if (temp_attendances != null) {
 					let absentList = temp_attendances
@@ -176,6 +186,38 @@ const ClassDiemDanhGVien = ({ route }) => {
 			);
 		}
 	};
+
+	const sendNoti = async (student_account_id, message, noti_type) => {
+		try {
+			console.log("Noti type:...", noti_type);
+			console.log("Account Id:...", student_account_id);
+			console.log("Message:...", message);
+			console.log("Token:", params.token);
+			const response = await axios.post(
+				"http://157.66.24.126:8080/it5023e/send_notification",
+				{
+					token: params.token,
+					message: message,
+					toUser: student_account_id,
+					type: noti_type,
+				},
+				{
+					headers: {
+						"Content-Type": "multipart/form-data",
+					},
+				}
+			);
+
+			if (response.data.meta.code === "1000") {
+				console.log("Gửi thông báo thành công!...");
+			} else {
+				console.error("API error:", response.data.meta.message);
+			}
+		} catch (error) {
+			console.error("API call failed: ", error);
+			console.error(error.response.data);
+		}
+	}
 
 	const fetchAttendences = async () => {
 		dispatch(startLoading());
@@ -277,7 +319,7 @@ const ClassDiemDanhGVien = ({ route }) => {
 
 	console.log("Accepted ids: ", acceptedStudentIds);
 
-	const reviewRequest = async (request_id, status) => {
+	const reviewRequest = async (request_id, status, student_account_id) => {
 		dispatch(startLoading());
 		try {
 			const response = await api.post("/it5023e/review_absence_request", {
@@ -288,6 +330,11 @@ const ClassDiemDanhGVien = ({ route }) => {
 
 			if (response.data.meta.code === "1000") {
 				console.log("Request reviewed!");
+				if (status === "ACCEPTED") {
+					sendNoti(student_account_id, `Yêu cầu xin nghỉ lớp ${params.class.id} ngày ${format_Date(dateCheck)} của bạn đã được chấp nhận`, "ACCEPT_ABSENCE_REQUEST");
+				} else {
+					sendNoti(student_account_id, `Yêu cầu xin nghỉ lớp ${params.class.id} ngày ${format_Date(dateCheck)} của bạn đã bị từ chối`, "REJECT_ABSENCE_REQUEST");
+				}
 			} else {
 				console.error("API error:", response.data.message);
 			}
@@ -301,14 +348,14 @@ const ClassDiemDanhGVien = ({ route }) => {
 		}
 	};
 
-	function acceptRequest(request_id) {
+	function acceptRequest(request_id, student_account_id) {
 		setViewDescription(-1);
-		reviewRequest(request_id, "ACCEPTED");
+		reviewRequest(request_id, "ACCEPTED", student_account_id);
 	}
 
-	function rejectRequest(request_id) {
+	function rejectRequest(request_id, student_account_id) {
 		setViewDescription(-1);
-		reviewRequest(request_id, "REJECTED");
+		reviewRequest(request_id, "REJECTED", student_account_id);
 	}
 
 	const takeAttendence = async () => {
@@ -339,7 +386,7 @@ const ClassDiemDanhGVien = ({ route }) => {
 		}
 	};
 
-	const setAttendanceStatus = async (attendance_id) => {
+	const setAttendanceStatus = async (attendance_id, student_account_id) => {
 		dispatch(startLoading());
 		try {
 			const response = await api.post("/it5023e/set_attendance_status", {
@@ -350,6 +397,7 @@ const ClassDiemDanhGVien = ({ route }) => {
 
 			if (response.data.meta.code === "1000") {
 				console.log("Đổi Excused thành công: ", attendance_id);
+				sendNoti(student_account_id, `Cập nhật trạng thái điểm danh lớp ${params.class.id} ngày ${format_Date(dateCheck)}: Vắng có phép`, "ABSENCE");
 			} else {
 				console.error("API error:", response.data.message);
 			}
@@ -371,22 +419,23 @@ const ClassDiemDanhGVien = ({ route }) => {
 		const temp_attendances = await fetchAttendences();
 		console.log("2 attendences: ", temp_attendances);
 
-		let excusedIds = [];
 		temp_attendances.forEach((attendance) => {
-			if (
-				absentStudentIds.includes(attendance.student_id) &&
-				acceptedStudentIds.includes(attendance.student_id) &&
-				attendance.status !== "PRESENT"
-			) {
-				excusedIds.push(attendance.attendance_id);
+			let student_account_id = studentId_accountId[attendance.student_id];
+			if (absentStudentIds.includes(attendance.student_id) && acceptedStudentIds.includes(attendance.student_id) && attendance.status !== "PRESENT") {
+				setAttendanceStatus(attendance.attendance_id, student_account_id);
+			} else if (attendance.status === "PRESENT") {
+				sendNoti(student_account_id, `Cập nhật trạng thái điểm danh lớp ${params.class.id} ngày ${format_Date(dateCheck)}: Có mặt`, "ABSENCE");
+			} else {
+				sendNoti(student_account_id, `Cập nhật trạng thái điểm danh lớp ${params.class.id} ngày ${format_Date(dateCheck)}: Vắng không phép`, "ABSENCE");
 			}
-			console.log("Excused attendence ids: ", excusedIds);
-			excusedIds.forEach((attendance_id) => {
-				setAttendanceStatus(attendance_id);
-			});
+
 		});
+
 		dispatch(stopLoading());
 	};
+
+	// console.log("studentId_accountId: ", studentId_accountId);
+	console.log("absent requests: ", absentRequests);
 
 	const checkAbsent = (date) => {
 		//  Fetch api
@@ -476,7 +525,7 @@ const ClassDiemDanhGVien = ({ route }) => {
 									<View className="flex-row justify-center mt-10">
 										<TouchableOpacity
 											className="rounded-lg bg-red-600 h-10 mr-8 justify-center p-2"
-											onPress={() => acceptRequest(absentRequests[viewDescription].request_id)}
+											onPress={() => acceptRequest(absentRequests[viewDescription].request_id, absentRequests[viewDescription].student_account_id)}
 										>
 											<Text className="self-center text-white text-base font-bold">
 												Chấp nhận
@@ -484,7 +533,7 @@ const ClassDiemDanhGVien = ({ route }) => {
 										</TouchableOpacity>
 										<TouchableOpacity
 											className="rounded-lg bg-red-600 h-10 justify-center p-2"
-											onPress={() => rejectRequest(absentRequests[viewDescription].request_id)}
+											onPress={() => rejectRequest(absentRequests[viewDescription].request_id, absentRequests[viewDescription].student_account_id)}
 										>
 											<Text className="self-center text-white text-base font-bold">Từ chối</Text>
 										</TouchableOpacity>
