@@ -148,10 +148,9 @@ const ClassDocsScreenGVien = ({ route }) => {
 			});
 
 			if (response.status === 200) {
-				alert("Tài liệu đã được xóa thành công");
 				dispatch(stopLoading());
 				fetchDocs();
-				console.log(response.data);
+				alert("Tài liệu đã được xóa thành công");
 				setModalVisible(false);
 				setShowConfirmDelete(false);
 			} else {

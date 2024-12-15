@@ -91,8 +91,8 @@ const CreateSurveyGVien = () => {
 			});
 			console.log("Upload success:", response.data);
 			dispatch(stopLoading());
-			alert("Tạo survey thành công!");
 			goBack();
+			alert("Tạo bài kiểm tra thành công!");
 		} catch (error) {
 			dispatch(stopLoading());
 			console.error("Upload failed:", error.response ? error.response.data : error.message);

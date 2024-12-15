@@ -146,8 +146,8 @@ const EditSurveyGVien = () => {
 
 			if (response.data.meta.code === "1000") {
 				dispatch(stopLoading());
-				alert("Chỉnh sửa thành công!");
 				goBack();
+				alert("Chỉnh sửa bài kiểm tra thành công!");
 			} else {
 				console.error("API error:", response.data.meta.message);
 			}
@@ -170,8 +170,8 @@ const EditSurveyGVien = () => {
 
 			if (response.data.meta.code === "1000") {
 				dispatch(stopLoading());
-				alert("Xóa thành công!");
 				goBack();
+				alert("Xóa bài kiểm tra thành công!");
 			} else {
 				dispatch(stopLoading());
 				console.error("API error:", response.data.meta.message);

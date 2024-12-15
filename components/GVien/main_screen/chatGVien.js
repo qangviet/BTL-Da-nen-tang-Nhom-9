@@ -38,6 +38,9 @@ const ChatGVien = ({ route }) => {
 					<LogoBK width={32} height={48} className="mx-auto"></LogoBK>
 				</View>
 			</View>
+			<View className="justify-center self-center flex-1">
+				<Text className="text-lg self-center italic text-red-600 font-bold">Chức năng đang được phát triển</Text>
+			</View>
 		</View>
 	);
 };

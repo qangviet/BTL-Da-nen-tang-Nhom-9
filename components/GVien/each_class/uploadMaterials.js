@@ -97,9 +97,9 @@ const UploadMaterialGVien = () => {
 				},
 			});
 			console.log("Upload success:", response.data);
-			alert("Tạo tài liệu thành công!");
 			dispatch(stopLoading());
 			goBack();
+			alert("Tạo tài liệu thành công!");
 		} catch (error) {
 			dispatch(stopLoading());
 			console.error("Upload failed:", error.response ? error.response.data : error.message);

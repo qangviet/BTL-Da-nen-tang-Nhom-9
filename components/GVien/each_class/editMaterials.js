@@ -173,8 +173,8 @@ const EditMaterialGVien = () => {
 			});
 			console.log("Upload success:", response.data);
 			dispatch(stopLoading());
-			alert("Chỉnh tài liệu thành công!");
 			goBack();
+			alert("Chỉnh tài liệu thành công!");
 		} catch (error) {
 			dispatch(stopLoading());
 			console.error("Upload failed:", error.response ? error.response.data : error.message);

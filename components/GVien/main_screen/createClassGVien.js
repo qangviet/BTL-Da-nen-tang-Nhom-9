@@ -113,10 +113,10 @@ const CreateClassScreenGVien = () => {
 			});
 
 			if (response.status === 200) {
-				alert("Lớp học đã được tạo thành công!");
 				console.log(response.data);
 				dispatch(stopLoading());
 				goBack();
+				alert("Lớp học đã được tạo thành công!");
 			} else {
 				alert("Tạo lớp học không thành công. Vui lòng thử lại.");
 			}

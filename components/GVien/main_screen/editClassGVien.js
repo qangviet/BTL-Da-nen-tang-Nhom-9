@@ -139,10 +139,10 @@ const EditClassScreenGVien = () => {
 			});
 
 			if (response.status === 200) {
-				alert("Lớp học đã được lưu thành công!");
 				console.log(response.data);
 				dispatch(stopLoading());
 				goBack();
+				alert("Lớp học đã được lưu thành công!");
 			} else {
 				alert("Chỉnh sửa lớp học không thành công. Vui lòng thử lại.");
 			}
@@ -173,10 +173,10 @@ const EditClassScreenGVien = () => {
 			});
 
 			if (response.status === 200) {
-				alert("Lớp học đã được xóa thành công!");
 				console.log(response.data);
 				dispatch(stopLoading());
 				goBack();
+				alert("Lớp học đã được xóa thành công!");
 			} else {
 				alert("Xóa lớp học không thành công. Vui lòng thử lại.");
 			}
