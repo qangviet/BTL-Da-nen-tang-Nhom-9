@@ -152,13 +152,11 @@ const ClassDocsScreenGVien = ({ route }) => {
 				dispatch(stopLoading());
 				fetchDocs();
 				console.log(response.data);
-				goBack();
+				setModalVisible(false);
+				setShowConfirmDelete(false);
 			} else {
 				alert("Vui lòng thử lại");
 				dispatch(stopLoading());
-
-				setModalVisible(false);
-				setShowConfirmDelete(false);
 			}
 		} catch (error) {
 			dispatch(stopLoading());

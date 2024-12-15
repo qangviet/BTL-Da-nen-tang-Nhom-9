@@ -43,7 +43,7 @@ const LoginScreen = () => {
 	
 				// Kiểm tra nếu mã phản hồi là "1000"
 				if (response.data.code === "1000") {
-					alert("Đăng nhập thành công!");
+
 					const userData = response.data.data;
 					const PARAMS = {
 						userInfo: {
@@ -85,6 +85,7 @@ const LoginScreen = () => {
 							})
 						);
 					}
+					alert("Đăng nhập thành công!");
 				}
 			} catch (error) {
 				// Xử lý lỗi API
@@ -101,64 +102,6 @@ const LoginScreen = () => {
 			alert("Chưa nhập đủ thông tin");
 		}
 	};
-
-
-
-	// const handleLogin = () => {
-	// 	// Ở đây bạn sẽ thêm logic xác thực đăng nhập thực tế
-	// 	if (username === TeacherLogin.username && password === TeacherLogin.password) {
-	// 		// Fetch data from API
-	// 		// ...
-	// 		// Redirect to home screen
-	// 		const PARAMS = {
-	// 			userInfo: {
-	// 				name: "Trương Quang Việt",
-	// 			},
-	// 			token: "fake token",
-	// 			role: 2, // 1: student, 2: teacher
-	// 		};
-	// 		dispatch(
-	// 			navigate({
-	// 				screen: "TabMainGVien",
-	// 				params: PARAMS.userInfo,
-	// 			})
-	// 		);
-	// 		dispatch(
-	// 			loginAct({
-	// 				token: PARAMS.token,
-	// 				role: PARAMS.role,
-	// 			})
-	// 		);
-	// 	} else if (username === StudentLogin.username && password === StudentLogin.password) {
-	// 		// Fetch data from API
-	// 		// ...
-	// 		// Redirect to home screen
-	// 		const PARAMS = {
-	// 			userInfo: {
-	// 				name: "Lường Mạnh Tú",
-	// 			},
-	// 			token: "fake token",
-	// 			role: 1, // 1: student, 2: teacher
-	// 		};
-	// 		dispatch(
-	// 			navigate({
-	// 				screen: "TabMainSVien",
-	// 				params: PARAMS.userInfo,
-	// 			})
-	// 		);
-	// 		dispatch(
-	// 			loginAct({
-	// 				token: PARAMS.token,
-	// 				role: PARAMS.role,
-	// 			})
-	// 		);
-
-	// 	} else if (username === "" || password === "") {
-	// 		alert("Chưa nhập đủ thông tin!");
-	// 	} else {
-	// 		alert("Sai tên đăng nhập hoặc mật khẩu!");
-	// 	}
-	// };
 
 	const [hidePassword, setHidePassword] = useState(true);
 
