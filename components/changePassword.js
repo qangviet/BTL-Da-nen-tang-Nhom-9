@@ -54,27 +54,32 @@ const ChangePassword = () => {
 		console.log("MK moi...", newPassword);
 		try {
 			// Gọi API đăng xuất
-			dispatch(startLoadding());
+			//dispatch(startLoadding());
 			const response = await api.post("/it4788/change_password", {
 				token: param.token,
 				old_password: currentPassword,
 				new_password: newPassword,
 			});
 
+			console.log("Changing.....")
+
 			// Kiểm tra phản hồi từ API
 			if (response.data.code === "1000") {
 				console.log(response.data.message);
-				Alert.alert("Thành công", "Đã đổi mật khẩu xong");
+				alert("Đổi mật khẩu thành công!");
 				goBackToHome();
 			} else {
-				console.log("Logout failed:", response.data.message);
+				alert(`Lỗi ${response.data.message}`)
+				console.error("Logout failed:", response.data.message);
 			}
-			dispatch(stopLoading());
+			//dispatch(stopLoading());
 		} catch (error) {
-			dispatch(stopLoading());
-			const errorMessage = error.response.data.message;
-			console.error("Error logging out:", errorMessage);
-			Alert.alert("Lỗi", errorMessage);
+			//dispatch(stopLoading());
+			console.error(error.response.data)
+			alert(`Lỗi: ${error.response.data.message}`)
+			// const errorMessage = error.response.data.message;
+			// console.error("Error logging out:", errorMessage);
+			// alert("Lỗi", errorMessage);
 		}
 
 		// // Add your password change logic here
