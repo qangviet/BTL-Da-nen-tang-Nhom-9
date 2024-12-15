@@ -38,7 +38,7 @@ const ClassDiemDanhGVien = ({ route }) => {
 
 	const [dsSinhVien, setDsSinhVien] = useState([]);
 	const [absentStudentIds, setAbsentStudentIds] = useState([]);
-	console.log("Absent ids: ", absentStudentIds);
+	// console.log("Absent ids: ", absentStudentIds);
 
 	const [attendances, setAttendances] = useState([]);
 
@@ -292,21 +292,19 @@ const ClassDiemDanhGVien = ({ route }) => {
 		// fetchAttendences();
 	}, [dateCheck]);
 
-	console.log("attendences: ", attendances);
-	console.log("Students: ", dsSinhVien);
+	// console.log("attendences: ", attendances);
+	// console.log("Students: ", dsSinhVien);
 
 	useEffect(() => {
-		if (currentScreen === "ClassScreenGVien")
-			if (viewDescription >= 0) {
-				fetchAbsentRequests();
-			}
+		fetchAbsentRequests();
 	}, [viewDescription]);
 
-	console.log("Accepted ids: ", acceptedStudentIds);
+	// console.log("Accepted ids: ", acceptedStudentIds);
 
 	const reviewRequest = async (request_id, status, student_account_id) => {
 		dispatch(startLoading());
 		try {
+			// console.log(">>>>>> Status: ", status);
 			const response = await api.post("/it5023e/review_absence_request", {
 				token: params.token,
 				request_id: request_id,
@@ -314,12 +312,13 @@ const ClassDiemDanhGVien = ({ route }) => {
 			});
 
 			if (response.data.meta.code === "1000") {
-				console.log("Request reviewed!");
-				if (status === "ACCEPTED") {
-					sendNoti(student_account_id, `Yêu cầu xin nghỉ lớp ${params.class.id} ngày ${format_Date(dateCheck)} của bạn đã được chấp nhận`, "ACCEPT_ABSENCE_REQUEST");
-				} else {
-					sendNoti(student_account_id, `Yêu cầu xin nghỉ lớp ${params.class.id} ngày ${format_Date(dateCheck)} của bạn đã bị từ chối`, "REJECT_ABSENCE_REQUEST");
-				}
+				console.log(">>>>>> Status: ", status);
+				console.log("___Request reviewed!");
+				// if (status === "ACCEPTED") {
+				// 	await sendNoti(student_account_id, `Yêu cầu xin nghỉ lớp ${params.class.id} ngày ${format_Date(dateCheck)} của bạn đã được chấp nhận`, "ACCEPT_ABSENCE_REQUEST");
+				// } else {
+				// 	await sendNoti(student_account_id, `Yêu cầu xin nghỉ lớp ${params.class.id} ngày ${format_Date(dateCheck)} của bạn đã bị từ chối`, "REJECT_ABSENCE_REQUEST");
+				// }
 			} else {
 				console.error("API error:", response.data.message);
 			}
@@ -333,14 +332,18 @@ const ClassDiemDanhGVien = ({ route }) => {
 		}
 	};
 
-	function acceptRequest(request_id, student_account_id) {
+	async function acceptRequest(request_id, student_account_id) {
+		console.log();
+		// console.log(">>>>> ACCEPT");
 		setViewDescription(-1);
-		reviewRequest(request_id, "ACCEPTED", student_account_id);
+		await reviewRequest(request_id, "ACCEPTED", student_account_id);
 	}
 
-	function rejectRequest(request_id, student_account_id) {
+	async function rejectRequest(request_id, student_account_id) {
+		console.log();
+		// console.log(">>>>> REJECT");
 		setViewDescription(-1);
-		reviewRequest(request_id, "REJECTED", student_account_id);
+		await reviewRequest(request_id, "REJECTED", student_account_id);
 	}
 
 	const takeAttendence = async () => {
@@ -377,7 +380,7 @@ const ClassDiemDanhGVien = ({ route }) => {
 
 			if (response.data.meta.code === "1000") {
 				console.log("Đổi Excused thành công: ", attendance_id);
-				sendNoti(student_account_id, `Cập nhật trạng thái điểm danh lớp ${params.class.id} ngày ${format_Date(dateCheck)}: Vắng có phép`, "ABSENCE");
+				await sendNoti(student_account_id, `Cập nhật trạng thái điểm danh lớp ${params.class.id} ngày ${format_Date(dateCheck)}: Vắng có phép`, "ABSENCE");
 			} else {
 				console.error("API error:", response.data.message);
 			}
