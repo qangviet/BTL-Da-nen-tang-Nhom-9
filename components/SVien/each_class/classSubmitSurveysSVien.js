@@ -71,6 +71,11 @@ const ClassSubmitSurveysSVien = () => {
 
 	const handleSubmit = async () => {
 		//setsubmitVisible(true)
+		if (!file) {
+			alert("Vui lòng tải tài liệu lên!")
+			dispatch(stopLoading());
+			return;
+		}
 		console.log("File...:", file);
 		const fileUri = file.uri;
 		// Kiểm tra xem file có tồn tại không

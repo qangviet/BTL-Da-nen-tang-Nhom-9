@@ -54,6 +54,11 @@ const CreateSurveyGVien = () => {
 
 	const handleSubmit = async () => {
 		dispatch(startLoading());
+		if (!file) {
+			alert("Vui lòng tải tài liệu lên!")
+			dispatch(stopLoading());
+			return;
+		}
 		const fileUri = file.uri;
 		// Kiểm tra xem file có tồn tại không
 		const fileInfo = await FileSystem.getInfoAsync(fileUri);

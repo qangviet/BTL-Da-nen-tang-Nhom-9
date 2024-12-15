@@ -61,7 +61,13 @@ const EditSurveyGVien = () => {
 	};
 
 	const openModalConfirmSave = () => {
-		setModalConfirmSave(true);
+		if (file) 
+		{
+			setModalConfirmSave(true);
+		}
+		else {
+			alert("Vui lòng tải tài liệu lên!")
+		}
 	};
 	const openModalConfirmDelete = () => {
 		setModalConfirmDelete(true);
@@ -112,11 +118,17 @@ const EditSurveyGVien = () => {
 
 	const handleSave = async () => {
 		dispatch(startLoading());
+		if (!file) {
+			alert("Vui lòng tải tài liệu lên!")
+			dispatch(stopLoading());
+			return;
+		}
 		const fileUri = file.uri;
 		// Kiểm tra xem file có tồn tại không
 		const fileInfo = await FileSystem.getInfoAsync(fileUri);
 		if (!fileInfo.exists) {
 			console.error("File not found!");
+			alert("Vui lòng tải tài liệu lên!")
 			dispatch(stopLoading());
 			return;
 		}
