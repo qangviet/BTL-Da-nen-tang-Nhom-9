@@ -89,6 +89,7 @@ const LoginScreen = () => {
 				}
 			} catch (error) {
 				// Xử lý lỗi API
+				console.error(error.response.data)
 				if (error.response) {
 					alert(`Lỗi: ${error.response.data.message || "Không xác định"}`);
 				} else if (error.request) {

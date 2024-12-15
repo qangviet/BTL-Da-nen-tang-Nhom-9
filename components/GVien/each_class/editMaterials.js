@@ -140,6 +140,7 @@ const EditMaterialGVien = () => {
 		const fileInfo = await FileSystem.getInfoAsync(fileUri);
 		if (!fileInfo.exists) {
 			console.error("File not found!");
+			alert("Vui lòng tải tài liệu lên!")
 			dispatch(stopLoading());
 			return;
 		}

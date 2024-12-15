@@ -61,6 +61,8 @@ const ChangePassword = () => {
 				new_password: newPassword,
 			});
 
+			console.log("Changing.....")
+
 			// Kiểm tra phản hồi từ API
 			if (response.data.code === "1000") {
 				console.log(response.data.message);
@@ -72,10 +74,12 @@ const ChangePassword = () => {
 				console.log("Logout failed:", response.data.message);
 			}
 		} catch (error) {
-			dispatch(stopLoading());
-			const errorMessage = error.response.data.message;
-			console.error("Error logging out:", errorMessage);
-			Alert.alert("Lỗi", errorMessage);
+			//dispatch(stopLoading());
+			console.error(error.response.data)
+			alert(`Lỗi: ${error.response.data.message}`)
+			// const errorMessage = error.response.data.message;
+			// console.error("Error logging out:", errorMessage);
+			// alert("Lỗi", errorMessage);
 		}
 
 		// // Add your password change logic here

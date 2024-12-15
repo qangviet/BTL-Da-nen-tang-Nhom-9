@@ -19,6 +19,32 @@ const HomeSVien = () => {
 	const [USER, setUSER] = useState({});
 	const [avtLink, setAvtLink] = useState("");
 
+	const [noti_count, setNotiCount] = useState(0);
+
+	const fetchCountNoti = async () => {
+		try {
+		  const response = await api.post("/it5023e/get_unread_notification_count", {
+			token: param.token,
+		  });
+	
+		  if (response.data.meta.code === "1000") {
+			const notiCount = response.data.data;
+			setNotiCount(notiCount);
+		  } else {
+			console.error("API error:", response.data);
+		  }
+		} catch (error) {
+		  console.error("Error fetching notifications:", error?.message || error);
+		}
+	  };
+	
+	  // Tự động gọi API mỗi khi màn hình HomeSVien được focus
+	  useFocusEffect(
+		useCallback(() => {
+		  fetchCountNoti();
+		}, []) // Không cần dependencies vì chỉ chạy khi focus
+	  );
+
 	useEffect(() => {
 		if (currentScreen !== "TabMainSVien") {
 			navigation.navigate(currentScreen);
