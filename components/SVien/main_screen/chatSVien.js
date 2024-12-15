@@ -72,7 +72,7 @@ const ChatSVien = () => {
 										className="bg-red-500 rounded-full h-6 w-6 
 								flex justify-center items-center absolute z-10 -right-3 -top-3"
 									>
-										<Text className="text-white text-[11px]">{noti_count > 10 ? `${noti_count}+` : noti_count}</Text>
+										<Text className="text-white text-[11px]">{noti_count > 10 ? "10+" : noti_count}</Text>
 									</View>
 								)}
 
